@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { Link } from "react-router-dom";
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
@@ -15,13 +16,15 @@ import { LocalShipping } from '@material-ui/icons';
 import Button from '@material-ui/core/Button';
 
 
+
 class Header extends Component {
     constructor(props) {
         super(props);
         this.handleDrawerClose = this.handleDrawerClose.bind(this);
         this.handleDrawerOpen = this.handleDrawerOpen.bind(this);
+        this.changeIndex = this.changeIndex.bind(this);
         this.state = {
-            selectedIndex: 0,
+            selectedIndex: 1,
             openDrawer: false
         };
     }
@@ -32,6 +35,11 @@ class Header extends Component {
 
     handleDrawerOpen() {
         this.setState({ openDrawer: true });
+    }
+
+    changeIndex(selectedIndex) {
+        this.handleDrawerClose();
+        this.setState({selectedIndex });
     }
 
     render() {
@@ -62,12 +70,22 @@ class Header extends Component {
                         </div>
                         <Divider />
                         <List>
-                            <ListItem button selected={this.state.selectedIndex === 0}>
-                                <ListItemIcon>
-                                    <LocalShipping />
-                                </ListItemIcon>
-                                <ListItemText primary={`Solicitar Pedido`} />
-                            </ListItem>
+                            <Link className="back" to="/nueva-orden" onClick={()=>this.changeIndex(0)}>
+                                <ListItem button selected={this.state.selectedIndex === 0}>
+                                    <ListItemIcon>
+                                        <LocalShipping />
+                                    </ListItemIcon>
+                                    <ListItemText primary={`Solicitar Pedido`} />
+                                </ListItem>
+                            </Link>
+                            <Link className="back" to="/order-list" onClick={()=>this.changeIndex(1)}>
+                                <ListItem button selected={this.state.selectedIndex === 1}>
+                                    <ListItemIcon>
+                                        <LocalShipping />
+                                    </ListItemIcon>
+                                    <ListItemText primary={`Listado de Ordenes`} />
+                                </ListItem>
+                            </Link>
                         </List>
                         <Divider />
                     </Drawer>

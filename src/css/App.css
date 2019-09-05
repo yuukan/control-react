@@ -182,7 +182,9 @@ header .toolbar {
   .main-container .landing-container {
     background: white;
     width: 100%;
-    padding: 0 15px; }
+    padding: 0 15px 15px; }
+    .main-container .landing-container.with-spacing {
+      padding: 25px; }
     .main-container .landing-container .form-item {
       width: 100%; }
       .main-container .landing-container .form-item.margin-fix {
@@ -260,3 +262,25 @@ h3.transporte-title {
   font-size: 25px;
   margin-bottom: 25px;
   text-align: center; }
+
+/****************************************************************/
+.new-btn {
+  float: right;
+  background: #1976D2;
+  color: white;
+  border-radius: 10px;
+  padding: 15px;
+  font-size: 20px;
+  text-decoration: none; }
+  .new-btn:hover {
+    background: #145ca4; }
+
+.label {
+  float: left;
+  width: 100%;
+  color: #333;
+  font-size: 14px;
+  padding: 10px 0; }
+
+strong {
+  font-weight: bold; }

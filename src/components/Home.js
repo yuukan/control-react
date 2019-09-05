@@ -32,6 +32,7 @@ class Home extends Component {
             cliente: null,
             direccion: null,
             transporte: null,
+            planta: null,
             producto: null,
             compartimiento: null,
             fechaEntrega: new Date(),
@@ -43,7 +44,11 @@ class Home extends Component {
             detalle: [],
             exclusivo: 0,
             exclusivoid: 0,
-            comentario: ""
+            comentario: "",
+            precio: "",
+            no_oficial: "0",
+            costo: 0,
+            IDP: ""
         }
     }
 
@@ -77,6 +82,12 @@ class Home extends Component {
         if (b.name === "fleteAplicado") {
             this.setState({ transporte: null, compartimiento: null, detalle: [], exclusivo: 0, exclusivoid: 0 });
         }
+        if (b.name === "planta") {
+            this.props.load_products(option.value);
+        }
+        if (b.name === "producto") {
+            this.setState({ precio: option.precio, costo: option.precio, no_oficial: option.no_oficial, IDP: option.IDP });
+        }
     }
 
     handleDateChange(fechaEntrega) {
@@ -101,6 +112,11 @@ class Home extends Component {
             swal("Error", "Debe agregar el compartimiento", "error");
             return;
         }
+
+        if (this.state.precio === "" || this.state.precio === "0") {
+            swal("Error", "Debe agregar el precio", "error");
+            return;
+        }
         if (this.state.compartimiento) {
             if (this.state.cantidad > parseInt(this.state.compartimiento.galones)) {
                 swal("Error", "El compartimiento no puede recibir más de " + this.state.compartimiento.galones + " galones", "error");
@@ -110,9 +126,9 @@ class Home extends Component {
         let row = [];
         let exclusivo = 0, exclusivoid = 0;
         if (this.state.compartimiento) {
-            row = [this.state.producto.value, this.state.cantidad, this.state.compartimiento.value, this.state.producto.label, this.state.producto.color];
+            row = [this.state.producto.value, this.state.cantidad, this.state.compartimiento.value, this.state.producto.label, this.state.producto.color, this.state.no_oficial, this.state.precio, this.state.costo, this.state.IDP];
         } else {
-            row = [this.state.producto.value, this.state.cantidad, 0, this.state.producto.label, this.state.producto.color];
+            row = [this.state.producto.value, this.state.cantidad, 0, this.state.producto.label, this.state.producto.color, this.state.no_oficial, this.state.precio, this.state.costo, this.state.IDP];
         }
         let detalle = this.state.detalle.splice(0);
         detalle.push(row);
@@ -123,20 +139,22 @@ class Home extends Component {
         } else {
             exclusivo = 2;
         }
-        this.setState({ detalle, producto: "", cantidad: 0, compartimiento: 0, exclusivo, exclusivoid });
+        this.setState({ detalle, producto: "", cantidad: 0, compartimiento: 0, exclusivo, exclusivoid, costo: 0, precio: "", no_oficial: 0, IDP: "" });
     }
 
     guardarPedido() {
+        let t_ = this;
         let t = this.state;
         if (t.detalle.length === 0) {
             swal("Error", "Debe de ingresar el detalle de los productos del pedido!", "error");
             return;
         }
-        if (t.cliente !== null && t.tipoPago !== null && t.tipoPago !== null && t.direccion !== null && t.fleteAplicado !== 0) {
+        if (t.cliente !== null && t.tipoPago !== null && t.tipoPago !== null && t.direccion !== null && t.fleteAplicado !== 0 && t.planta !== null) {
             let transporte = 0;
             if (t.transporte !== null) transporte = t.transporte.id;
             axios.post(this.props.url + "api/save-order", {
                 cliente: t.cliente.value,
+                nombreCliente: t.cliente.label,
                 diaEntrega: ("0" + t.fechaEntrega.getDate()).slice(-2),
                 mesEntrega: ("0" + t.fechaEntrega.getMonth()).slice(-2),
                 anioEntrega: t.fechaEntrega.getFullYear(),
@@ -148,10 +166,13 @@ class Home extends Component {
                 montoPorGalon: t.montoPorGalon,
                 transporte: transporte,
                 comentario: t.comentario,
-                detalle: t.detalle
+                detalle: t.detalle,
+                planta: t.planta.value
             })
                 .then(function (response) {
-                    t.setState({ clientes: response.data });
+                    // t.setState({ clientes: response.data });
+                    t_.props.load_orders();
+                    t_.props.history.push("/order-list");
                 })
                 .catch(function (error) {
                     console.log(error);
@@ -269,7 +290,7 @@ class Home extends Component {
                 </Typography>
                 <div className="landing-container">
                     <Grid container spacing={2} justify="space-around">
-                        <Grid item xs={12} sm={6} md={6} lg={3}>
+                        <Grid item xs={12} sm={6} md={3} lg={3}>
                             <FormControl variant="outlined" className="form-item margin-fix2">
                                 <Select2
                                     value={this.state.cliente}
@@ -280,13 +301,24 @@ class Home extends Component {
                                 />
                             </FormControl>
                         </Grid>
-                        <Grid item xs={12} sm={6} md={6} lg={3}>
+                        <Grid item xs={12} sm={6} md={3} lg={3}>
+                            <FormControl variant="outlined" className="form-item margin-fix2">
+                                <Select2
+                                    value={this.state.planta}
+                                    onChange={this.handleChangeSelect}
+                                    name="planta"
+                                    options={this.props.plants}
+                                    placeholder="*Seleccione una planta"
+                                />
+                            </FormControl>
+                        </Grid>
+                        <Grid item xs={12} sm={6} md={3} lg={3}>
                             <MuiPickersUtilsProvider utils={DateFnsUtils} locale={esLocale}>
                                 <KeyboardDatePicker
                                     margin="normal"
                                     className="full-width"
                                     id="mui-pickers-date"
-                                    label="Fecha de Entrega"
+                                    label="Fecha de Carga"
                                     value={this.state.fechaEntrega}
                                     onChange={this.handleDateChange}
                                     KeyboardButtonProps={{
@@ -295,7 +327,7 @@ class Home extends Component {
                                 />
                             </MuiPickersUtilsProvider>
                         </Grid>
-                        <Grid item xs={12} sm={6} md={6} lg={3}>
+                        <Grid item xs={12} sm={6} md={3} lg={3}>
                             <MuiPickersUtilsProvider utils={DateFnsUtils} locale={esLocale}>
                                 <KeyboardTimePicker
                                     margin="normal"
@@ -310,7 +342,7 @@ class Home extends Component {
                                 />
                             </MuiPickersUtilsProvider>
                         </Grid>
-                        <Grid item xs={12} sm={6} md={6} lg={3}>
+                        <Grid item xs={12} sm={6} md={3} lg={3}>
                             <FormControl variant="outlined" className="form-item margin-fix2">
                                 <Select2
                                     value={this.state.tipoPago}
@@ -321,7 +353,7 @@ class Home extends Component {
                                 />
                             </FormControl>
                         </Grid>
-                        <Grid item xs={12} sm={6} md={6} lg={3}>
+                        <Grid item xs={12} sm={6} md={3} lg={3}>
                             <FormControl variant="outlined" className="form-item margin-fix2">
                                 <Select2
                                     value={this.state.direccion}
@@ -332,7 +364,7 @@ class Home extends Component {
                                 />
                             </FormControl>
                         </Grid>
-                        <Grid item xs={12} sm={6} md={6} lg={3}>
+                        <Grid item xs={12} sm={6} md={3} lg={3}>
                             <FormControl variant="outlined" className="form-item margin-fix2 small">
                                 <Select2
                                     value={this.state.fleteAplicado}
@@ -357,7 +389,7 @@ class Home extends Component {
                                     ) : ""
                             }
                         </Grid>
-                        <Grid item xs={12} sm={6} md={6} lg={3}>
+                        <Grid item xs={12} sm={6} md={3} lg={3}>
                             {
                                 this.state.fleteAplicado.value === 1 ?
                                     (
@@ -373,7 +405,6 @@ class Home extends Component {
                                     ) : ""
                             }
                         </Grid>
-                        <Grid item xs={12} sm={6} md={6} lg={3}></Grid>
                         <Grid item xs={12} sm={6} md={6} lg={6}>
                             <FormControl variant="outlined" className="form-item">
                                 <TextField
@@ -414,7 +445,7 @@ class Home extends Component {
                             ) : ""
                     }
                     <Grid container spacing={2} justify="space-around" className="margin-separation">
-                        <Grid item xs={12} sm={6} md={6} lg={3}>
+                        <Grid item xs={12} sm={6} md={3} lg={3}>
                             <FormControl variant="outlined" className="form-item margin-fix2">
                                 <Select2
                                     value={this.state.producto}
@@ -426,7 +457,7 @@ class Home extends Component {
                             </FormControl>
                         </Grid>
 
-                        <Grid item xs={12} sm={6} md={6} lg={3}>
+                        <Grid item xs={12} sm={6} md={3} lg={3}>
                             <TextField
                                 id="cantidad"
                                 name="cantidad"
@@ -437,10 +468,10 @@ class Home extends Component {
                                 margin="normal"
                             />
                         </Grid>
-                        <Grid item xs={12} sm={6} md={6} lg={3}>
-                            {
-                                this.state.fleteAplicado.value === 1 && this.state.transporte ?
-                                    (
+                        {
+                            this.state.fleteAplicado.value === 1 && this.state.transporte ?
+                                (
+                                    <Grid item xs={12} sm={6} md={3} lg={3}>
                                         <FormControl variant="outlined" className="form-item margin-fix2">
                                             <Select2
                                                 value={this.state.compartimiento}
@@ -451,11 +482,23 @@ class Home extends Component {
                                                 noOptionsMessage={this.NoResults}
                                             />
                                         </FormControl>
-                                    ) : ""
-                            }
+                                    </Grid>
+                                ) : ""
+                        }
+                        <Grid item xs={12} sm={6} md={3} lg={3}>
+                            <FormControl variant="outlined" className="form-item">
+                                <TextField
+                                    name="precio"
+                                    id="precio"
+                                    label="Precio"
+                                    value={this.state.precio}
+                                    onChange={this.handleChange}
+                                    margin="normal"
+                                />
+                            </FormControl>
                         </Grid>
-                        <Grid item xs={12} sm={6} md={6} lg={3}>
-                            <Button variant="contained" color="secondary" className="margin-fix" onClick={this.agregarDetalle}>
+                        <Grid item xs={12} sm={12} md={12} lg={12}>
+                            <Button variant="contained" color="secondary" className="margin-fix" onClick={this.agregarDetalle} style={{ float: 'right' }}>
                                 Agregar
                             </Button>
                         </Grid>
@@ -463,16 +506,19 @@ class Home extends Component {
                         {detalle && detalle.length > 0
                             ? detalle.map((key, idx) => (
                                 <React.Fragment key={`p${idx}`}>
-                                    <Grid item xs={12} sm={6} md={6} lg={3}>
+                                    <Grid item xs={12} sm={6} md={3} lg={3}>
                                         {key[3]}
                                     </Grid>
-                                    <Grid item xs={12} sm={6} md={6} lg={3}>
+                                    <Grid item xs={12} sm={6} md={3} lg={3}>
                                         {key[1]}
                                     </Grid>
-                                    <Grid item xs={12} sm={6} md={6} lg={3}>
+                                    <Grid item xs={12} sm={6} md={2} lg={2}>
                                         {key[2] !== 0 ? key[2] : ""}
                                     </Grid>
-                                    <Grid item xs={12} sm={6} md={6} lg={3}>
+                                    <Grid item xs={12} sm={4} md={2} lg={2}>
+                                        {key[6] !== 0 && key[6] !== "" ? key[6] : ""}
+                                    </Grid>
+                                    <Grid item xs={12} sm={2} md={2} lg={2}>
                                         <Button variant="contained" color="secondary" onClick={() => this.delete(idx)}>
                                             <FontAwesomeIcon icon="trash" />
                                         </Button>
