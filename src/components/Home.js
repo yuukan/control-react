@@ -294,6 +294,7 @@ class Home extends Component {
                             <FormControl variant="outlined" className="form-item margin-fix2">
                                 <Select2
                                     value={this.state.cliente}
+                                    isSearchable={true}
                                     onChange={this.handleChangeSelect}
                                     name="cliente"
                                     options={this.props.clientes}
@@ -305,6 +306,7 @@ class Home extends Component {
                             <FormControl variant="outlined" className="form-item margin-fix2">
                                 <Select2
                                     value={this.state.planta}
+                                    isSearchable={true}
                                     onChange={this.handleChangeSelect}
                                     name="planta"
                                     options={this.props.plants}
@@ -346,6 +348,7 @@ class Home extends Component {
                             <FormControl variant="outlined" className="form-item margin-fix2">
                                 <Select2
                                     value={this.state.tipoPago}
+                                    isSearchable={true}
                                     onChange={this.handleChangeSelect}
                                     name="tipoPago"
                                     options={tipos_pago}
@@ -357,6 +360,7 @@ class Home extends Component {
                             <FormControl variant="outlined" className="form-item margin-fix2">
                                 <Select2
                                     value={this.state.direccion}
+                                    isSearchable={true}
                                     onChange={this.handleChangeSelect}
                                     name="direccion"
                                     options={addresses}
@@ -368,6 +372,7 @@ class Home extends Component {
                             <FormControl variant="outlined" className="form-item margin-fix2 small">
                                 <Select2
                                     value={this.state.fleteAplicado}
+                                    isSearchable={true}
                                     onChange={this.handleChangeSelect}
                                     name="fleteAplicado"
                                     options={flete_aplicado}
@@ -396,6 +401,7 @@ class Home extends Component {
                                         <FormControl variant="outlined" className="form-item margin-fix2">
                                             <Select2
                                                 value={this.state.transporte}
+                                                isSearchable={true}
                                                 onChange={this.handleChangeSelect}
                                                 name="transporte"
                                                 options={this.props.fletes}
@@ -449,6 +455,7 @@ class Home extends Component {
                             <FormControl variant="outlined" className="form-item margin-fix2">
                                 <Select2
                                     value={this.state.producto}
+                                    isSearchable={true}
                                     onChange={this.handleChangeSelect}
                                     name="producto"
                                     options={productos}
@@ -475,6 +482,7 @@ class Home extends Component {
                                         <FormControl variant="outlined" className="form-item margin-fix2">
                                             <Select2
                                                 value={this.state.compartimiento}
+                                                isSearchable={true}
                                                 onChange={this.handleChangeSelect}
                                                 name="compartimiento"
                                                 options={compartimientos_select}

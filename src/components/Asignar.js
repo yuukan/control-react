@@ -303,6 +303,7 @@ class Asignar extends Component {
         // Product Filters
         // #################################################
 
+        let tot = 0;
         return (
             <div className="main-container">
                 <Typography variant="h3" component="h1" gutterBottom>
@@ -408,48 +409,84 @@ class Asignar extends Component {
                         </Grid>
                     </Grid>
                     <Grid container spacing={2} justify="space-around" className="margin-separation">
-                        <Grid item xs={12} sm={6} md={2} lg={2}>
+                        <Grid item xs={12} sm={6} md={2} lg={2} className="th">
                             <strong>Producto</strong>
                         </Grid>
-                        <Grid item xs={12} sm={6} md={2} lg={2}>
+                        <Grid item xs={12} sm={6} md={1} lg={1} className="th goCenter">
                             <strong>Cantidad</strong>
                         </Grid>
-                        <Grid item xs={12} sm={6} md={2} lg={2}>
+                        <Grid item xs={12} sm={6} md={1} lg={1} className="th goCenter">
                             <strong>Compartimiento</strong>
                         </Grid>
-                        <Grid item xs={12} sm={6} md={2} lg={2}>
+                        <Grid item xs={12} sm={6} md={2} lg={2} className="th goRight">
                             <strong>Precio</strong>
                         </Grid>
-                        <Grid item xs={12} sm={6} md={2} lg={2}>
-                            <strong>IPD</strong>
+                        <Grid item xs={12} sm={6} md={2} lg={2} className="th goRight">
+                            <strong>IDP</strong>
                         </Grid>
-                        <Grid item xs={12} sm={6} md={2} lg={2}>
+                        <Grid item xs={12} sm={6} md={2} lg={2} className="th goRight">
                             <strong>IVA</strong>
                         </Grid>
+                        <Grid item xs={12} sm={6} md={2} lg={2} className="th goRight">
+                            <strong>Subtotal</strong>
+                        </Grid>
                         {order && order.Compartimientos.length > 0
-                            ? order.Compartimientos.map((key, idx) => (
-                                <React.Fragment key={`p${idx}`}>
-                                    <Grid item xs={12} sm={6} md={2} lg={2}>
-                                        {key.Nombre}
+                            ? order.Compartimientos.map((key, idx) => {
+                                tot += parseFloat((key.Precio * key.cantidad).toFixed(2));
+                                let subTotal = parseFloat((key.Precio * key.cantidad).toFixed(2));
+                                return (
+                                    <React.Fragment key={`p${idx}`}>
+                                        <Grid item xs={6} sm={6} md={2} lg={2} className="ch">
+                                            <strong>Producto</strong>
+                                            {key.Nombre}
+                                        </Grid>
+                                        <Grid item xs={6} sm={6} md={1} lg={1} className="ch goRight">
+                                            <strong>Cantidad</strong>
+                                            {key.cantidad}
+                                        </Grid>
+                                        <Grid item xs={6} sm={6} md={1} lg={1} className="ch goCenter">
+                                            <strong>Compartimiento</strong>
+                                            {key.Compartimiento !== 0 ? key.Compartimiento : ""}
+                                        </Grid>
+                                        <Grid item xs={6} sm={6} md={2} lg={2} className="ch goRight">
+                                            <strong>Precio</strong>
+                                            {key.Precio}
+                                        </Grid>
+                                        <Grid item xs={6} sm={6} md={2} lg={2} className="ch goRight">
+                                            <strong>IDP</strong>
+                                            {key.IDP}
+                                        </Grid>
+                                        <Grid item xs={6} sm={6} md={2} lg={2} className="ch goRight">
+                                            <strong>IVA</strong>
+                                            {(key.Precio - ((key.Precio - key.IDP) / 1.12)).toFixed(2)}
+                                        </Grid>
+                                        <Grid item xs={6} sm={6} md={2} lg={2} className="ch goRight">
+                                            <strong>Subtotal</strong>
+                                            {subTotal.toLocaleString('en-US', {
+                                                minimumFractionDigits: 2,
+                                                maximumFractionDigits: 2
+                                            })}
+                                        </Grid>
+                                        <Grid item xs={6} sm={6} md={12} lg={12} className="mobile">
+                                            &nbsp;
                                     </Grid>
-                                    <Grid item xs={12} sm={6} md={2} lg={2}>
-                                        {key.cantidad}
+                                        <Grid item xs={12} sm={12} md={12} lg={12} className="separator">
+                                            &nbsp;
                                     </Grid>
-                                    <Grid item xs={12} sm={6} md={2} lg={2}>
-                                        {key.Compartimiento !== 0 ? key.Compartimiento : ""}
-                                    </Grid>
-                                    <Grid item xs={12} sm={6} md={2} lg={2}>
-                                        {key.Precio}
-                                    </Grid>
-                                    <Grid item xs={12} sm={6} md={2} lg={2}>
-                                        {key.IDP}
-                                    </Grid>
-                                    <Grid item xs={12} sm={6} md={2} lg={2}>
-                                        {(key.Precio * 0.12).toFixed(2)}
-                                    </Grid>
-                                </React.Fragment>
-                            ))
+                                    </React.Fragment>
+                                )
+                            })
                             : ""}
+
+                        <Grid item xs={6} sm={6} md={10} lg={10} className="tot goRight">
+                            <strong>Total</strong>
+                        </Grid>
+                        <Grid item xs={6} sm={6} md={2} lg={2} className="tot goRight">
+                            {tot.toLocaleString('en-US', {
+                                minimumFractionDigits: 2,
+                                maximumFractionDigits: 2
+                            })}
+                        </Grid>
 
                     </Grid>
                 </div>
