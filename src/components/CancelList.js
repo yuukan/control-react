@@ -2,8 +2,6 @@ import React, { Component } from 'react';
 import Typography from '@material-ui/core/Typography';
 import MaterialTable from 'material-table';
 import { Link } from "react-router-dom";
-import swal from 'sweetalert';
-import axios from 'axios';
 
 import { forwardRef } from 'react';
 import AddBox from '@material-ui/icons/AddBox';
@@ -21,8 +19,6 @@ import Remove from '@material-ui/icons/Remove';
 import SaveAlt from '@material-ui/icons/SaveAlt';
 import Search from '@material-ui/icons/Search';
 import ViewColumn from '@material-ui/icons/ViewColumn';
-import DateRange from '@material-ui/icons/DateRange';
-import { LocalAtm, Cancel, CloudUpload } from '@material-ui/icons/';
 
 const tableIcons = {
     Add: forwardRef((props, ref) => <AddBox {...props} ref={ref} />),
@@ -44,7 +40,7 @@ const tableIcons = {
     ViewColumn: forwardRef((props, ref) => <ViewColumn {...props} ref={ref} />)
 };
 
-class List extends Component {
+class CancelList extends Component {
 
     constructor(props) {
         super(props);
@@ -66,13 +62,16 @@ class List extends Component {
 
         if (this.props.orders) orders = this.props.orders;
 
+        // Show only the anuladas orders
+        orders = orders.filter(
+            (key) =>
+                key.status.trim() === "Anulado"
+        );
+
         return (
             <div className="main-container">
                 <Typography variant="h3" component="h1" gutterBottom>
-                    Listado de Pedidos
-                    <Link className="new-btn" to="/nueva-orden">
-                        Nueva Orden
-                    </Link>
+                    Pedidos Anulados
                 </Typography>
                 <div className="landing-container with-spacing">
                     {
@@ -83,63 +82,6 @@ class List extends Component {
                                 data={orders}
                                 title="Listado de Pedidos"
                                 pageSize={20}
-                                actions={[
-                                    rowData => ({
-                                        icon: DateRange,
-                                        tooltip: 'Asignar Horario',
-                                        onClick: (event, rowData) => {
-                                            // console.log(rowData);
-                                            this.props.history.push("/asignar/" + rowData.id);
-                                        },
-                                        hidden: parseInt(rowData.oid) === 6
-                                    }),
-                                    rowData => ({
-                                        icon: LocalAtm,
-                                        tooltip: 'Créditos',
-                                        onClick: (event, rowData) => {
-                                            // console.log(rowData);
-                                            this.props.history.push("/creditos/" + rowData.id);
-                                        },
-                                        hidden: parseInt(rowData.oid) === 6
-                                    }),
-                                    rowData => ({
-                                        icon: CloudUpload,
-                                        tooltip: 'Subir a SAP',
-                                        onClick: (event, rowData) => {
-                                            console.log(rowData);
-                                            // this.props.history.push("/creditos/" + rowData.id);
-                                        },
-                                        hidden: parseInt(rowData.oid) === 6
-                                    }),
-                                    rowData => ({
-                                        icon: Cancel,
-                                        tooltip: 'Anular Orden',
-                                        onClick: (event, rowData) => {
-                                            // this.props.history.push("/creditos/" + rowData.id);
-                                            swal("Anular Orden?", "Comentario", {
-                                                buttons: ["No", "Si"],
-                                                icon: "warning",
-                                                content: "input",
-                                            }).then((anular) => {
-                                                if (anular !== null) {
-                                                    let t_ = this;
-                                                    axios.post(this.props.url + "api/cancel-order", {
-                                                        id: rowData.id,
-                                                        user: window.localStorage.getItem('tp_uid'),
-                                                        comentario: anular
-                                                    })
-                                                        .then(function () {
-                                                            // t.setState({ clientes: response.data });
-                                                            t_.props.load_orders();
-                                                        })
-                                                        .catch(function (error) {
-                                                            console.log(error);
-                                                        });
-                                                }
-                                            });
-                                        }
-                                    })
-                                ]}
                                 localization={{
                                     pagination: {
                                         labelDisplayedRows: '{from}-{to} de {count}',
@@ -168,4 +110,4 @@ class List extends Component {
         );
     }
 }
-export default List;
+export default CancelList;

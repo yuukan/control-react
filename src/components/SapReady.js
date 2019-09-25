@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import Typography from '@material-ui/core/Typography';
 import MaterialTable from 'material-table';
-import { Link } from "react-router-dom";
+import { CloudUpload, Cancel } from '@material-ui/icons/';
 import swal from 'sweetalert';
 import axios from 'axios';
 
@@ -21,8 +21,6 @@ import Remove from '@material-ui/icons/Remove';
 import SaveAlt from '@material-ui/icons/SaveAlt';
 import Search from '@material-ui/icons/Search';
 import ViewColumn from '@material-ui/icons/ViewColumn';
-import DateRange from '@material-ui/icons/DateRange';
-import { LocalAtm, Cancel, CloudUpload } from '@material-ui/icons/';
 
 const tableIcons = {
     Add: forwardRef((props, ref) => <AddBox {...props} ref={ref} />),
@@ -44,7 +42,7 @@ const tableIcons = {
     ViewColumn: forwardRef((props, ref) => <ViewColumn {...props} ref={ref} />)
 };
 
-class List extends Component {
+class SapReady extends Component {
 
     constructor(props) {
         super(props);
@@ -66,13 +64,16 @@ class List extends Component {
 
         if (this.props.orders) orders = this.props.orders;
 
+        // Show only the anuladas orders
+        orders = orders.filter(
+            (key) =>
+                key.status.trim() === "Horario Asignado" || key.status.trim() === "Aprobado"
+        );
+
         return (
             <div className="main-container">
                 <Typography variant="h3" component="h1" gutterBottom>
-                    Listado de Pedidos
-                    <Link className="new-btn" to="/nueva-orden">
-                        Nueva Orden
-                    </Link>
+                    Pedidos Listos para subir a SAP
                 </Typography>
                 <div className="landing-container with-spacing">
                     {
@@ -84,24 +85,6 @@ class List extends Component {
                                 title="Listado de Pedidos"
                                 pageSize={20}
                                 actions={[
-                                    rowData => ({
-                                        icon: DateRange,
-                                        tooltip: 'Asignar Horario',
-                                        onClick: (event, rowData) => {
-                                            // console.log(rowData);
-                                            this.props.history.push("/asignar/" + rowData.id);
-                                        },
-                                        hidden: parseInt(rowData.oid) === 6
-                                    }),
-                                    rowData => ({
-                                        icon: LocalAtm,
-                                        tooltip: 'Créditos',
-                                        onClick: (event, rowData) => {
-                                            // console.log(rowData);
-                                            this.props.history.push("/creditos/" + rowData.id);
-                                        },
-                                        hidden: parseInt(rowData.oid) === 6
-                                    }),
                                     rowData => ({
                                         icon: CloudUpload,
                                         tooltip: 'Subir a SAP',
@@ -139,6 +122,7 @@ class List extends Component {
                                             });
                                         }
                                     })
+
                                 ]}
                                 localization={{
                                     pagination: {
@@ -168,4 +152,4 @@ class List extends Component {
         );
     }
 }
-export default List;
+export default SapReady;

@@ -177,6 +177,10 @@ header .toolbar {
 .drawer-header {
   text-align: right; }
 
+.link {
+  text-decoration: none;
+  color: rgba(0, 0, 0, 0.54); }
+
 .main-container {
   padding: 27px 15px; }
   .main-container .landing-container {
@@ -193,9 +197,29 @@ header .toolbar {
         margin-top: 27px; }
       .main-container .landing-container .form-item.small {
         width: 120px; }
-    .main-container .landing-container .montoPorGalon {
-      width: calc(100% - 140px);
-      margin-left: 20px; }
+    .main-container .landing-container .comentarios {
+      width: 100%;
+      margin: 25px 0; }
+      .main-container .landing-container .comentarios li {
+        background: white;
+        width: 100%;
+        border-bottom: 1px solid #e0e0e0;
+        padding: 10px 5px; }
+        .main-container .landing-container .comentarios li:nth-child(even) {
+          background: #f4f4f4; }
+        .main-container .landing-container .comentarios li .date {
+          width: 100%;
+          font-size: 14px;
+          margin-bottom: 10px; }
+        .main-container .landing-container .comentarios li .user {
+          width: 100%;
+          font-size: 14px;
+          font-weight: bold;
+          margin-bottom: 10px; }
+        .main-container .landing-container .comentarios li .comment {
+          width: 100%;
+          font-size: 18px;
+          line-height: normal; }
 
 .full-width {
   width: 100%; }

@@ -12,7 +12,7 @@ import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
-import { LocalShipping } from '@material-ui/icons';
+import { LocalShipping, ListAltTwoTone } from '@material-ui/icons';
 import Button from '@material-ui/core/Button';
 
 
@@ -39,7 +39,7 @@ class Header extends Component {
 
     changeIndex(selectedIndex) {
         this.handleDrawerClose();
-        this.setState({selectedIndex });
+        this.setState({ selectedIndex });
     }
 
     render() {
@@ -70,7 +70,7 @@ class Header extends Component {
                         </div>
                         <Divider />
                         <List>
-                            <Link className="back" to="/nueva-orden" onClick={()=>this.changeIndex(0)}>
+                            <Link className="link" to="/nueva-orden" onClick={() => this.changeIndex(0)}>
                                 <ListItem button selected={this.state.selectedIndex === 0}>
                                     <ListItemIcon>
                                         <LocalShipping />
@@ -78,12 +78,44 @@ class Header extends Component {
                                     <ListItemText primary={`Solicitar Pedido`} />
                                 </ListItem>
                             </Link>
-                            <Link className="back" to="/order-list" onClick={()=>this.changeIndex(1)}>
+                            <Link className="link" to="/order-list" onClick={() => this.changeIndex(1)}>
                                 <ListItem button selected={this.state.selectedIndex === 1}>
                                     <ListItemIcon>
-                                        <LocalShipping />
+                                        <ListAltTwoTone />
                                     </ListItemIcon>
                                     <ListItemText primary={`Listado de Ordenes`} />
+                                </ListItem>
+                            </Link>
+                            <Link className="link" to="/new-list" onClick={() => this.changeIndex(2)}>
+                                <ListItem button selected={this.state.selectedIndex === 2}>
+                                    <ListItemIcon>
+                                        <ListAltTwoTone />
+                                    </ListItemIcon>
+                                    <ListItemText primary={`Ordenes Nuevas`} />
+                                </ListItem>
+                            </Link>
+                            <Link className="link" to="/credit-list" onClick={() => this.changeIndex(3)}>
+                                <ListItem button selected={this.state.selectedIndex === 3}>
+                                    <ListItemIcon>
+                                        <ListAltTwoTone />
+                                    </ListItemIcon>
+                                    <ListItemText primary={`Pendiente Validación Crédito`} />
+                                </ListItem>
+                            </Link>
+                            <Link className="link" to="/sap-list" onClick={() => this.changeIndex(4)}>
+                                <ListItem button selected={this.state.selectedIndex === 4}>
+                                    <ListItemIcon>
+                                        <ListAltTwoTone />
+                                    </ListItemIcon>
+                                    <ListItemText primary={`Ordenesl para Subir a Sap`} />
+                                </ListItem>
+                            </Link>
+                            <Link className="link" to="/cancelled-list" onClick={() => this.changeIndex(5)}>
+                                <ListItem button selected={this.state.selectedIndex === 5}>
+                                    <ListItemIcon>
+                                        <ListAltTwoTone />
+                                    </ListItemIcon>
+                                    <ListItemText primary={`Ordenes Anuladas`} />
                                 </ListItem>
                             </Link>
                         </List>

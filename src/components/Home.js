@@ -156,7 +156,7 @@ class Home extends Component {
                 cliente: t.cliente.value,
                 nombreCliente: t.cliente.label,
                 diaEntrega: ("0" + t.fechaEntrega.getDate()).slice(-2),
-                mesEntrega: ("0" + t.fechaEntrega.getMonth()).slice(-2),
+                mesEntrega: ("0" + (t.fechaEntrega.getMonth() + 1)).slice(-2),
                 anioEntrega: t.fechaEntrega.getFullYear(),
                 hora: t.fechaEntrega.getHours(),
                 minutos: t.fechaEntrega.getMinutes(),
@@ -181,8 +181,21 @@ class Home extends Component {
             swal("Error", "Debe de llenar todos los campos requeridos!", "error");
         }
     }
-
+    componentDidUpdate() {
+        if (this.props.config && this.state.montoPorGalon === 0) {
+            if (this.state.montoPorGalon !== this.props.config.MontoPorGalon) {
+                let montoPorGalon = this.props.config.MontoPorGalon.toLocaleString('en-US', {
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2
+                });
+                this.setState({
+                    montoPorGalon: parseFloat(montoPorGalon)
+                });
+            }
+        }
+    }
     render() {
+
 
         let conts = [];
 
@@ -249,8 +262,8 @@ class Home extends Component {
         ];
 
         let flete_aplicado = [
-            { value: 1, label: "Si" },
-            { value: 2, label: "No" }
+            { value: 1, label: "EX Rack" },
+            { value: 2, label: "En el lugar" }
         ];
 
         // #################################################
@@ -368,48 +381,40 @@ class Home extends Component {
                                 />
                             </FormControl>
                         </Grid>
-                        <Grid item xs={12} sm={6} md={3} lg={3}>
-                            <FormControl variant="outlined" className="form-item margin-fix2 small">
+                        <Grid item xs={12} sm={6} md={2} lg={2}>
+                            <FormControl variant="outlined" className="form-item margin-fix2">
                                 <Select2
                                     value={this.state.fleteAplicado}
                                     isSearchable={true}
                                     onChange={this.handleChangeSelect}
                                     name="fleteAplicado"
                                     options={flete_aplicado}
-                                    placeholder="*Flete"
+                                    placeholder="*Forma de Carga"
                                 />
                             </FormControl>
-                            {
-                                this.state.fleteAplicado.value === 1 ?
-                                    (
-                                        <TextField
-                                            id="montoPorGalon"
-                                            name="montoPorGalon"
-                                            label="Monto por Galón"
-                                            className="montoPorGalon"
-                                            value={this.state.montoPorGalon}
-                                            onChange={this.handleChange}
-                                            margin="normal"
-                                        />
-                                    ) : ""
-                            }
                         </Grid>
-                        <Grid item xs={12} sm={6} md={3} lg={3}>
-                            {
-                                this.state.fleteAplicado.value === 1 ?
-                                    (
-                                        <FormControl variant="outlined" className="form-item margin-fix2">
-                                            <Select2
-                                                value={this.state.transporte}
-                                                isSearchable={true}
-                                                onChange={this.handleChangeSelect}
-                                                name="transporte"
-                                                options={this.props.fletes}
-                                                placeholder="Seleccione un Transporte"
-                                            />
-                                        </FormControl>
-                                    ) : ""
-                            }
+                        <Grid item xs={12} sm={6} md={2} lg={2}>
+                            <TextField
+                                id="montoPorGalon"
+                                name="montoPorGalon"
+                                label="Monto por Galón"
+                                className="montoPorGalon"
+                                value={this.state.montoPorGalon}
+                                onChange={this.handleChange}
+                                margin="normal"
+                            />
+                        </Grid>
+                        <Grid item xs={12} sm={6} md={2} lg={2}>
+                            <FormControl variant="outlined" className="form-item margin-fix2">
+                                <Select2
+                                    value={this.state.transporte}
+                                    isSearchable={true}
+                                    onChange={this.handleChangeSelect}
+                                    name="transporte"
+                                    options={this.props.fletes}
+                                    placeholder="Transporte"
+                                />
+                            </FormControl>
                         </Grid>
                         <Grid item xs={12} sm={6} md={6} lg={6}>
                             <FormControl variant="outlined" className="form-item">
@@ -434,7 +439,7 @@ class Home extends Component {
                 </Typography>
                 <div className="landing-container padding-bottom-separation">
                     {
-                        this.state.fleteAplicado.value === 1 && this.state.transporte ?
+                        this.state.transporte ?
                             (
                                 <Grid container spacing={2} justify="space-around" className="padding-top-separation">
                                     <Grid item xs={12} sm={6} md={6} lg={6}>
@@ -476,7 +481,7 @@ class Home extends Component {
                             />
                         </Grid>
                         {
-                            this.state.fleteAplicado.value === 1 && this.state.transporte ?
+                            this.state.transporte ?
                                 (
                                     <Grid item xs={12} sm={6} md={3} lg={3}>
                                         <FormControl variant="outlined" className="form-item margin-fix2">

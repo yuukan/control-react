@@ -2,22 +2,13 @@ import React, { Component } from 'react';
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
 import FormControl from '@material-ui/core/FormControl';
-import esLocale from "date-fns/locale/es";
-import DateFnsUtils from '@date-io/date-fns';
 import Button from '@material-ui/core/Button';
 import swal from 'sweetalert';
-import Select2 from 'react-select';
 import TextField from '@material-ui/core/TextField';
 import axios from 'axios';
 
-import {
-    MuiPickersUtilsProvider,
-    KeyboardTimePicker,
-    KeyboardDatePicker,
-} from '@material-ui/pickers';
 
-
-class Asignar extends Component {
+class Creditos extends Component {
 
     constructor() {
         super();
@@ -25,7 +16,7 @@ class Asignar extends Component {
         this.handleChangeSelect = this.handleChangeSelect.bind(this);
         this.handleDateChange = this.handleDateChange.bind(this);
         this.agregarDetalle = this.agregarDetalle.bind(this);
-        this.guardarPedido = this.guardarPedido.bind(this);
+        this.aprobarPedido = this.aprobarPedido.bind(this);
         this.delete = this.delete.bind(this);
         this.state = {
             cliente: null,
@@ -143,19 +134,11 @@ class Asignar extends Component {
         return strTime;
     }
 
-    guardarPedido() {
+    aprobarPedido() {
         let t_ = this;
         let t = this.state;
-        axios.post(this.props.url + "api/assign-order", {
-            diaEntrega: ("0" + t.fechaEntrega.getDate()).slice(-2),
-            mesEntrega: ("0" + (t.fechaEntrega.getMonth() + 1)).slice(-2),
-            anioEntrega: t.fechaEntrega.getFullYear(),
-            hora: t.fechaEntrega.getHours(),
-            minutos: t.fechaEntrega.getMinutes(),
-            transporte: t.transporte.id,
+        axios.post(this.props.url + "api/approve-order", {
             comentario: t.comentario,
-            planta: t.planta.value,
-            planta_original: t.planta.value,
             id: this.props.match.params.id,
             user: window.localStorage.getItem('tp_uid')
         })
@@ -246,7 +229,7 @@ class Asignar extends Component {
             comentarios = order.comentarios.map((key, idx) => {
                 let da = new Date(key.created_at);
                 return (
-                    <li key={idx}
+                    <li key={`c${idx}`}
                     >
                         <div className="date">
                             {da.getDate()}/{da.getMonth()}/{da.getFullYear()} {this.formatAMPM(da)}
@@ -315,53 +298,41 @@ class Asignar extends Component {
         // #################################################
 
         let tot = 0;
+
+        let fE = "", fT = "", planta = "", trans;
+        if (this.state.fechaEntrega) {
+            fE = this.state.fechaEntrega.getDate() + "/" + this.state.fechaEntrega.getMonth() + "/" + this.state.fechaEntrega.getFullYear();
+            fT = this.formatAMPM(this.state.fechaEntrega);
+        }
+        if (this.state.planta && this.state.transporte) {
+            planta = this.state.planta.label;
+            trans = this.state.transporte.label;
+        }
         return (
             <div className="main-container">
                 <Typography variant="h3" component="h1" gutterBottom>
-                    Asignar Horario
+                    Aprobaciónde Pedido por Créditos
                 </Typography>
                 <div className="landing-container">
                     <Grid container spacing={2} justify="space-around">
                         <Grid item xs={12} sm={6} md={3} lg={3}>
-                            <MuiPickersUtilsProvider utils={DateFnsUtils} locale={esLocale}>
-                                <KeyboardDatePicker
-                                    margin="normal"
-                                    className="full-width"
-                                    id="mui-pickers-date"
-                                    label="Fecha de Carga"
-                                    value={this.state.fechaEntrega}
-                                    onChange={this.handleDateChange}
-                                    KeyboardButtonProps={{
-                                        'aria-label': 'change date',
-                                    }}
-                                />
-                            </MuiPickersUtilsProvider>
+                            <label className="label">
+                                Fecha de Carga
+                            </label>
+                            {fE}
                         </Grid>
                         <Grid item xs={12} sm={6} md={3} lg={3}>
-                            <MuiPickersUtilsProvider utils={DateFnsUtils} locale={esLocale}>
-                                <KeyboardTimePicker
-                                    margin="normal"
-                                    className="full-width"
-                                    id="mui-pickers-time"
-                                    label="Hora de Carga"
-                                    value={this.state.fechaEntrega}
-                                    onChange={this.handleDateChange}
-                                    KeyboardButtonProps={{
-                                        'aria-label': 'Cambiar hora',
-                                    }}
-                                />
-                            </MuiPickersUtilsProvider>
+                            <label className="label">
+                                Hora de Carga
+                            </label>
+                            {fT}
                         </Grid>
                         <Grid item xs={12} sm={6} md={3} lg={3}>
-                            <FormControl variant="outlined" className="form-item margin-fix2">
-                                <Select2
-                                    value={this.state.planta}
-                                    isSearchable={true}
-                                    onChange={this.handleChangeSelect}
-                                    name="planta"
-                                    options={this.props.plants}
-                                    placeholder="*Seleccione una planta"
-                                />
+                            <label className="label">
+                                Planta
+                            </label>
+                            <FormControl variant="outlined" className="form-item">
+                                {planta}
                             </FormControl>
                         </Grid>
                         <Grid item xs={12} sm={6} md={3} lg={3}>
@@ -404,14 +375,7 @@ class Asignar extends Component {
                                 Transporte
                             </label>
                             <FormControl variant="outlined" className="form-item">
-                                <Select2
-                                    value={this.state.transporte}
-                                    isSearchable={true}
-                                    onChange={this.handleChangeSelect}
-                                    name="transporte"
-                                    options={this.props.fletes}
-                                    placeholder="Transporte"
-                                />
+                                {trans}
                             </FormControl>
                         </Grid>
                         <Grid item xs={12} sm={6} md={6} lg={6}>
@@ -550,8 +514,8 @@ class Asignar extends Component {
                 </div>
                 <Grid container spacing={2} justify="flex-end" className="padding-top-separation">
                     <Grid item xs={2} sm={2} md={2} lg={2}>
-                        <Button variant="contained" color="primary" className="pull-right" onClick={this.guardarPedido}>
-                            Guardar
+                        <Button variant="contained" color="primary" className="pull-right" onClick={this.aprobarPedido}>
+                            Aprobar
                         </Button>
                     </Grid>
                 </Grid>
@@ -559,4 +523,4 @@ class Asignar extends Component {
         );
     }
 }
-export default Asignar;
+export default Creditos;
