@@ -45,7 +45,8 @@ class Asignar extends Component {
             comentario: "",
             id: 0,
             planta: null,
-            plant_original: null
+            plant_original: null,
+            order: null
         }
     }
 
@@ -68,8 +69,9 @@ class Asignar extends Component {
     handleChangeSelect(option, b) {
 
         if (b.name === "transporte") {
-            if (option.compartimientos.length !== this.state.transporte.compartimientos.length) {
-                swal("Error", "El transporte debe de tener la misma cantidad de compartimientos.", "error");
+            console.log(option.compartimientos.length, this.state.order.Compartimientos.length);
+            if (option.compartimientos.length < this.state.order.Compartimientos.length) {
+                swal("Error", "El transporte debe de tener la misma cantidad de compartimientos o más.", "error");
                 return false;
             }
         }
@@ -183,7 +185,7 @@ class Asignar extends Component {
 
             let id = nextProps.match.params.id;
 
-            return { fechaEntrega: new Date(order.FechaCarga + " " + order.HoraCarga), id, transporte: tra, planta: pla, planta_original: pla };
+            return { fechaEntrega: new Date(order.FechaCarga + " " + order.HoraCarga), id, transporte: tra, planta: pla, planta_original: pla, order };
         }
         return null;
     }
