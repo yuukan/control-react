@@ -357,3 +357,7 @@ strong {
   @media (max-width: 959px) {
     .separator {
       display: block; } }
+
+.credit-digits {
+  font-size: 35px;
+  padding: 45px 0 0; }

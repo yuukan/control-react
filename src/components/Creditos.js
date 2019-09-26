@@ -308,6 +308,11 @@ class Creditos extends Component {
             planta = this.state.planta.label;
             trans = this.state.transporte.label;
         }
+
+        let credito = 0;
+        if (order) {
+            credito = order.credit.debit - order.credit.credit;
+        }
         return (
             <div className="main-container">
                 <Typography variant="h3" component="h1" gutterBottom>
@@ -387,6 +392,19 @@ class Creditos extends Component {
                             </FormControl>
                         </Grid>
                         <Grid item xs={12} sm={6} md={6} lg={6}></Grid>
+                    </Grid>
+                </div>
+                <Typography variant="h4" component="h2" gutterBottom className="margin-separation">
+                    Crédito
+                </Typography>
+                <div className="landing-container padding-bottom-separation">
+                    <Grid item xs={12} sm={12} md={12} lg={12}>
+                        <div className="credit-digits">
+                            Q {parseFloat(credito).toLocaleString('en-US', {
+                                minimumFractionDigits: 2,
+                                maximumFractionDigits: 2
+                            })}
+                        </div>
                     </Grid>
                 </div>
                 <Typography variant="h4" component="h2" gutterBottom className="margin-separation">
