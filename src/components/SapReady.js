@@ -67,7 +67,7 @@ class SapReady extends Component {
         // Show only the anuladas orders
         orders = orders.filter(
             (key) =>
-                key.status.trim() === "Horario Asignado" || key.status.trim() === "Aprobado"
+                key.CreditoValidado !== null && key.HorarioAsignado !== null && this.props.prices_flag && key.sid !== "5" && key.sid !== "6"
         );
 
         return (
@@ -83,13 +83,44 @@ class SapReady extends Component {
                                 columns={this.state.columns}
                                 data={orders}
                                 title="Listado de Pedidos"
-                                pageSize={20}
+                                options={{
+                                    pageSize: 20
+                                }}
                                 actions={[
                                     rowData => ({
                                         icon: CloudUpload,
                                         tooltip: 'Subir a SAP',
                                         onClick: (event, rowData) => {
-                                            console.log(rowData);
+                                            swal("Subir Orden a SAP?", "Comentario", {
+                                                buttons: ["No", "Si"],
+                                                icon: "warning",
+                                                content: "input",
+                                            }).then((subir) => {
+                                                if (subir !== null) {
+                                                    let t_ = this;
+                                                    axios.post(this.props.url + "api/push-order-sap", {
+                                                        id: rowData.id,
+                                                        user: window.localStorage.getItem('tp_uid'),
+                                                        comentario: subir
+                                                    })
+                                                        .then(function (response) {
+                                                            if (response.data) {
+                                                                t_.props.load_orders();
+                                                                swal("Exito!", "Se subió la orden a SAP.", {
+                                                                    icon: "success"
+                                                                });
+                                                            } else {
+                                                                swal("Error", "Contactar al Administrador", {
+                                                                    icon: "error"
+                                                                });
+                                                            }
+                                                        })
+                                                        .catch(function (error) {
+                                                            console.log(error);
+                                                        });
+                                                }
+                                                // console.log(rowData);
+                                            });
                                             // this.props.history.push("/creditos/" + rowData.id);
                                         },
                                         hidden: parseInt(rowData.oid) === 6

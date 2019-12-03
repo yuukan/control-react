@@ -173,6 +173,12 @@ h1.welcome {
 
 header .toolbar {
   justify-content: space-between; }
+  header .toolbar.red {
+    background: #FF5555; }
+
+header h6 span {
+  font-size: 12px;
+  margin-left: 25px; }
 
 .drawer-header {
   text-align: right; }
@@ -224,22 +230,51 @@ header .toolbar {
 .full-width {
   width: 100%; }
 
+.center-me {
+  text-align: center; }
+
 .cisterna {
-  float: left;
-  width: 100%;
-  height: 150px;
-  background: url(../images/cisterna.png) repeat-x bottom left; }
+  display: inline-block;
+  background: url(../images/cisterna.png) no-repeat bottom left;
+  background-size: 100%;
+  margin: 0 auto;
+  width: 550px;
+  height: 222px; }
+  @media (max-width: 767px) {
+    .cisterna {
+      width: 450px;
+      height: 205px; } }
+  @media (max-width: 575px) {
+    .cisterna {
+      width: 320px;
+      height: 135px; } }
   .cisterna .cisterna-circle {
-    height: 100px;
-    border: 5px solid #574538;
-    border-radius: 50px;
+    height: 123px;
+    margin-top: 14px;
     display: flex;
-    overflow: hidden; }
+    overflow: hidden;
+    width: 100%; }
     .cisterna .cisterna-circle .cont {
       width: 100%;
-      background: #E9DDCA;
       position: relative;
-      border-right: 5px solid #574538; }
+      border-right: 5px solid #5D616C; }
+      .cisterna .cisterna-circle .cont:first-of-type {
+        border-bottom-left-radius: 40px;
+        border-top-left-radius: 60px;
+        overflow: hidden; }
+      .cisterna .cisterna-circle .cont:last-of-type {
+        border-right: none;
+        border-bottom-right-radius: 40px;
+        border-top-right-radius: 60px;
+        overflow: hidden; }
+      @media (max-width: 767px) {
+        .cisterna .cisterna-circle .cont {
+          top: 20px;
+          height: 106px; } }
+      @media (max-width: 575px) {
+        .cisterna .cisterna-circle .cont {
+          top: 0;
+          height: 73px; } }
       .cisterna .cisterna-circle .cont .number {
         position: absolute;
         top: 50%;
@@ -247,6 +282,9 @@ header .toolbar {
         transform: translate(-50%, -50%);
         font-size: 18px;
         z-index: 1; }
+        @media (max-width: 575px) {
+          .cisterna .cisterna-circle .cont .number {
+            font-size: 14px; } }
       .cisterna .cisterna-circle .cont .product {
         float: left;
         width: 100%;
@@ -286,6 +324,12 @@ h3.transporte-title {
   font-size: 25px;
   margin-bottom: 25px;
   text-align: center; }
+
+.log-list {
+  border-bottom: 1px solid #e0e0e0;
+  padding: 10px 5px; }
+  .log-list:nth-child(even) {
+    background: #f4f4f4; }
 
 /****************************************************************/
 .new-btn {

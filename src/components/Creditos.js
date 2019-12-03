@@ -5,9 +5,44 @@ import FormControl from '@material-ui/core/FormControl';
 import Button from '@material-ui/core/Button';
 import swal from 'sweetalert';
 import TextField from '@material-ui/core/TextField';
+import MaterialTable from 'material-table';
+import { forwardRef } from 'react';
+import AddBox from '@material-ui/icons/AddBox';
+import ArrowUpward from '@material-ui/icons/ArrowUpward';
+import Check from '@material-ui/icons/Check';
+import ChevronLeft from '@material-ui/icons/ChevronLeft';
+import ChevronRight from '@material-ui/icons/ChevronRight';
+import Clear from '@material-ui/icons/Clear';
+import DeleteOutline from '@material-ui/icons/DeleteOutline';
+import Edit from '@material-ui/icons/Edit';
+import FilterList from '@material-ui/icons/FilterList';
+import FirstPage from '@material-ui/icons/FirstPage';
+import LastPage from '@material-ui/icons/LastPage';
+import Remove from '@material-ui/icons/Remove';
+import SaveAlt from '@material-ui/icons/SaveAlt';
+import Search from '@material-ui/icons/Search';
+import ViewColumn from '@material-ui/icons/ViewColumn';
 import axios from 'axios';
 
-
+const tableIcons = {
+    Add: forwardRef((props, ref) => <AddBox {...props} ref={ref} />),
+    Check: forwardRef((props, ref) => <Check {...props} ref={ref} />),
+    Clear: forwardRef((props, ref) => <Clear {...props} ref={ref} />),
+    Delete: forwardRef((props, ref) => <DeleteOutline {...props} ref={ref} />),
+    DetailPanel: forwardRef((props, ref) => <ChevronRight {...props} ref={ref} />),
+    Edit: forwardRef((props, ref) => <Edit {...props} ref={ref} />),
+    Export: forwardRef((props, ref) => <SaveAlt {...props} ref={ref} />),
+    Filter: forwardRef((props, ref) => <FilterList {...props} ref={ref} />),
+    FirstPage: forwardRef((props, ref) => <FirstPage {...props} ref={ref} />),
+    LastPage: forwardRef((props, ref) => <LastPage {...props} ref={ref} />),
+    NextPage: forwardRef((props, ref) => <ChevronRight {...props} ref={ref} />),
+    PreviousPage: forwardRef((props, ref) => <ChevronLeft {...props} ref={ref} />),
+    ResetSearch: forwardRef((props, ref) => <Clear {...props} ref={ref} />),
+    Search: forwardRef((props, ref) => <Search {...props} ref={ref} />),
+    SortArrow: forwardRef((props, ref) => <ArrowUpward {...props} ref={ref} />),
+    ThirdStateCheck: forwardRef((props, ref) => <Remove {...props} ref={ref} />),
+    ViewColumn: forwardRef((props, ref) => <ViewColumn {...props} ref={ref} />)
+};
 class Creditos extends Component {
 
     constructor() {
@@ -36,7 +71,14 @@ class Creditos extends Component {
             comentario: "",
             id: 0,
             planta: null,
-            plant_original: null
+            plant_original: null,
+            columns: [
+                { title: 'Fecha', field: 'fecha' },
+                { title: 'Hora', field: 'hora' },
+                { title: 'Usuario', field: 'name' },
+                { title: 'Tipo Operación', field: 'type' },
+                { title: 'Descripción', field: 'Texto' }
+            ]
         }
     }
 
@@ -311,13 +353,24 @@ class Creditos extends Component {
 
         let credito = 0;
         if (order) {
-            credito = order.credit.debit - order.credit.credit;
+            if (order.credit !== null) {
+                credito = order.credit.debit - order.credit.credit;
+            }
         }
         return (
             <div className="main-container">
-                <Typography variant="h3" component="h1" gutterBottom>
-                    Aprobaciónde Pedido por Créditos
-                </Typography>
+                {
+                    this.props.credito === 1 ? (
+                        <Typography variant="h3" component="h1" gutterBottom>
+                            Aprobación de Pedido por Créditos
+                    </Typography>
+                    ) :
+                        (
+                            <Typography variant="h3" component="h1" gutterBottom>
+                                Detalle de Órden
+                    </Typography>
+                        )
+                }
                 <div className="landing-container">
                     <Grid container spacing={2} justify="space-around">
                         <Grid item xs={12} sm={6} md={3} lg={3}>
@@ -394,38 +447,46 @@ class Creditos extends Component {
                         <Grid item xs={12} sm={6} md={6} lg={6}></Grid>
                     </Grid>
                 </div>
-                <Typography variant="h4" component="h2" gutterBottom className="margin-separation">
-                    Crédito
-                </Typography>
-                <div className="landing-container padding-bottom-separation">
-                    <Grid item xs={12} sm={12} md={12} lg={12}>
-                        <div className="credit-digits">
-                            Q {parseFloat(credito).toLocaleString('en-US', {
-                                minimumFractionDigits: 2,
-                                maximumFractionDigits: 2
-                            })}
-                        </div>
-                    </Grid>
-                </div>
+                {
+                    this.props.credito === 1 ? (
+                        <React.Fragment>
+                            <Typography variant="h4" component="h2" gutterBottom className="margin-separation">
+                                Crédito
+                            </Typography>
+                            <div className="landing-container padding-bottom-separation">
+                                <Grid item xs={12} sm={12} md={12} lg={12}>
+                                    <div className="credit-digits">
+                                        Q {parseFloat(credito).toLocaleString('en-US', {
+                                            minimumFractionDigits: 2,
+                                            maximumFractionDigits: 2
+                                        })}
+                                    </div>
+                                </Grid>
+                            </div>
+                        </React.Fragment>) : ""
+                }
                 <Typography variant="h4" component="h2" gutterBottom className="margin-separation">
                     Comentarios
                 </Typography>
                 <div className="landing-container padding-bottom-separation">
-                    <Grid item xs={12} sm={12} md={12} lg={12}>
-                        <FormControl variant="outlined" className="form-item">
-                            <TextField
-                                name="comentario"
-                                id="comentario"
-                                label="Comentario"
-                                multiline
-                                rowsMax="10"
-                                value={this.state.comentario}
-                                onChange={this.handleChange}
-                                margin="normal"
-                                ref={this.comentario}
-                            />
-                        </FormControl>
-                    </Grid>
+                    {
+                        this.props.credito === 1 ? (
+                            <Grid item xs={12} sm={12} md={12} lg={12}>
+                                <FormControl variant="outlined" className="form-item">
+                                    <TextField
+                                        name="comentario"
+                                        id="comentario"
+                                        label="Comentario"
+                                        multiline
+                                        rowsMax="10"
+                                        value={this.state.comentario}
+                                        onChange={this.handleChange}
+                                        margin="normal"
+                                        ref={this.comentario}
+                                    />
+                                </FormControl>
+                            </Grid>) : ""
+                    }
                     <Grid item xs={12} sm={12} md={12} lg={12}>
                         <ul className="comentarios">
                             {comentarios}
@@ -437,7 +498,7 @@ class Creditos extends Component {
                 </Typography>
                 <div className="landing-container padding-bottom-separation">
                     <Grid container spacing={2} justify="space-around" className="padding-top-separation">
-                        <Grid item xs={12} sm={6} md={6} lg={6}>
+                        <Grid item xs={12} sm={12} md={12} lg={12} className="center-me">
                             <h3 className="transporte-title">
                                 {flete ? flete.label : ""}
                             </h3>
@@ -530,13 +591,58 @@ class Creditos extends Component {
 
                     </Grid>
                 </div>
-                <Grid container spacing={2} justify="flex-end" className="padding-top-separation">
-                    <Grid item xs={2} sm={2} md={2} lg={2}>
-                        <Button variant="contained" color="primary" className="pull-right" onClick={this.aprobarPedido}>
-                            Aprobar
-                        </Button>
-                    </Grid>
-                </Grid>
+                {
+                    this.props.detalle === 1 ? (
+                        <React.Fragment>
+                            <div className="landing-container">
+                                {
+                                    order ? (
+                                        <MaterialTable
+                                            icons={tableIcons}
+                                            columns={this.state.columns}
+                                            data={order.log}
+                                            title="Bitácora"
+                                            options={{
+                                                pageSize: 20
+                                            }}
+                                            localization={{
+                                                pagination: {
+                                                    labelDisplayedRows: '{from}-{to} de {count}',
+                                                    labelRowsSelect: 'Filas'
+                                                },
+                                                toolbar: {
+                                                    nRowsSelected: '{0} filas(s) seleccionadas',
+                                                    searchPlaceholder: 'Buscar'
+                                                },
+                                                header: {
+                                                    actions: 'Estados'
+                                                },
+                                                body: {
+                                                    emptyDataSourceMessage: 'No existen ordenes',
+                                                    filterRow: {
+                                                        filterTooltip: 'Filter'
+                                                    }
+                                                }
+
+                                            }}
+                                        />
+                                    ) : ""
+                                }
+                            </div>
+                        </React.Fragment>
+                    ) : ""
+                }
+                {
+                    this.props.credito === 1 ? (
+                        <Grid container spacing={2} justify="flex-end" className="padding-top-separation">
+                            <Grid item xs={2} sm={2} md={2} lg={2}>
+                                <Button variant="contained" color="primary" className="pull-right" onClick={this.aprobarPedido}>
+                                    Aprobar
+                                </Button>
+                            </Grid>
+                        </Grid>
+                    ) : ""
+                }
             </div>
         );
     }

@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { Redirect } from 'react-router'
-// import axios from 'axios';
-// import swal from 'sweetalert';
+import axios from 'axios';
+import swal from 'sweetalert';
 
 class Landing extends Component {
 
@@ -19,27 +19,29 @@ class Landing extends Component {
     //####################################Login####################################
     login(e) {
         e.preventDefault();
-        this.props.changeLogged(true);
+        // this.props.changeLogged(true);
 
-        // let this_ = this;
-        // let email = this.email.current.value;
-        // let password = this.password.current.value;
+        let this_ = this;
+        let email = this.email.current.value;
+        let password = this.password.current.value;
 
-        // axios.post(this.props.url + "api/login", {
-        //     email,
-        //     password
-        // })
-        //     .then(function (response) {
-        //         if (response.data.error === 0) {
-        //             localStorage.setItem("estID", response.data.id);
-        //             this_.props.changeLogged(true);
-        //         } else {
-        //             swal("Error", response.data.message, "error");
-        //         }
-        //     })
-        //     .catch(function (error) {
-        //         console.log(error);
-        //     });
+        axios.post(this.props.url + "api/login", {
+            email,
+            password
+        })
+            .then(function (response) {
+                if (response.data.error === 0) {
+                    localStorage.setItem("tp_uid", response.data.id);
+                    this_.props.setUserPermissions(response.data.permissions.split(","));
+                    localStorage.setItem("tp_uid_per", response.data.permissions.split(","));
+                    this_.props.changeLogged(true);
+                } else {
+                    swal("Error", response.data.message, "error");
+                }
+            })
+            .catch(function (error) {
+                console.log(error);
+            });
     }
     //####################################Login####################################
 
@@ -53,7 +55,7 @@ class Landing extends Component {
                     <img src="images/logo.png" alt="Logo" />
                     <div className="email-form">
                         <form onSubmit={this.login}>
-                            <input type="text" placeholder="Email" required ref={this.email} />
+                            <input type="text" autoFocus placeholder="Email" required ref={this.email} />
                             <input type="password" placeholder="Contraseña" required ref={this.password} />
                             <button type="submit" className="gohome">
                                 <FontAwesomeIcon icon="sign-in" />

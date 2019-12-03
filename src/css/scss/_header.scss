@@ -1,6 +1,15 @@
 header{
     .toolbar{
         justify-content: space-between;
+        &.red{
+            background:#FF5555;
+        }
+    }
+    h6{
+        span{
+            font-size: 12px;
+            margin-left: 25px;
+        }
     }
 }
 .drawer-header{

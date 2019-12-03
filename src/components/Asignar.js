@@ -243,6 +243,8 @@ class Asignar extends Component {
             }
         }
 
+        console.log(flete);
+
         let comentarios = "";
         if (order && order.comentarios.length > 0) {
             comentarios = order.comentarios.map((key, idx) => {

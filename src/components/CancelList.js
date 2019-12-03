@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import Typography from '@material-ui/core/Typography';
 import MaterialTable from 'material-table';
-import { Link } from "react-router-dom";
 
 import { forwardRef } from 'react';
 import AddBox from '@material-ui/icons/AddBox';
@@ -19,6 +18,7 @@ import Remove from '@material-ui/icons/Remove';
 import SaveAlt from '@material-ui/icons/SaveAlt';
 import Search from '@material-ui/icons/Search';
 import ViewColumn from '@material-ui/icons/ViewColumn';
+import { Visibility } from '@material-ui/icons/';
 
 const tableIcons = {
     Add: forwardRef((props, ref) => <AddBox {...props} ref={ref} />),
@@ -81,7 +81,18 @@ class CancelList extends Component {
                                 columns={this.state.columns}
                                 data={orders}
                                 title="Listado de Pedidos"
-                                pageSize={20}
+                                options={{
+                                    pageSize: 20
+                                }}
+                                actions={[
+                                    rowData => ({
+                                        icon: Visibility,
+                                        tooltip: 'Ver Detalles',
+                                        onClick: (event, rowData) => {
+                                            this.props.history.push("/detail/" + rowData.id);
+                                        },
+                                    })
+                                ]}
                                 localization={{
                                     pagination: {
                                         labelDisplayedRows: '{from}-{to} de {count}',

@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import Typography from '@material-ui/core/Typography';
 import MaterialTable from 'material-table';
-import { Link } from "react-router-dom";
 
 import { forwardRef } from 'react';
 import AddBox from '@material-ui/icons/AddBox';
@@ -19,7 +18,7 @@ import Remove from '@material-ui/icons/Remove';
 import SaveAlt from '@material-ui/icons/SaveAlt';
 import Search from '@material-ui/icons/Search';
 import ViewColumn from '@material-ui/icons/ViewColumn';
-import { CalendarToday, Money, Cancel, FiberNew, Visibility } from '@material-ui/icons/';
+import { Visibility } from '@material-ui/icons/';
 
 const tableIcons = {
     Add: forwardRef((props, ref) => <AddBox {...props} ref={ref} />),
@@ -41,19 +40,22 @@ const tableIcons = {
     ViewColumn: forwardRef((props, ref) => <ViewColumn {...props} ref={ref} />)
 };
 
-class List extends Component {
+class PricessedKust extends Component {
 
     constructor(props) {
         super(props);
         this.state = {
             columns: [
-                { title: 'ID', field: 'id' },
                 { title: 'Fecha', field: 'creado' },
                 { title: 'Cliente', field: 'CodigoCliente' },
                 { title: 'Status', field: 'status' },
                 { title: 'Tipo Pago', field: 'tipo_pago' },
                 { title: 'Flete', field: 'flete' },
                 { title: 'Placa Flete', field: 'placa' },
+                { title: 'Entrega Productos', field: 'Chevron' },
+                { title: 'Entrega Flete', field: 'Fletero' },
+                { title: 'Factura Cliente', field: 'Invoice' },
+
             ]
         };
     }
@@ -64,18 +66,16 @@ class List extends Component {
 
         if (this.props.orders) orders = this.props.orders;
 
+        // Show only the anuladas orders
         orders = orders.filter(
             (key) =>
-                key.sid !== "5"
+                key.sid === "5"
         );
 
         return (
             <div className="main-container">
                 <Typography variant="h3" component="h1" gutterBottom>
-                    Listado de Pedidos
-                    <Link className="new-btn" to="/nueva-orden">
-                        Nueva Orden
-                    </Link>
+                    Pedidos Procesados
                 </Typography>
                 <div className="landing-container with-spacing">
                     {
@@ -84,31 +84,11 @@ class List extends Component {
                                 icons={tableIcons}
                                 columns={this.state.columns}
                                 data={orders}
-                                title="Horario Asignado"
+                                title="Listado de Pedidos"
                                 options={{
                                     pageSize: 20
                                 }}
                                 actions={[
-                                    rowData => ({
-                                        icon: FiberNew,
-                                        tooltip: 'Nuevo',
-                                        hidden: rowData.status === 'Ingresado'
-                                    }),
-                                    rowData => ({
-                                        icon: CalendarToday,
-                                        tooltip: 'Horario Asignado',
-                                        hidden: rowData.HorarioAsignado === null
-                                    }),
-                                    rowData => ({
-                                        icon: Money,
-                                        tooltip: 'Credito Validado',
-                                        hidden: rowData.CreditoValidado === null
-                                    }),
-                                    rowData => ({
-                                        icon: Cancel,
-                                        tooltip: 'Anulada',
-                                        hidden: rowData.status !== "Anulado"
-                                    }),
                                     rowData => ({
                                         icon: Visibility,
                                         tooltip: 'Ver Detalles',
@@ -127,7 +107,7 @@ class List extends Component {
                                         searchPlaceholder: 'Buscar'
                                     },
                                     header: {
-                                        actions: 'Estados'
+                                        actions: 'Acciones'
                                     },
                                     body: {
                                         emptyDataSourceMessage: 'No existen ordenes',
@@ -145,4 +125,4 @@ class List extends Component {
         );
     }
 }
-export default List;
+export default PricessedKust;

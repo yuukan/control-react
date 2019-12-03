@@ -20,7 +20,7 @@ import Remove from '@material-ui/icons/Remove';
 import SaveAlt from '@material-ui/icons/SaveAlt';
 import Search from '@material-ui/icons/Search';
 import ViewColumn from '@material-ui/icons/ViewColumn';
-import { DateRange, LocalAtm, Cancel, CloudUpload } from '@material-ui/icons/';
+import { DateRange, Cancel } from '@material-ui/icons/';
 
 const tableIcons = {
     Add: forwardRef((props, ref) => <AddBox {...props} ref={ref} />),
@@ -67,13 +67,13 @@ class ScheduleList extends Component {
         // Show only the anuladas orders
         orders = orders.filter(
             (key) =>
-                key.status.trim() === "Ingresado"
+                key.status.trim() !== "Anulado" && key.status.trim() !== "Operado"
         );
 
         return (
             <div className="main-container">
                 <Typography variant="h3" component="h1" gutterBottom>
-                    Ordenes Nuevas
+                    Asignar Horario
                 </Typography>
                 <div className="landing-container with-spacing">
                     {
@@ -83,7 +83,9 @@ class ScheduleList extends Component {
                                 columns={this.state.columns}
                                 data={orders}
                                 title="Listado de Pedidos"
-                                pageSize={20}
+                                options={{
+                                    pageSize: 20
+                                }}
                                 actions={[
                                     rowData => ({
                                         icon: DateRange,

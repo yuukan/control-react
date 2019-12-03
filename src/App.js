@@ -11,6 +11,7 @@ import CancelList from './components/CancelList';
 import ScheduleList from './components/ScheduleList';
 import CreditList from './components/CreditList';
 import SapReady from './components/SapReady';
+import ProcessedList from './components/ProcessedList';
 import axios from 'axios';
 // We import the css
 import './css/App.css';
@@ -20,7 +21,8 @@ import { library } from '@fortawesome/fontawesome-svg-core';
 import { faBars, faPrint, faEnvelope, faTrash, faSignIn } from '@fortawesome/pro-solid-svg-icons';
 library.add(faBars, faPrint, faEnvelope, faTrash, faSignIn);
 
-let url = "http://192.168.0.7:81/control/public/";
+// let url = "http://192.168.0.7:81/control/public/";
+let url = "http://0e036c81.ngrok.io/control/public/";
 
 class App extends Component {
   constructor(props) {
@@ -28,21 +30,28 @@ class App extends Component {
     this.changeLogged = this.changeLogged.bind(this);
     this.load_orders = this.load_orders.bind(this);
     this.load_products = this.load_products.bind(this);
+    this.setUserPermissions = this.setUserPermissions.bind(this);
 
     this.state = {
-      logged: true,
+      logged: false,
       config: null,
       clientes: [],
       productos: [],
       fletes: [],
       orders: [],
-      plants: []
+      plants: [],
+      user_permissions: [],
+      prices_flag: 0
     };
   }
 
   //Function to change the logged state
   changeLogged(logged) {
     this.setState({ logged });
+  }
+
+  setUserPermissions(user_permissions) {
+    this.setState({ user_permissions });
   }
 
   componentDidMount() {
@@ -58,6 +67,14 @@ class App extends Component {
     axios.post(url + "api/get-fletes")
       .then(function (response) {
         t.setState({ fletes: response.data });
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+    // ################################################
+    axios.post(url + "api/get-prices-flag")
+      .then(function (response) {
+        t.setState({ prices_flag: response.data[0].ban === "1" });
       })
       .catch(function (error) {
         console.log(error);
@@ -79,6 +96,13 @@ class App extends Component {
         console.log(error);
       });
     this.load_orders();
+    // We set the logged in
+    let id = localStorage.getItem("tp_uid");
+    let permissions = localStorage.getItem("tp_uid_per");
+    if (id) {
+      this.setUserPermissions(permissions.split(","));
+      this.setState({ logged: true });
+    }
   }
 
   load_orders() {
@@ -111,95 +135,139 @@ class App extends Component {
     return (
       <Router>
         <div id="main">
-          <Header isLoggedIn={this.state.logged} />
-          <Route exact path="/"
-            render={(props) =>
-              <Landing {...props}
-                url={url}
-                logged={this.state.logged}
-                changeLogged={this.changeLogged}
-                setUserInfo={this.setUserInfo}
-                clientes={this.state.clientes}
-                productos={this.state.productos}
-                fletes={this.state.fletes}
-              />} />
+          <Header isLoggedIn={this.state.logged} changeLogged={this.changeLogged} prices_flag={this.state.prices_flag} />
+          {
+            !this.state.logged ?
+              (
+                <Route path="/"
+                  render={(props) =>
+                    <Landing {...props}
+                      url={url}
+                      logged={this.state.logged}
+                      changeLogged={this.changeLogged}
+                      setUserPermissions={this.setUserPermissions}
+                      setUserInfo={this.setUserInfo}
+                      clientes={this.state.clientes}
+                      productos={this.state.productos}
+                      fletes={this.state.fletes}
+                    />} />
+              ) :
+              (
+                <React.Fragment>
+                  <Route exact path="/"
+                    render={(props) =>
+                      <Landing {...props}
+                        url={url}
+                        logged={this.state.logged}
+                        changeLogged={this.changeLogged}
+                        setUserInfo={this.setUserInfo}
+                        clientes={this.state.clientes}
+                        productos={this.state.productos}
+                        fletes={this.state.fletes}
+                      />} />
 
-          <Route path="/nueva-orden"
-            render={(props) =>
-              <Home {...props}
-                url={url}
-                logged={this.state.logged}
-                changeLogged={this.changeLogged}
-                setUserInfo={this.setUserInfo}
-                clientes={this.state.clientes}
-                productos={this.state.productos}
-                fletes={this.state.fletes}
-                plants={this.state.plants}
-                load_orders={this.load_orders}
-                load_products={this.load_products}
-                config={this.state.config}
-              />} />
+                  <Route path="/nueva-orden"
+                    render={(props) =>
+                      <Home {...props}
+                        url={url}
+                        logged={this.state.logged}
+                        changeLogged={this.changeLogged}
+                        setUserInfo={this.setUserInfo}
+                        clientes={this.state.clientes}
+                        productos={this.state.productos}
+                        fletes={this.state.fletes}
+                        plants={this.state.plants}
+                        load_orders={this.load_orders}
+                        load_products={this.load_products}
+                        config={this.state.config}
+                      />} />
 
-          <Route path="/order-list"
-            render={(props) =>
-              <List {...props}
-                orders={this.state.orders}
-                url={url}
-                load_orders={this.load_orders}
-              />} />
+                  <Route path="/order-list"
+                    render={(props) =>
+                      <List {...props}
+                        orders={this.state.orders}
+                        url={url}
+                        load_orders={this.load_orders}
+                        prices_flag={this.state.prices_flag}
+                      />} />
 
-          <Route path="/credit-list"
-            render={(props) =>
-              <CreditList {...props}
-                orders={this.state.orders}
-                url={url}
-                load_orders={this.load_orders}
-              />} />
+                  <Route path="/credit-list"
+                    render={(props) =>
+                      <CreditList {...props}
+                        orders={this.state.orders}
+                        url={url}
+                        load_orders={this.load_orders}
+                        prices_flag={this.state.prices_flag}
+                      />} />
 
-          <Route path="/new-list"
-            render={(props) =>
-              <ScheduleList {...props}
-                orders={this.state.orders}
-                url={url}
-                load_orders={this.load_orders}
-              />} />
+                  <Route path="/new-list"
+                    render={(props) =>
+                      <ScheduleList {...props}
+                        orders={this.state.orders}
+                        url={url}
+                        load_orders={this.load_orders}
+                        prices_flag={this.state.prices_flag}
+                      />} />
 
-          <Route path="/sap-list"
-            render={(props) =>
-              <SapReady {...props}
-                orders={this.state.orders}
-                url={url}
-                load_orders={this.load_orders}
-              />} />
+                  <Route path="/sap-list"
+                    render={(props) =>
+                      <SapReady {...props}
+                        orders={this.state.orders}
+                        url={url}
+                        load_orders={this.load_orders}
+                        prices_flag={this.state.prices_flag}
+                      />} />
 
-          <Route path="/cancelled-list"
-            render={(props) =>
-              <CancelList {...props}
-                orders={this.state.orders}
-                url={url}
-                load_orders={this.load_orders}
-              />} />
+                  <Route path="/processed-list"
+                    render={(props) =>
+                      <ProcessedList {...props}
+                        orders={this.state.orders}
+                        url={url}
+                        load_orders={this.load_orders}
+                        prices_flag={this.state.prices_flag}
+                      />} />
 
-          <Route path="/asignar/:id"
-            render={(props) =>
-              <Asignar {...props}
-                url={url}
-                fletes={this.state.fletes}
-                orders={this.state.orders}
-                plants={this.state.plants}
-                load_orders={this.load_orders}
-              />} />
+                  <Route path="/cancelled-list"
+                    render={(props) =>
+                      <CancelList {...props}
+                        orders={this.state.orders}
+                        url={url}
+                        load_orders={this.load_orders}
+                        prices_flag={this.state.prices_flag}
+                      />} />
 
-          <Route path="/creditos/:id"
-            render={(props) =>
-              <Creditos {...props}
-                url={url}
-                fletes={this.state.fletes}
-                orders={this.state.orders}
-                plants={this.state.plants}
-                load_orders={this.load_orders}
-              />} />
+                  <Route path="/asignar/:id"
+                    render={(props) =>
+                      <Asignar {...props}
+                        url={url}
+                        fletes={this.state.fletes}
+                        orders={this.state.orders}
+                        plants={this.state.plants}
+                        load_orders={this.load_orders}
+                      />} />
 
+                  <Route path="/creditos/:id"
+                    render={(props) =>
+                      <Creditos {...props}
+                        url={url}
+                        fletes={this.state.fletes}
+                        orders={this.state.orders}
+                        plants={this.state.plants}
+                        load_orders={this.load_orders}
+                        credito={1}
+                      />} />
+                  <Route path="/detail/:id"
+                    render={(props) =>
+                      <Creditos {...props}
+                        url={url}
+                        fletes={this.state.fletes}
+                        orders={this.state.orders}
+                        plants={this.state.plants}
+                        load_orders={this.load_orders}
+                        detalle={1}
+                      />} />
+                </React.Fragment>
+              )}
         </div>
       </Router>
     );

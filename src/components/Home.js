@@ -167,7 +167,8 @@ class Home extends Component {
                 transporte: transporte,
                 comentario: t.comentario,
                 detalle: t.detalle,
-                planta: t.planta.value
+                planta: t.planta.value,
+                user: window.localStorage.getItem('tp_uid')
             })
                 .then(function (response) {
                     // t.setState({ clientes: response.data });
@@ -442,7 +443,7 @@ class Home extends Component {
                         this.state.transporte ?
                             (
                                 <Grid container spacing={2} justify="space-around" className="padding-top-separation">
-                                    <Grid item xs={12} sm={6} md={6} lg={6}>
+                                    <Grid item xs={12} sm={12} md={12} lg={12} className="center-me">
                                         <h3 className="transporte-title">
                                             {this.state.transporte.label}
                                         </h3>
