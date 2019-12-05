@@ -3,6 +3,7 @@ import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
 import FormControl from '@material-ui/core/FormControl';
 import Button from '@material-ui/core/Button';
+import Select2 from 'react-select';
 import swal from 'sweetalert';
 import TextField from '@material-ui/core/TextField';
 import MaterialTable from 'material-table';
@@ -182,7 +183,8 @@ class Creditos extends Component {
         axios.post(this.props.url + "api/approve-order", {
             comentario: t.comentario,
             id: this.props.match.params.id,
-            user: window.localStorage.getItem('tp_uid')
+            user: window.localStorage.getItem('tp_uid'),
+            tipoPago: this.state.tipoPago.value
         })
             .then(function () {
                 // t.setState({ clientes: response.data });
@@ -208,7 +210,20 @@ class Creditos extends Component {
 
             let id = nextProps.match.params.id;
 
-            return { fechaEntrega: new Date(order.FechaCarga + " " + order.HoraCarga), id, transporte: tra, planta: pla, planta_original: pla };
+            let tipoPago = "";
+            if (order.tipo_pago.trim() === "Contado") {
+                tipoPago = {
+                    label: "Contado",
+                    value: 1
+                };
+            } else {
+                tipoPago = {
+                    label: "Crédito",
+                    value: 2
+                };
+            }
+
+            return { fechaEntrega: new Date(order.FechaCarga + " " + order.HoraCarga), id, transporte: tra, planta: pla, planta_original: pla, tipoPago };
         }
         return null;
     }
@@ -235,6 +250,11 @@ class Creditos extends Component {
                 flete = this.props.fletes[flete];
             }
         }
+
+        let tipos_pago = [
+            { value: 1, label: "Contado" },
+            { value: 2, label: "Crédito" }
+        ];
 
         let conts = [];
 
@@ -403,7 +423,16 @@ class Creditos extends Component {
                             <label className="label">
                                 Tipo de Pago
                             </label>
-                            {order ? order.tipo_pago : ""}
+                            <FormControl variant="outlined" className="form-item">
+                                <Select2
+                                    value={this.state.tipoPago}
+                                    isSearchable={true}
+                                    onChange={this.handleChangeSelect}
+                                    name="tipoPago"
+                                    options={tipos_pago}
+                                    placeholder="*Tipo de Pago"
+                                />
+                            </FormControl>
                         </Grid>
                         <Grid item xs={12} sm={6} md={3} lg={3}>
                             <label className="label">

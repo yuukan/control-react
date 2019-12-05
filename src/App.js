@@ -22,7 +22,7 @@ import { faBars, faPrint, faEnvelope, faTrash, faSignIn } from '@fortawesome/pro
 library.add(faBars, faPrint, faEnvelope, faTrash, faSignIn);
 
 // let url = "http://192.168.0.7:81/control/public/";
-let url = "http://0e036c81.ngrok.io/control/public/";
+let url = "https://5a4ef201.ngrok.io/control/public/";
 
 class App extends Component {
   constructor(props) {
