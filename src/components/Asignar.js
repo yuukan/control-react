@@ -69,7 +69,7 @@ class Asignar extends Component {
     handleChangeSelect(option, b) {
 
         if (b.name === "transporte") {
-            console.log(option.compartimientos.length, this.state.order.Compartimientos.length);
+            // console.log(option.compartimientos.length, this.state.order.Compartimientos.length);
             if (option.compartimientos.length < this.state.order.Compartimientos.length) {
                 swal("Error", "El transporte debe de tener la misma cantidad de compartimientos o más.", "error");
                 return false;
@@ -159,6 +159,7 @@ class Asignar extends Component {
             planta: t.planta.value,
             planta_original: t.planta.value,
             id: this.props.match.params.id,
+            montoPorGalon: t.montoPorGalon,
             user: window.localStorage.getItem('tp_uid')
         })
             .then(function () {
@@ -185,7 +186,12 @@ class Asignar extends Component {
 
             let id = nextProps.match.params.id;
 
-            return { fechaEntrega: new Date(order.FechaCarga + " " + order.HoraCarga), id, transporte: tra, planta: pla, planta_original: pla, order };
+            let montoPorGalon = parseFloat(order.FleteXGalon).toLocaleString('en-US', {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+            });
+
+            return { fechaEntrega: new Date(order.FechaCarga + " " + order.HoraCarga), id, transporte: tra, planta: pla, planta_original: pla, order, montoPorGalon };
         }
         return null;
     }
@@ -242,8 +248,6 @@ class Asignar extends Component {
                 );
             }
         }
-
-        console.log(flete);
 
         let comentarios = "";
         if (order && order.comentarios.length > 0) {
@@ -394,13 +398,15 @@ class Asignar extends Component {
                                 {order ? (order.FleteAplicado === "1" ? "Ex Rack" : "Puesto en el lugar") : ""}
                             </FormControl>
                             <FormControl variant="outlined" className="form-item small">
-                                <label className="label">
-                                    Monto Por Gal
-                                </label>
-                                {order ? parseFloat(order.FleteXGalon).toLocaleString('en-US', {
-                                    minimumFractionDigits: 2,
-                                    maximumFractionDigits: 2
-                                }) : ""}
+                                <TextField
+                                    id="montoPorGalon"
+                                    name="montoPorGalon"
+                                    label="Monto por Galón"
+                                    className="montoPorGalon"
+                                    value={this.state.montoPorGalon}
+                                    onChange={this.handleChange}
+                                    margin="normal"
+                                />
                             </FormControl>
                         </Grid>
                         <Grid item xs={12} sm={6} md={3} lg={3}>

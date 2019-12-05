@@ -202,7 +202,7 @@ header h6 span {
       .main-container .landing-container .form-item.margin-fix2 {
         margin-top: 27px; }
       .main-container .landing-container .form-item.small {
-        width: 120px; }
+        width: 50%; }
     .main-container .landing-container .comentarios {
       width: 100%;
       margin: 25px 0; }

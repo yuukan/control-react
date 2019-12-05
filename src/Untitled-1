@@ -1,24 +1,6 @@
-- Good receipt PO
-- Chevron
-    - listado de los productos con el total (costo)
+Aprobación de crédito
+- En crédito que pueda modificar la forma de pago
 
-- Fletero
-    *Revisar Doctype (S=Servicio)
-    - Código de Sap
-    - Meterlo por Servicios
-        - Descripción: Flete del pedido #ID, para el cliente código # y nombre #. 0.0x por galon
-        - G/L Account -> backend no es el valor del label ej (_SYS...)
-    - 1 sola linea 
-        - Total de galones por precio por galon
+Horario
+- Puede modificar el monto por flete (cobrado)
 
-- Si no estan los precios de hoy, bloqueo no subir a SAP
-- Listado de pedidos poner iconos de Estados y de Precios no son de hoy
-- Cuando se sub a SAP que guarde los ID de los tres documentos subidos
-Reportes
-- Log
-- Desplegar los pedidos que si subieron 
-
-
-- Entrega Flete
-- Entrega productos
-- Factura cliente
