@@ -11,6 +11,7 @@ import CancelList from './components/CancelList';
 import ScheduleList from './components/ScheduleList';
 import CreditList from './components/CreditList';
 import SapReady from './components/SapReady';
+import Programar from './components/Programar';
 import ProcessedList from './components/ProcessedList';
 import axios from 'axios';
 // We import the css
@@ -22,7 +23,7 @@ import { faBars, faPrint, faEnvelope, faTrash, faSignIn } from '@fortawesome/pro
 library.add(faBars, faPrint, faEnvelope, faTrash, faSignIn);
 
 // let url = "http://192.168.0.7:81/control/public/";
-let url = "https://5a4ef201.ngrok.io/control/public/";
+let url = "http://de00cffb.ngrok.io/control/public/";
 
 class App extends Component {
   constructor(props) {
@@ -107,6 +108,7 @@ class App extends Component {
 
   load_orders() {
     let t = this;
+    t.setState({ orders: null });
     // ################################################
     axios.post(url + "api/get-orders")
       .then(function (response) {
@@ -203,6 +205,15 @@ class App extends Component {
                   <Route path="/new-list"
                     render={(props) =>
                       <ScheduleList {...props}
+                        orders={this.state.orders}
+                        url={url}
+                        load_orders={this.load_orders}
+                        prices_flag={this.state.prices_flag}
+                      />} />
+
+                  <Route path="/to-schedule"
+                    render={(props) =>
+                      <Programar {...props}
                         orders={this.state.orders}
                         url={url}
                         load_orders={this.load_orders}

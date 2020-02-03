@@ -31,12 +31,15 @@ class Asignar extends Component {
             cliente: null,
             direccion: null,
             transporte: null,
+            transporte_original: null,
             producto: null,
             compartimiento: null,
             fechaEntrega: null,
+            fechaEntregaOriginal: null,
             tipoPago: null,
             fleteAplicado: 0,
             montoPorGalon: 0,
+            montoPorGalonOriginal: 0,
             cantidadCompartimientos: 0,
             cantidad: 0,
             detalle: [],
@@ -45,7 +48,7 @@ class Asignar extends Component {
             comentario: "",
             id: 0,
             planta: null,
-            plant_original: null,
+            planta_original: null,
             order: null
         }
     }
@@ -154,12 +157,23 @@ class Asignar extends Component {
             anioEntrega: t.fechaEntrega.getFullYear(),
             hora: t.fechaEntrega.getHours(),
             minutos: t.fechaEntrega.getMinutes(),
+            diaEntregaOriginal: ("0" + t.fechaEntregaOriginal.getDate()).slice(-2),
+            mesEntregaOriginal: ("0" + (t.fechaEntregaOriginal.getMonth() + 1)).slice(-2),
+            anioEntregaOriginal: t.fechaEntregaOriginal.getFullYear(),
+            horaOriginal: t.fechaEntregaOriginal.getHours(),
+            minutosOriginal: t.fechaEntregaOriginal.getMinutes(),
             transporte: t.transporte.id,
+            transporte_original: t.transporte_original.id,
+            transporte_label: t.transporte.label,
+            transporte_original_label: t.transporte_original.label,
             comentario: t.comentario,
             planta: t.planta.value,
-            planta_original: t.planta.value,
+            planta_original: t.planta_original.value,
+            planta_label: t.planta.label,
+            planta_original_label: t.planta_original.label,
             id: this.props.match.params.id,
             montoPorGalon: t.montoPorGalon,
+            montoPorGalonOriginal: t.montoPorGalonOriginal,
             user: window.localStorage.getItem('tp_uid')
         })
             .then(function () {
@@ -191,7 +205,7 @@ class Asignar extends Component {
                 maximumFractionDigits: 2
             });
 
-            return { fechaEntrega: new Date(order.FechaCarga + " " + order.HoraCarga), id, transporte: tra, planta: pla, planta_original: pla, order, montoPorGalon };
+            return { fechaEntrega: new Date(order.fecha_carga + " " + order.HoraCarga), fechaEntregaOriginal: new Date(order.fecha_carga + " " + order.HoraCarga), id, transporte: tra, transporte_original: tra, planta: pla, planta_original: pla, order, montoPorGalon, montoPorGalonOriginal: montoPorGalon };
         }
         return null;
     }
@@ -352,6 +366,7 @@ class Asignar extends Component {
                                     className="full-width"
                                     id="mui-pickers-time"
                                     label="Hora de Carga"
+                                    ampm={false}
                                     value={this.state.fechaEntrega}
                                     onChange={this.handleDateChange}
                                     KeyboardButtonProps={{

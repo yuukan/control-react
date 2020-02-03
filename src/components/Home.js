@@ -249,12 +249,13 @@ class Home extends Component {
         let addresses = [];
         let c = this.state.cliente;
         if (c) {
-            if (c.address !== "") {
-                addresses.push({ value: c.address, label: c.address });
-            }
-            if (c.MailAddres !== "" && c.MailAddres !== c.address) {
-                addresses.push({ value: c.MailAddres, label: c.MailAddres });
-            }
+            addresses = this.state.cliente.addresses
+            // if (c.address !== "") {
+            //     addresses.push({ value: c.address, label: c.address });
+            // }
+            // if (c.MailAddres !== "" && c.MailAddres !== c.address) {
+            //     addresses.push({ value: c.MailAddres, label: c.MailAddres });
+            // }
         }
 
         let tipos_pago = [
@@ -347,6 +348,7 @@ class Home extends Component {
                             <MuiPickersUtilsProvider utils={DateFnsUtils} locale={esLocale}>
                                 <KeyboardTimePicker
                                     margin="normal"
+                                    ampm={false}
                                     className="full-width"
                                     id="mui-pickers-time"
                                     label="Hora de Carga"
@@ -523,13 +525,13 @@ class Home extends Component {
                                     <Grid item xs={12} sm={6} md={3} lg={3}>
                                         {key[3]}
                                     </Grid>
-                                    <Grid item xs={12} sm={6} md={3} lg={3}>
+                                    <Grid item xs={12} sm={6} md={3} lg={3} className="right_justify">
                                         {key[1]}
                                     </Grid>
-                                    <Grid item xs={12} sm={6} md={2} lg={2}>
+                                    <Grid item xs={12} sm={6} md={2} lg={2} className="right_justify">
                                         {key[2] !== 0 ? key[2] : ""}
                                     </Grid>
-                                    <Grid item xs={12} sm={4} md={2} lg={2}>
+                                    <Grid item xs={12} sm={4} md={2} lg={2} className="right_justify">
                                         {key[6] !== 0 && key[6] !== "" ? key[6] : ""}
                                     </Grid>
                                     <Grid item xs={12} sm={2} md={2} lg={2}>

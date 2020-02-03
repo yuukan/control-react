@@ -171,13 +171,30 @@ h1.welcome {
     line-height: 30px;
     font-size: 15px; }
 
+.loading {
+  width: 100%;
+  text-align: center; }
+  .loading div {
+    display: inline-block; }
+
 header .toolbar {
-  justify-content: space-between; }
+  justify-content: space-between;
+  background: white; }
   header .toolbar.red {
-    background: #FF5555; }
+    background: transparent;
+    background-image: -webkit-linear-gradient(60deg, #de3f8a 0%, #fa6161 100%); }
+    header .toolbar.red svg,
+    header .toolbar.red .MuiButton-text {
+      color: white; }
+  header .toolbar svg,
+  header .toolbar .MuiButton-text {
+    color: black; }
+
+header h6 img {
+  height: 50px; }
 
 header h6 span {
-  font-size: 12px;
+  font-size: 18px;
   margin-left: 25px; }
 
 .drawer-header {
@@ -186,6 +203,17 @@ header h6 span {
 .link {
   text-decoration: none;
   color: rgba(0, 0, 0, 0.54); }
+
+.MuiDrawer-paper {
+  background-color: transparent !important;
+  background-image: -webkit-linear-gradient(60deg, #f23232 0%, #f46642 100%) !important; }
+  .MuiDrawer-paper .MuiButtonBase-root,
+  .MuiDrawer-paper svg {
+    color: white !important; }
+  .MuiDrawer-paper .Mui-selected {
+    background-color: rgba(255, 255, 255, 0.25) !important; }
+  .MuiDrawer-paper hr {
+    background-color: rgba(255, 255, 255, 0.25); }
 
 .main-container {
   padding: 27px 15px; }
@@ -330,6 +358,9 @@ h3.transporte-title {
   padding: 10px 5px; }
   .log-list:nth-child(even) {
     background: #f4f4f4; }
+
+.right_justify {
+  text-align: right; }
 
 /****************************************************************/
 .new-btn {

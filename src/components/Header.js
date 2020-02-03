@@ -12,7 +12,7 @@ import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
-import { LocalShipping, ListAltTwoTone, CheckBox } from '@material-ui/icons';
+import { LocalShipping, ListAltTwoTone, CheckBox, Schedule } from '@material-ui/icons';
 import Button from '@material-ui/core/Button';
 import swal from 'sweetalert';
 
@@ -68,9 +68,13 @@ class Header extends Component {
                                 <MenuIcon />
                             </IconButton>
                             <Typography variant="h6">
-                                Control de Pedidos
                                 {
-                                    !this.props.prices_flag ? <span>{`(Precios no actualizados)`}</span> : ""
+                                    !this.props.prices_flag ? (
+                                        <span>{`(Precios no actualizados)`}</span>
+                                    ) :
+                                        (
+                                            <img src="images/logo.png" alt="" />
+                                        )
                                 }
                             </Typography>
                             <Button color="inherit" onClick={this.logOut}>Salir</Button>
@@ -79,6 +83,7 @@ class Header extends Component {
                     <Drawer
                         variant="persistent"
                         anchor="left"
+                        className="Drawer"
                         open={this.state.openDrawer}
                     >
                         <div className="drawer-header">
@@ -118,6 +123,14 @@ class Header extends Component {
                                         <ListAltTwoTone />
                                     </ListItemIcon>
                                     <ListItemText primary={`Validación Crédito`} />
+                                </ListItem>
+                            </Link>
+                            <Link className="link" to="/to-schedule" onClick={() => this.changeIndex(7)}>
+                                <ListItem button selected={this.state.selectedIndex === 7}>
+                                    <ListItemIcon>
+                                        <Schedule />
+                                    </ListItemIcon>
+                                    <ListItemText primary={`Pendientes de Programar`} />
                                 </ListItem>
                             </Link>
                             <Link className="link" to="/sap-list" onClick={() => this.changeIndex(4)}>

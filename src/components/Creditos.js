@@ -62,6 +62,7 @@ class Creditos extends Component {
             compartimiento: null,
             fechaEntrega: null,
             tipoPago: null,
+            tipoPagoOriginal: null,
             fleteAplicado: 0,
             montoPorGalon: 0,
             cantidadCompartimientos: 0,
@@ -78,7 +79,14 @@ class Creditos extends Component {
                 { title: 'Hora', field: 'hora' },
                 { title: 'Usuario', field: 'name' },
                 { title: 'Tipo Operación', field: 'type' },
-                { title: 'Descripción', field: 'Texto' }
+                { title: 'Descripción', field: 'Texto', render: rowData => <div dangerouslySetInnerHTML={{ __html: rowData.Texto }} /> }
+            ],
+            columns2: [
+                { title: 'Fecha Emisión', field: 'Fecha_Emision' },
+                { title: 'Fecha Vencimiento', field: 'Fecha_Vencimiento' },
+                { title: 'Línea de Crédito', field: 'CreditLine' },
+                { title: 'Monto Original', field: 'Monto_Original' },
+                { title: 'Monto Vencido', field: 'Monto_Vencido' }
             ]
         }
     }
@@ -177,6 +185,13 @@ class Creditos extends Component {
         return strTime;
     }
 
+    numFormat(num) {
+        return num.toLocaleString('en-US', {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2
+        });
+    }
+
     aprobarPedido() {
         let t_ = this;
         let t = this.state;
@@ -184,7 +199,10 @@ class Creditos extends Component {
             comentario: t.comentario,
             id: this.props.match.params.id,
             user: window.localStorage.getItem('tp_uid'),
-            tipoPago: this.state.tipoPago.value
+            tipoPago: this.state.tipoPago.value,
+            tipoPagoOriginal: this.state.tipoPagoOriginal.value,
+            tipoPago_label: this.state.tipoPago.label,
+            tipoPagoOriginal_label: this.state.tipoPagoOriginal.label,
         })
             .then(function () {
                 // t.setState({ clientes: response.data });
@@ -223,7 +241,7 @@ class Creditos extends Component {
                 };
             }
 
-            return { fechaEntrega: new Date(order.FechaCarga + " " + order.HoraCarga), id, transporte: tra, planta: pla, planta_original: pla, tipoPago };
+            return { fechaEntrega: new Date(order.fecha_carga + " " + order.HoraCarga), id, transporte: tra, planta: pla, planta_original: pla, tipoPago, tipoPagoOriginal: tipoPago };
         }
         return null;
     }
@@ -260,7 +278,7 @@ class Creditos extends Component {
 
         if (order && order.flete && flete) {
             for (let i = 0; i < flete.compartimientos.length; i++) {
-                let filled = 0;
+                // let filled = 0;
                 let product = "";
                 let height = 0;
                 let color = "transparent";
@@ -276,9 +294,13 @@ class Creditos extends Component {
                     height: `${height}%`,
                     backgroundColor: `#${color}`
                 };
+                let cantidad = 0;
+                if (typeof order.Compartimientos[i] !== "undefined") {
+                    cantidad = order.Compartimientos[i].cantidad;
+                }
                 conts.push(
                     <div key={`cont${i}`} className={`cont cont${i + 1}`}>
-                        <div className="number">{filled} / {CantidadGalones}</div>
+                        <div className="number">{cantidad} / {CantidadGalones}</div>
                         <div className="product">{product}</div>
                         <div className={`fill`} style={style}></div>
                     </div>
@@ -363,18 +385,21 @@ class Creditos extends Component {
 
         let fE = "", fT = "", planta = "", trans;
         if (this.state.fechaEntrega) {
-            fE = this.state.fechaEntrega.getDate() + "/" + this.state.fechaEntrega.getMonth() + "/" + this.state.fechaEntrega.getFullYear();
-            fT = this.formatAMPM(this.state.fechaEntrega);
+            fE = this.state.fechaEntrega.getDate() + "/" + (this.state.fechaEntrega.getMonth() + 1) + "/" + this.state.fechaEntrega.getFullYear();
+            // fT = this.formatAMPM(this.state.fechaEntrega);
+            fT = this.state.fechaEntrega.getHours() + ":" + this.state.fechaEntrega.getMinutes();
         }
         if (this.state.planta && this.state.transporte) {
             planta = this.state.planta.label;
             trans = this.state.transporte.label;
         }
 
-        let credito = 0;
+        // let credito = 0, credit_detail = null;
+        let credit_detail = null;
         if (order) {
             if (order.credit !== null) {
-                credito = order.credit.debit - order.credit.credit;
+                // credito = order.credit.debit - order.credit.credit;
+                credit_detail = order.credit_detail;
             }
         }
         return (
@@ -423,16 +448,21 @@ class Creditos extends Component {
                             <label className="label">
                                 Tipo de Pago
                             </label>
-                            <FormControl variant="outlined" className="form-item">
-                                <Select2
-                                    value={this.state.tipoPago}
-                                    isSearchable={true}
-                                    onChange={this.handleChangeSelect}
-                                    name="tipoPago"
-                                    options={tipos_pago}
-                                    placeholder="*Tipo de Pago"
-                                />
-                            </FormControl>
+                            {this.props.credito === 1 ? (
+                                <FormControl variant="outlined" className="form-item">
+                                    <Select2
+                                        value={this.state.tipoPago}
+                                        isSearchable={true}
+                                        onChange={this.handleChangeSelect}
+                                        name="tipoPago"
+                                        options={tipos_pago}
+                                        placeholder="*Tipo de Pago"
+                                    />
+                                </FormControl>
+                            ) : (
+                                    order ? order.tipo_pago : ""
+                                )
+                            }
                         </Grid>
                         <Grid item xs={12} sm={6} md={3} lg={3}>
                             <label className="label">
@@ -482,16 +512,52 @@ class Creditos extends Component {
                             <Typography variant="h4" component="h2" gutterBottom className="margin-separation">
                                 Crédito
                             </Typography>
-                            <div className="landing-container padding-bottom-separation">
-                                <Grid item xs={12} sm={12} md={12} lg={12}>
-                                    <div className="credit-digits">
-                                        Q {parseFloat(credito).toLocaleString('en-US', {
-                                            minimumFractionDigits: 2,
-                                            maximumFractionDigits: 2
-                                        })}
+                            {credit_detail !== null ? (
+                                <React.Fragment>
+                                    <div className="landing-container padding-bottom-separation">
+                                        <Grid item xs={12} sm={12} md={12} lg={12}>
+                                            <div className="credit-digits">
+                                                Balance
+                                        Q {parseFloat(credit_detail[0].Balance).toLocaleString('en-US', {
+                                                    minimumFractionDigits: 2,
+                                                    maximumFractionDigits: 2
+                                                })}
+                                            </div>
+                                        </Grid>
                                     </div>
-                                </Grid>
-                            </div>
+                                    <div className="landing-container padding-bottom-separation">
+                                        <MaterialTable
+                                            icons={tableIcons}
+                                            columns={this.state.columns2}
+                                            data={credit_detail}
+                                            title="Estado de Cuenta"
+                                            options={{
+                                                pageSize: 5
+                                            }}
+                                            localization={{
+                                                pagination: {
+                                                    labelDisplayedRows: '{from}-{to} de {count}',
+                                                    labelRowsSelect: 'Filas'
+                                                },
+                                                toolbar: {
+                                                    nRowsSelected: '{0} filas(s) seleccionadas',
+                                                    searchPlaceholder: 'Buscar'
+                                                },
+                                                header: {
+                                                    actions: 'Estados'
+                                                },
+                                                body: {
+                                                    emptyDataSourceMessage: 'No existen ordenes',
+                                                    filterRow: {
+                                                        filterTooltip: 'Filter'
+                                                    }
+                                                }
+
+                                            }}
+                                        />
+                                    </div>
+                                </React.Fragment>) : ""
+                            }
                         </React.Fragment>) : ""
                 }
                 <Typography variant="h4" component="h2" gutterBottom className="margin-separation">
@@ -539,7 +605,7 @@ class Creditos extends Component {
                         </Grid>
                     </Grid>
                     <Grid container spacing={2} justify="space-around" className="margin-separation">
-                        <Grid item xs={12} sm={6} md={2} lg={2} className="th">
+                        <Grid item xs={12} sm={6} md={1} lg={1} className="th">
                             <strong>Producto</strong>
                         </Grid>
                         <Grid item xs={12} sm={6} md={1} lg={1} className="th goCenter">
@@ -548,58 +614,89 @@ class Creditos extends Component {
                         <Grid item xs={12} sm={6} md={1} lg={1} className="th goCenter">
                             <strong>Compartimiento</strong>
                         </Grid>
-                        <Grid item xs={12} sm={6} md={2} lg={2} className="th goRight">
+                        <Grid item xs={12} sm={6} md={1} lg={1} className="th goRight">
                             <strong>Precio</strong>
                         </Grid>
-                        <Grid item xs={12} sm={6} md={2} lg={2} className="th goRight">
+                        <Grid item xs={12} sm={6} md={1} lg={1} className="th goRight">
+                            <strong>Subtotal</strong>
+                        </Grid>
+                        <Grid item xs={12} sm={6} md={1} lg={1} className="th goRight">
+                            <strong>Flete</strong>
+                        </Grid>
+                        <Grid item xs={12} sm={6} md={1} lg={1} className="th goRight">
                             <strong>IDP</strong>
                         </Grid>
-                        <Grid item xs={12} sm={6} md={2} lg={2} className="th goRight">
+                        <Grid item xs={12} sm={6} md={1} lg={1} className="th goRight">
                             <strong>IVA</strong>
                         </Grid>
                         <Grid item xs={12} sm={6} md={2} lg={2} className="th goRight">
-                            <strong>Subtotal</strong>
+                            <strong>Total Sin Flete e IDP</strong>
+                        </Grid>
+                        <Grid item xs={12} sm={6} md={1} lg={1} className="th goRight">
+                            <strong>Precio + IVA + IDP</strong>
+                        </Grid>
+                        <Grid item xs={12} sm={6} md={1} lg={1} className="th goRight">
+                            <strong>Costo + IVA + IDP</strong>
                         </Grid>
                         {order && order.Compartimientos.length > 0
                             ? order.Compartimientos.map((key, idx) => {
-                                tot += parseFloat((key.Precio * key.cantidad).toFixed(2));
-                                let subTotal = parseFloat((key.Precio * key.cantidad).toFixed(2));
+                                let sub = key.Precio * key.cantidad;
+                                let flete = key.cantidad * order.FleteXGalon;
+                                let idp = key.IDP * key.cantidad;
+                                let neto = sub - flete - idp;
+                                let subMenosIDP = sub - idp;
+                                let costo = 0;
+                                key.Costo ? costo = key.Costo : costo = 0;
+                                tot += neto;
                                 return (
                                     <React.Fragment key={`p${idx}`}>
-                                        <Grid item xs={6} sm={6} md={2} lg={2} className="ch">
+                                        <Grid item xs={6} sm={6} md={1} lg={1} className="ch">
                                             <strong>Producto</strong>
                                             {key.Nombre}
                                         </Grid>
                                         <Grid item xs={6} sm={6} md={1} lg={1} className="ch goRight">
                                             <strong>Cantidad</strong>
-                                            {key.cantidad}
+                                            {this.numFormat(key.cantidad)}
                                         </Grid>
                                         <Grid item xs={6} sm={6} md={1} lg={1} className="ch goCenter">
                                             <strong>Compartimiento</strong>
                                             {key.Compartimiento !== 0 ? key.Compartimiento : ""}
                                         </Grid>
-                                        <Grid item xs={6} sm={6} md={2} lg={2} className="ch goRight">
+                                        <Grid item xs={6} sm={6} md={1} lg={1} className="ch goRight">
                                             <strong>Precio</strong>
-                                            Q {key.Precio}
+                                            Q {this.numFormat(key.Precio)}
                                         </Grid>
-                                        <Grid item xs={6} sm={6} md={2} lg={2} className="ch goRight">
-                                            <strong>IDP</strong>
-                                            Q {key.IDP}
-                                        </Grid>
-                                        <Grid item xs={6} sm={6} md={2} lg={2} className="ch goRight">
-                                            <strong>IVA</strong>
-                                            Q {(key.Precio - ((key.Precio - key.IDP) / 1.12)).toFixed(2)}
-                                        </Grid>
-                                        <Grid item xs={6} sm={6} md={2} lg={2} className="ch goRight">
+                                        <Grid item xs={6} sm={6} md={1} lg={1} className="ch goRight">
                                             <strong>Subtotal</strong>
-                                            Q {subTotal.toLocaleString('en-US', {
-                                                minimumFractionDigits: 2,
-                                                maximumFractionDigits: 2
-                                            })}
+                                            Q {this.numFormat(sub)}
+                                        </Grid>
+                                        <Grid item xs={6} sm={6} md={1} lg={1} className="ch goRight">
+                                            <strong>Flete</strong>
+                                            Q {this.numFormat(flete)}
+                                        </Grid>
+                                        <Grid item xs={6} sm={6} md={1} lg={1} className="ch goRight">
+                                            <strong>IDP</strong>
+                                            Q {this.numFormat(idp)}
+                                        </Grid>
+                                        <Grid item xs={6} sm={6} md={1} lg={1} className="ch goRight">
+                                            <strong>IVA</strong>
+                                            Q {(subMenosIDP - (subMenosIDP / 1.12)).toFixed(2)}
+                                        </Grid>
+                                        <Grid item xs={6} sm={6} md={2} lg={2} className="ch goRight">
+                                            <strong>Total Sin Flete e IDP</strong>
+                                            Q {this.numFormat(neto)}
+                                        </Grid>
+                                        <Grid item xs={6} sm={6} md={1} lg={1} className="ch goRight">
+                                            <strong>Precio + IVA + IDP</strong>
+                                            Q {this.numFormat(key.Precio)}
+                                        </Grid>
+                                        <Grid item xs={6} sm={6} md={1} lg={1} className="ch goRight">
+                                            <strong>Costo + IVA + IDP</strong>
+                                            Q {this.numFormat(costo)}
                                         </Grid>
                                         <Grid item xs={6} sm={6} md={12} lg={12} className="mobile">
                                             &nbsp;
-                                    </Grid>
+                                        </Grid>
                                         <Grid item xs={12} sm={12} md={12} lg={12} className="separator">
                                             &nbsp;
                                     </Grid>
@@ -608,7 +705,7 @@ class Creditos extends Component {
                             })
                             : ""}
 
-                        <Grid item xs={6} sm={6} md={10} lg={10} className="tot goRight">
+                        <Grid item xs={6} sm={6} md={8} lg={8} className="tot goRight">
                             <strong>Total</strong>
                         </Grid>
                         <Grid item xs={6} sm={6} md={2} lg={2} className="tot goRight">
@@ -617,6 +714,7 @@ class Creditos extends Component {
                                 maximumFractionDigits: 2
                             })}
                         </Grid>
+                        <Grid item xs={6} sm={6} md={2} lg={2} className="tot goRight">&nbsp;</Grid>
 
                     </Grid>
                 </div>

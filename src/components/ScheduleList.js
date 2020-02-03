@@ -20,7 +20,7 @@ import Remove from '@material-ui/icons/Remove';
 import SaveAlt from '@material-ui/icons/SaveAlt';
 import Search from '@material-ui/icons/Search';
 import ViewColumn from '@material-ui/icons/ViewColumn';
-import { DateRange, Cancel } from '@material-ui/icons/';
+import { DateRange, Cancel, Star } from '@material-ui/icons/';
 
 const tableIcons = {
     Add: forwardRef((props, ref) => <AddBox {...props} ref={ref} />),
@@ -65,10 +65,11 @@ class ScheduleList extends Component {
         if (this.props.orders) orders = this.props.orders;
 
         // Show only the anuladas orders
-        orders = orders.filter(
-            (key) =>
-                key.status.trim() !== "Anulado" && key.status.trim() !== "Operado"
-        );
+        if (orders)
+            orders = orders.filter(
+                (key) =>
+                    key.status.trim() !== "Anulado" && key.status.trim() !== "Operado"
+            );
 
         return (
             <div className="main-container">
@@ -87,6 +88,11 @@ class ScheduleList extends Component {
                                     pageSize: 20
                                 }}
                                 actions={[
+                                    rowData => ({
+                                        icon: () => <Star color="secondary" />,
+                                        tooltip: 'VIP',
+                                        hidden: rowData.star === 'N'
+                                    }),
                                     rowData => ({
                                         icon: DateRange,
                                         tooltip: 'Asignar Horario',

@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import Typography from '@material-ui/core/Typography';
 import MaterialTable from 'material-table';
-import { CloudUpload, Cancel } from '@material-ui/icons/';
+import { CloudUpload, Cancel, Star } from '@material-ui/icons/';
 import swal from 'sweetalert';
 import axios from 'axios';
 
@@ -21,6 +21,7 @@ import Remove from '@material-ui/icons/Remove';
 import SaveAlt from '@material-ui/icons/SaveAlt';
 import Search from '@material-ui/icons/Search';
 import ViewColumn from '@material-ui/icons/ViewColumn';
+import ReactLoading from "react-loading";
 
 const tableIcons = {
     Add: forwardRef((props, ref) => <AddBox {...props} ref={ref} />),
@@ -50,11 +51,14 @@ class SapReady extends Component {
             columns: [
                 { title: 'Fecha', field: 'creado' },
                 { title: 'Cliente', field: 'CodigoCliente' },
+                { title: 'Fecha de Carga', field: 'FechaCarga' },
+                { title: 'Hora de Carga', field: 'HoraCarga' },
                 { title: 'Status', field: 'status' },
                 { title: 'Tipo Pago', field: 'tipo_pago' },
                 { title: 'Flete', field: 'flete' },
-                { title: 'Placa Flete', field: 'placa' },
-            ]
+                { title: 'Placa Flete', field: 'placa' }
+            ],
+            uploading: false
         };
     }
 
@@ -65,16 +69,24 @@ class SapReady extends Component {
         if (this.props.orders) orders = this.props.orders;
 
         // Show only the anuladas orders
-        orders = orders.filter(
-            (key) =>
-                key.CreditoValidado !== null && key.HorarioAsignado !== null && this.props.prices_flag && key.sid !== "5" && key.sid !== "6"
-        );
+        if (orders)
+            orders = orders.filter(
+                (key) =>
+                    key.CreditoValidado !== null && key.HorarioAsignado !== null && this.props.prices_flag && key.sid !== "5" && key.sid !== "6" && key.Programado !== null
+            );
 
         return (
             <div className="main-container">
                 <Typography variant="h3" component="h1" gutterBottom>
                     Pedidos Listos para subir a SAP
                 </Typography>
+                {
+                    this.state.uploading ? (
+                        <div className="loading">
+                            <ReactLoading type="cubes" color="#F33E36" />
+                        </div>
+                    ) : ""
+                }
                 <div className="landing-container with-spacing">
                     {
                         orders ? (
@@ -88,39 +100,47 @@ class SapReady extends Component {
                                 }}
                                 actions={[
                                     rowData => ({
+                                        icon: () => <Star color="secondary" />,
+                                        tooltip: 'VIP',
+                                        hidden: rowData.star === 'N'
+                                    }),
+                                    rowData => ({
                                         icon: CloudUpload,
                                         tooltip: 'Subir a SAP',
                                         onClick: (event, rowData) => {
-                                            swal("Subir Orden a SAP?", "Comentario", {
-                                                buttons: ["No", "Si"],
-                                                icon: "warning",
-                                                content: "input",
-                                            }).then((subir) => {
-                                                if (subir !== null) {
-                                                    let t_ = this;
-                                                    axios.post(this.props.url + "api/push-order-sap", {
-                                                        id: rowData.id,
-                                                        user: window.localStorage.getItem('tp_uid'),
-                                                        comentario: subir
-                                                    })
-                                                        .then(function (response) {
-                                                            if (response.data) {
-                                                                t_.props.load_orders();
-                                                                swal("Exito!", "Se subió la orden a SAP.", {
-                                                                    icon: "success"
-                                                                });
-                                                            } else {
-                                                                swal("Error", "Contactar al Administrador", {
-                                                                    icon: "error"
-                                                                });
-                                                            }
+                                            if (!this.state.uploading)
+                                                swal("¿Subir Orden a SAP?", "Comentario", {
+                                                    buttons: ["No", "Si"],
+                                                    icon: "warning",
+                                                    content: "input",
+                                                }).then((subir) => {
+                                                    if (subir !== null) {
+                                                        this.setState({ uploading: true });
+                                                        let t_ = this;
+                                                        axios.post(this.props.url + "api/push-order-sap", {
+                                                            id: rowData.id,
+                                                            user: window.localStorage.getItem('tp_uid'),
+                                                            comentario: subir
                                                         })
-                                                        .catch(function (error) {
-                                                            console.log(error);
-                                                        });
-                                                }
-                                                // console.log(rowData);
-                                            });
+                                                            .then(function (response) {
+                                                                if (response.data) {
+                                                                    t_.props.load_orders();
+                                                                    swal("Exito!", "Se subió la orden a SAP.", {
+                                                                        icon: "success"
+                                                                    });
+                                                                } else {
+                                                                    swal("Error", "Contactar al Administrador", {
+                                                                        icon: "error"
+                                                                    });
+                                                                }
+                                                                t_.setState({ uploading: false });
+                                                            })
+                                                            .catch(function (error) {
+                                                                console.log(error);
+                                                            });
+                                                    }
+                                                    // console.log(rowData);
+                                                });
                                             // this.props.history.push("/creditos/" + rowData.id);
                                         },
                                         hidden: parseInt(rowData.oid) === 6

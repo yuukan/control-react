@@ -19,7 +19,7 @@ import Remove from '@material-ui/icons/Remove';
 import SaveAlt from '@material-ui/icons/SaveAlt';
 import Search from '@material-ui/icons/Search';
 import ViewColumn from '@material-ui/icons/ViewColumn';
-import { CalendarToday, Money, Cancel, FiberNew, Visibility } from '@material-ui/icons/';
+import { CalendarToday, Money, Cancel, Schedule, FiberNew, Visibility, Star } from '@material-ui/icons/';
 
 const tableIcons = {
     Add: forwardRef((props, ref) => <AddBox {...props} ref={ref} />),
@@ -64,10 +64,11 @@ class List extends Component {
 
         if (this.props.orders) orders = this.props.orders;
 
-        orders = orders.filter(
-            (key) =>
-                key.sid !== "5"
-        );
+        if (orders)
+            orders = orders.filter(
+                (key) =>
+                    key.sid !== "5" && key.sid !== "6"
+            );
 
         return (
             <div className="main-container">
@@ -90,6 +91,11 @@ class List extends Component {
                                 }}
                                 actions={[
                                     rowData => ({
+                                        icon: () => <Star color="secondary" />,
+                                        tooltip: 'VIP',
+                                        hidden: rowData.star === 'N'
+                                    }),
+                                    rowData => ({
                                         icon: FiberNew,
                                         tooltip: 'Nuevo',
                                         hidden: rowData.status === 'Ingresado'
@@ -108,6 +114,11 @@ class List extends Component {
                                         icon: Cancel,
                                         tooltip: 'Anulada',
                                         hidden: rowData.status !== "Anulado"
+                                    }),
+                                    rowData => ({
+                                        icon: Schedule,
+                                        tooltip: 'Programada',
+                                        hidden: rowData.Programado === null
                                     }),
                                     rowData => ({
                                         icon: Visibility,
