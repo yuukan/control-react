@@ -74,9 +74,14 @@ class List extends Component {
             <div className="main-container">
                 <Typography variant="h3" component="h1" gutterBottom>
                     Listado de Pedidos
-                    <Link className="new-btn" to="/nueva-orden">
-                        Nueva Orden
-                    </Link>
+                    {
+                        this.props.user_permissions.includes("1") ?
+                            (
+                                <Link className="new-btn" to="/nueva-orden">
+                                    Nueva Orden
+                                </Link>
+                            ) : ""
+                    }
                 </Typography>
                 <div className="landing-container with-spacing">
                     {

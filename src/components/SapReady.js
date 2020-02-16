@@ -49,14 +49,14 @@ class SapReady extends Component {
         super(props);
         this.state = {
             columns: [
-                { title: 'Fecha', field: 'creado' },
+                { title: 'Fecha Creación', field: 'creado' },
                 { title: 'Cliente', field: 'CodigoCliente' },
                 { title: 'Fecha de Carga', field: 'FechaCarga' },
                 { title: 'Hora de Carga', field: 'HoraCarga' },
-                { title: 'Status', field: 'status' },
                 { title: 'Tipo Pago', field: 'tipo_pago' },
-                { title: 'Flete', field: 'flete' },
-                { title: 'Placa Flete', field: 'placa' }
+                { title: 'Código Cliente SAP', field: 'CodigoClienteSap' },
+                { title: 'Código Transporte SAP', field: 'codigoTransporte' },
+                { title: 'Código Proveedor SAP', field: 'CodigoProveedorSAP' }
             ],
             uploading: false
         };
@@ -74,6 +74,7 @@ class SapReady extends Component {
                 (key) =>
                     key.CreditoValidado !== null && key.HorarioAsignado !== null && this.props.prices_flag && key.sid !== "5" && key.sid !== "6" && key.Programado !== null
             );
+
 
         return (
             <div className="main-container">
@@ -107,6 +108,7 @@ class SapReady extends Component {
                                     rowData => ({
                                         icon: CloudUpload,
                                         tooltip: 'Subir a SAP',
+                                        hidden: rowData.CodigoClienteSap === '' || rowData.CodigoClienteSap === null || rowData.codigoTransporte === '' || rowData.codigoTransporte === null || rowData.CodigoProveedorSAP === '' || rowData.CodigoProveedorSAP === null || parseInt(rowData.oid) === 6,
                                         onClick: (event, rowData) => {
                                             if (!this.state.uploading)
                                                 swal("¿Subir Orden a SAP?", "Comentario", {
@@ -123,13 +125,14 @@ class SapReady extends Component {
                                                             comentario: subir
                                                         })
                                                             .then(function (response) {
-                                                                if (response.data) {
+                                                                if (response.data[0]) {
                                                                     t_.props.load_orders();
                                                                     swal("Exito!", "Se subió la orden a SAP.", {
                                                                         icon: "success"
                                                                     });
                                                                 } else {
-                                                                    swal("Error", "Contactar al Administrador", {
+                                                                    // swal("Error", "Contactar al Administrador", {
+                                                                    swal("Error", response.data[1], {
                                                                         icon: "error"
                                                                     });
                                                                 }
@@ -142,8 +145,7 @@ class SapReady extends Component {
                                                     // console.log(rowData);
                                                 });
                                             // this.props.history.push("/creditos/" + rowData.id);
-                                        },
-                                        hidden: parseInt(rowData.oid) === 6
+                                        }
                                     }),
                                     rowData => ({
                                         icon: Cancel,

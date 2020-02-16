@@ -8,21 +8,7 @@ import swal from 'sweetalert';
 import TextField from '@material-ui/core/TextField';
 import MaterialTable from 'material-table';
 import { forwardRef } from 'react';
-import AddBox from '@material-ui/icons/AddBox';
-import ArrowUpward from '@material-ui/icons/ArrowUpward';
-import Check from '@material-ui/icons/Check';
-import ChevronLeft from '@material-ui/icons/ChevronLeft';
-import ChevronRight from '@material-ui/icons/ChevronRight';
-import Clear from '@material-ui/icons/Clear';
-import DeleteOutline from '@material-ui/icons/DeleteOutline';
-import Edit from '@material-ui/icons/Edit';
-import FilterList from '@material-ui/icons/FilterList';
-import FirstPage from '@material-ui/icons/FirstPage';
-import LastPage from '@material-ui/icons/LastPage';
-import Remove from '@material-ui/icons/Remove';
-import SaveAlt from '@material-ui/icons/SaveAlt';
-import Search from '@material-ui/icons/Search';
-import ViewColumn from '@material-ui/icons/ViewColumn';
+import { ViewColumn, Search, SaveAlt, Remove, LastPage, FirstPage, FilterList, Edit, DeleteOutline, Clear, ChevronRight, ChevronLeft, Check, ArrowUpward, AddBox } from '@material-ui/icons/';
 import axios from 'axios';
 
 const tableIcons = {
@@ -174,6 +160,14 @@ class Creditos extends Component {
         this.setState({ detalle, producto: "", cantidad: 0, compartimiento: 0, exclusivo, exclusivoid });
     }
 
+    formatTime(n) {
+        if (n.toString().length < 2) {
+            return "0" + n;
+        } else {
+            return n;
+        }
+    }
+
     formatAMPM(date) {
         var hours = date.getHours();
         var minutes = date.getMinutes();
@@ -216,7 +210,7 @@ class Creditos extends Component {
     }
 
     static getDerivedStateFromProps(nextProps, prevState) {
-        if (nextProps.match.params.id !== prevState.id && nextProps.orders.length > 0 && nextProps.plants) {
+        if (nextProps.match.params.id !== prevState.id && nextProps.orders && nextProps.orders.length > 0 && nextProps.plants) {
             let order = nextProps.orders.findIndex(x => x.id === nextProps.match.params.id);
             order = nextProps.orders[order];
 
@@ -247,7 +241,7 @@ class Creditos extends Component {
     }
 
     componentDidUpdate() {
-        if (this.props.match.params.id !== this.state.id && this.props.orders.length > 0) {
+        if (this.props.match.params.id !== this.state.id && this.props.orders && this.props.orders.length > 0) {
             let order = this.props.orders.findIndex(x => x.id === this.props.match.params.id);
             order = this.props.orders[order];
             let id = this.props.match.params.id;
@@ -387,7 +381,7 @@ class Creditos extends Component {
         if (this.state.fechaEntrega) {
             fE = this.state.fechaEntrega.getDate() + "/" + (this.state.fechaEntrega.getMonth() + 1) + "/" + this.state.fechaEntrega.getFullYear();
             // fT = this.formatAMPM(this.state.fechaEntrega);
-            fT = this.state.fechaEntrega.getHours() + ":" + this.state.fechaEntrega.getMinutes();
+            fT = this.formatTime(this.state.fechaEntrega.getHours()) + ":" + this.formatTime(this.state.fechaEntrega.getMinutes());
         }
         if (this.state.planta && this.state.transporte) {
             planta = this.state.planta.label;
@@ -648,6 +642,11 @@ class Creditos extends Component {
                                 let costo = 0;
                                 key.Costo ? costo = key.Costo : costo = 0;
                                 tot += neto;
+
+                                let noMargin = "";
+                                if (costo >= key.Precio) {
+                                    noMargin = "no_margin";
+                                }
                                 return (
                                     <React.Fragment key={`p${idx}`}>
                                         <Grid item xs={6} sm={6} md={1} lg={1} className="ch">
@@ -686,11 +685,11 @@ class Creditos extends Component {
                                             <strong>Total Sin Flete e IDP</strong>
                                             Q {this.numFormat(neto)}
                                         </Grid>
-                                        <Grid item xs={6} sm={6} md={1} lg={1} className="ch goRight">
+                                        <Grid item xs={6} sm={6} md={1} lg={1} className={`ch goRight ${noMargin}`}>
                                             <strong>Precio + IVA + IDP</strong>
                                             Q {this.numFormat(key.Precio)}
                                         </Grid>
-                                        <Grid item xs={6} sm={6} md={1} lg={1} className="ch goRight">
+                                        <Grid item xs={6} sm={6} md={1} lg={1} className={`ch goRight ${noMargin}`}>
                                             <strong>Costo + IVA + IDP</strong>
                                             Q {this.numFormat(costo)}
                                         </Grid>
@@ -699,7 +698,7 @@ class Creditos extends Component {
                                         </Grid>
                                         <Grid item xs={12} sm={12} md={12} lg={12} className="separator">
                                             &nbsp;
-                                    </Grid>
+                                        </Grid>
                                     </React.Fragment>
                                 )
                             })
@@ -715,7 +714,6 @@ class Creditos extends Component {
                             })}
                         </Grid>
                         <Grid item xs={6} sm={6} md={2} lg={2} className="tot goRight">&nbsp;</Grid>
-
                     </Grid>
                 </div>
                 {

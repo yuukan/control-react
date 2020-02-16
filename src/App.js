@@ -23,7 +23,8 @@ import { faBars, faPrint, faEnvelope, faTrash, faSignIn } from '@fortawesome/pro
 library.add(faBars, faPrint, faEnvelope, faTrash, faSignIn);
 
 // let url = "http://192.168.0.7:81/control/public/";
-let url = "http://de00cffb.ngrok.io/control/public/";
+let url = "http://f76eccf1.ngrok.io/control/public/";
+// let url = "http://localhost:8100/control/public/";
 
 class App extends Component {
   constructor(props) {
@@ -75,7 +76,8 @@ class App extends Component {
     // ################################################
     axios.post(url + "api/get-prices-flag")
       .then(function (response) {
-        t.setState({ prices_flag: response.data[0].ban === "1" });
+        if (response.data)
+          t.setState({ prices_flag: response.data[0].ban === "1" });
       })
       .catch(function (error) {
         console.log(error);
@@ -137,7 +139,12 @@ class App extends Component {
     return (
       <Router>
         <div id="main">
-          <Header isLoggedIn={this.state.logged} changeLogged={this.changeLogged} prices_flag={this.state.prices_flag} />
+          <Header
+            isLoggedIn={this.state.logged}
+            changeLogged={this.changeLogged}
+            prices_flag={this.state.prices_flag}
+            user_permissions={this.state.user_permissions}
+          />
           {
             !this.state.logged ?
               (
@@ -191,6 +198,7 @@ class App extends Component {
                         url={url}
                         load_orders={this.load_orders}
                         prices_flag={this.state.prices_flag}
+                        user_permissions={this.state.user_permissions}
                       />} />
 
                   <Route path="/credit-list"
