@@ -133,7 +133,7 @@ class Home extends Component {
         let detalle = this.state.detalle.splice(0);
         detalle.push(row);
 
-        if (this.state.producto.exclusivo === "si") {
+        if (this.state.producto.exclusivo === "Si") {
             exclusivo = 1;
             exclusivoid = this.state.producto.value;
         } else {

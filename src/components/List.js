@@ -103,7 +103,7 @@ class List extends Component {
                                     rowData => ({
                                         icon: FiberNew,
                                         tooltip: 'Nuevo',
-                                        hidden: rowData.status === 'Ingresado'
+                                        hidden: rowData.sid !== '1'
                                     }),
                                     rowData => ({
                                         icon: CalendarToday,
