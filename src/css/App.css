@@ -387,6 +387,9 @@ strong {
 .goRight {
   text-align: right; }
 
+.border_right {
+  border-right: 1px solid #e1e1e1; }
+
 .goCenter {
   text-align: center; }
 

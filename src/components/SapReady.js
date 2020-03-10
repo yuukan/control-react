@@ -133,7 +133,8 @@ class SapReady extends Component {
                                                                 } else {
                                                                     // swal("Error", "Contactar al Administrador", {
                                                                     swal("Error", response.data[1], {
-                                                                        icon: "error"
+                                                                        icon: "error",
+                                                                        html: true
                                                                     });
                                                                 }
                                                                 t_.setState({ uploading: false });

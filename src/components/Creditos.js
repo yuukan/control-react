@@ -376,7 +376,10 @@ class Creditos extends Component {
         // Product Filters
         // #################################################
 
-        let tot = 0;
+        let stot = 0,
+            ftot = 0,
+            idptot = 0,
+            ivatot = 0;
 
         let fE = "", fT = "", planta = "", trans;
         if (this.state.fechaEntrega) {
@@ -621,17 +624,17 @@ class Creditos extends Component {
                         <Grid item xs={12} sm={6} md={1} lg={1} className="th goRight">
                             <strong>IDP</strong>
                         </Grid>
-                        <Grid item xs={12} sm={6} md={1} lg={1} className="th goRight">
+                        <Grid item xs={12} sm={6} md={1} lg={1} className="th goRight border_right">
                             <strong>IVA</strong>
                         </Grid>
                         <Grid item xs={12} sm={6} md={2} lg={2} className="th goRight">
-                            <strong>Total Sin Flete e IDP</strong>
-                        </Grid>
-                        <Grid item xs={12} sm={6} md={1} lg={1} className="th goRight">
                             <strong>Precio + IVA + IDP</strong>
                         </Grid>
                         <Grid item xs={12} sm={6} md={1} lg={1} className="th goRight">
                             <strong>Costo + IVA + IDP</strong>
+                        </Grid>
+                        <Grid item xs={12} sm={6} md={1} lg={1} className="th goRight">
+                            <strong>Subtotal Costo</strong>
                         </Grid>
                         {order && order.Compartimientos.length > 0
                             ? order.Compartimientos.map((key, idx) => {
@@ -641,8 +644,14 @@ class Creditos extends Component {
                                 let neto = sub - flete - idp;
                                 let subMenosIDP = sub - idp;
                                 let costo = 0;
+                                let iva = subMenosIDP - (subMenosIDP / 1.12);
                                 key.Costo ? costo = key.Costo : costo = 0;
-                                tot += neto;
+                                // tot += neto;
+                                stot += sub;
+                                ftot += flete;
+                                idptot += idp;
+                                ivatot += iva;
+                                let subCosto = costo * key.cantidad;
 
                                 let noMargin = "";
                                 if (costo >= key.Precio) {
@@ -678,21 +687,21 @@ class Creditos extends Component {
                                             <strong>IDP</strong>
                                             Q {this.numFormat(idp)}
                                         </Grid>
-                                        <Grid item xs={6} sm={6} md={1} lg={1} className="ch goRight">
+                                        <Grid item xs={6} sm={6} md={1} lg={1} className="ch goRight border_right">
                                             <strong>IVA</strong>
-                                            Q {(subMenosIDP - (subMenosIDP / 1.12)).toFixed(2)}
+                                            Q {this.numFormat(iva)}
                                         </Grid>
-                                        <Grid item xs={6} sm={6} md={2} lg={2} className="ch goRight">
-                                            <strong>Total Sin Flete e IDP</strong>
-                                            Q {this.numFormat(neto)}
-                                        </Grid>
-                                        <Grid item xs={6} sm={6} md={1} lg={1} className={`ch goRight ${noMargin}`}>
+                                        <Grid item xs={6} sm={6} md={2} lg={2} className={`ch goRight ${noMargin}`}>
                                             <strong>Precio + IVA + IDP</strong>
-                                            Q {this.numFormat(key.Precio)}
+                                            Q {this.numFormat(key.Precio - order.FleteXGalon)}
                                         </Grid>
                                         <Grid item xs={6} sm={6} md={1} lg={1} className={`ch goRight ${noMargin}`}>
                                             <strong>Costo + IVA + IDP</strong>
-                                            Q {this.numFormat(costo - order.FleteXGalon)}
+                                            Q {this.numFormat(costo)}
+                                        </Grid>
+                                        <Grid item xs={6} sm={6} md={1} lg={1} className="ch goRight">
+                                            <strong>Subtotal Costo</strong>
+                                            Q {this.numFormat(subCosto)}
                                         </Grid>
                                         <Grid item xs={6} sm={6} md={12} lg={12} className="mobile">
                                             &nbsp;
@@ -706,27 +715,40 @@ class Creditos extends Component {
                             : ""}
 
                         <Grid item xs={4} sm={4} md={4} lg={4} className="tot goRight">
-                            <strong>Total de pedido</strong>
+                            <strong>Totales</strong>
                         </Grid>
                         <Grid item xs={1} sm={1} md={1} lg={1} className="tot goRight">
-                            Q {tot.toLocaleString('en-US', {
-                                minimumFractionDigits: 2,
-                                maximumFractionDigits: 2
-                            })}
-                        </Grid> 
-                        <Grid item xs={2} sm={2} md={2} lg={2} className="tot goRight">
-                        &nbsp;
-                        </Grid>
-                        <Grid item xs={2} sm={2} md={2} lg={2} className="tot goRight">
-                            <strong>Total</strong>
-                        </Grid>
-                        <Grid item xs={1} sm={1} md={1} lg={1} className="tot goRight">
-                            Q {tot.toLocaleString('en-US', {
+                            Q {stot.toLocaleString('en-US', {
                                 minimumFractionDigits: 2,
                                 maximumFractionDigits: 2
                             })}
                         </Grid>
-                        <Grid item xs={2} sm={6} md={2} lg={2} className="tot goRight">&nbsp;</Grid>
+                        <Grid item xs={1} sm={1} md={1} lg={1} className="tot goRight">
+                            Q {ftot.toLocaleString('en-US', {
+                                minimumFractionDigits: 2,
+                                maximumFractionDigits: 2
+                            })}
+                        </Grid>
+                        <Grid item xs={1} sm={1} md={1} lg={1} className="tot goRight">
+                            Q {idptot.toLocaleString('en-US', {
+                                minimumFractionDigits: 2,
+                                maximumFractionDigits: 2
+                            })}
+                        </Grid>
+                        <Grid item xs={1} sm={1} md={1} lg={1} className="tot goRight border_right">
+                            Q {ivatot.toLocaleString('en-US', {
+                                minimumFractionDigits: 2,
+                                maximumFractionDigits: 2
+                            })}
+                        </Grid>
+                        <Grid item xs={1} sm={1} md={1} lg={1} className="tot goRight">
+
+                        </Grid>
+                        <Grid item xs={1} sm={1} md={1} lg={1} className="tot goRight">
+
+                        </Grid>
+                        <Grid item xs={2} sm={6} md={1} lg={1} className="tot goRight">&nbsp;</Grid>
+                        <Grid item xs={2} sm={6} md={1} lg={1} className="tot goRight">&nbsp;</Grid>
                     </Grid>
                 </div>
                 {
