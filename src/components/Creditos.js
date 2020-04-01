@@ -406,12 +406,12 @@ class Creditos extends Component {
                     this.props.credito === 1 ? (
                         <Typography variant="h3" component="h1" gutterBottom>
                             Aprobación de Pedido por Créditos
-                    </Typography>
+                        </Typography>
                     ) :
                         (
                             <Typography variant="h3" component="h1" gutterBottom>
                                 Detalle de Órden
-                    </Typography>
+                            </Typography>
                         )
                 }
                 <div className="landing-container">
@@ -517,9 +517,9 @@ class Creditos extends Component {
                                             <div className="credit-digits">
                                                 Balance
                                         Q {parseFloat(credit_detail[0].Balance).toLocaleString('en-US', {
-                                                    minimumFractionDigits: 2,
-                                                    maximumFractionDigits: 2
-                                                })}
+                                                minimumFractionDigits: 2,
+                                                maximumFractionDigits: 2
+                                            })}
                                             </div>
                                         </Grid>
                                     </div>
@@ -641,7 +641,7 @@ class Creditos extends Component {
                                 let sub = key.Precio * key.cantidad;
                                 let flete = key.cantidad * order.FleteXGalon;
                                 let idp = key.IDP * key.cantidad;
-                                let neto = sub - flete - idp;
+                                // let neto = sub - flete - idp;
                                 let subMenosIDP = sub - idp;
                                 let costo = 0;
                                 let iva = subMenosIDP - (subMenosIDP / 1.12);
@@ -719,27 +719,27 @@ class Creditos extends Component {
                         </Grid>
                         <Grid item xs={1} sm={1} md={1} lg={1} className="tot goRight">
                             Q {stot.toLocaleString('en-US', {
-                                minimumFractionDigits: 2,
-                                maximumFractionDigits: 2
-                            })}
+                            minimumFractionDigits: 2,
+                            maximumFractionDigits: 2
+                        })}
                         </Grid>
                         <Grid item xs={1} sm={1} md={1} lg={1} className="tot goRight">
                             Q {ftot.toLocaleString('en-US', {
-                                minimumFractionDigits: 2,
-                                maximumFractionDigits: 2
-                            })}
+                            minimumFractionDigits: 2,
+                            maximumFractionDigits: 2
+                        })}
                         </Grid>
                         <Grid item xs={1} sm={1} md={1} lg={1} className="tot goRight">
                             Q {idptot.toLocaleString('en-US', {
-                                minimumFractionDigits: 2,
-                                maximumFractionDigits: 2
-                            })}
+                            minimumFractionDigits: 2,
+                            maximumFractionDigits: 2
+                        })}
                         </Grid>
                         <Grid item xs={1} sm={1} md={1} lg={1} className="tot goRight border_right">
                             Q {ivatot.toLocaleString('en-US', {
-                                minimumFractionDigits: 2,
-                                maximumFractionDigits: 2
-                            })}
+                            minimumFractionDigits: 2,
+                            maximumFractionDigits: 2
+                        })}
                         </Grid>
                         <Grid item xs={1} sm={1} md={1} lg={1} className="tot goRight">
 

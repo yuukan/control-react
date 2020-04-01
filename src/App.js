@@ -24,7 +24,7 @@ library.add(faBars, faPrint, faEnvelope, faTrash, faSignIn);
 
 // let url = "http://192.168.0.7:81/control/public/";
 // Live
-let url = "http://192.168.168.26:8100/control/public/";
+let url = window._url;
 // let url = "http://2f341138.ngrok.io/control/public/";
 
 class App extends Component {
