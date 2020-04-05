@@ -50,6 +50,8 @@ class Header extends Component {
         }).then((salir) => {
             if (salir !== null) {
                 this.props.changeLogged(false);
+                localStorage.removeItem("tp_uid");
+                localStorage.removeItem("tp_uid_per");
             }
         });
     }
