@@ -379,7 +379,8 @@ class Creditos extends Component {
         let stot = 0,
             ftot = 0,
             idptot = 0,
-            ivatot = 0;
+            ivatot = 0,
+            subtot = 0;
 
         let fE = "", fT = "", planta = "", trans;
         if (this.state.fechaEntrega) {
@@ -652,6 +653,7 @@ class Creditos extends Component {
                                 idptot += idp;
                                 ivatot += iva;
                                 let subCosto = costo * key.cantidad;
+                                subtot += subCosto;
 
                                 let noMargin = "";
                                 if (costo >= key.Precio) {
@@ -747,8 +749,17 @@ class Creditos extends Component {
                         <Grid item xs={1} sm={1} md={1} lg={1} className="tot goRight">
 
                         </Grid>
-                        <Grid item xs={2} sm={6} md={1} lg={1} className="tot goRight">&nbsp;</Grid>
-                        <Grid item xs={2} sm={6} md={1} lg={1} className="tot goRight">&nbsp;</Grid>
+                        <Grid item xs={1} sm={1} md={1} lg={1} className="tot goRight">
+                            <strong>
+                                Total
+                            </strong>
+                        </Grid>
+                        <Grid item xs={1} sm={1} md={1} lg={1} className="tot goRight">
+                            Q {subtot.toLocaleString('en-US', {
+                            minimumFractionDigits: 2,
+                            maximumFractionDigits: 2
+                        })}
+                        </Grid>
                     </Grid>
                 </div>
                 {
