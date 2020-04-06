@@ -54,9 +54,9 @@ class SapReady extends Component {
                 { title: 'Fecha de Carga', field: 'FechaCarga' },
                 { title: 'Hora de Carga', field: 'HoraCarga' },
                 { title: 'Tipo Pago', field: 'tipo_pago' },
-                { title: 'Código Cliente SAP', field: 'CodigoClienteSap' },
-                { title: 'Código Transporte SAP', field: 'codigoTransporte' },
-                { title: 'Código Proveedor SAP', field: 'CodigoProveedorSAP' }
+                { title: 'Código Cliente SAP', field: 'CodigoClienteSap', render: rowData => <div className={rowData.CodigoClienteSapExist > 0 ? "" : "no_margin"} dangerouslySetInnerHTML={{ __html: rowData.CodigoClienteSap }} /> },
+                { title: 'Código Transporte SAP', field: 'codigoTransporte', render: rowData => <div className={rowData.codigoTransporteExist > 0 ? "" : "no_margin"} dangerouslySetInnerHTML={{ __html: rowData.codigoTransporte }} /> },
+                { title: 'Código Proveedor SAP', field: 'CodigoProveedorSAP', render: rowData => <div className={rowData.CodigoProveedorSAPExist > 0 ? "" : "no_margin"} dangerouslySetInnerHTML={{ __html: rowData.CodigoProveedorSAP }} /> },
             ],
             uploading: false
         };
@@ -108,7 +108,7 @@ class SapReady extends Component {
                                     rowData => ({
                                         icon: CloudUpload,
                                         tooltip: 'Subir a SAP',
-                                        hidden: rowData.CodigoClienteSap === '' || rowData.CodigoClienteSap === null || rowData.codigoTransporte === '' || rowData.codigoTransporte === null || rowData.CodigoProveedorSAP === '' || rowData.CodigoProveedorSAP === null || parseInt(rowData.oid) === 6,
+                                        hidden: rowData.CodigoClienteSap === '' || rowData.CodigoClienteSap === null || rowData.codigoTransporte === '' || rowData.codigoTransporte === null || rowData.CodigoProveedorSAP === '' || rowData.CodigoProveedorSAP === null || parseInt(rowData.oid) === 6 || rowData.CodigoClienteSapExist === 0 || rowData.codigoTransporteExist === 0 || rowData.CodigoProveedorSAPExist === 0,
                                         onClick: (event, rowData) => {
                                             if (!this.state.uploading)
                                                 swal("¿Subir Orden a SAP?", "Comentario", {
