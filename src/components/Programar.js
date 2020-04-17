@@ -98,7 +98,7 @@ class Programar extends Component {
                                         icon: Schedule,
                                         tooltip: 'Marcar como Programado',
                                         onClick: (event, rowData) => {
-                                            swal("¿Desea marcar como parogramada?", "Comentario", {
+                                            swal("¿Desea marcar como programada?", "Comentario", {
                                                 buttons: ["No", "Si"],
                                                 icon: "warning",
                                                 content: "input",
