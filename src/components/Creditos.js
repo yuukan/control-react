@@ -70,9 +70,9 @@ class Creditos extends Component {
             columns2: [
                 { title: 'Fecha Emisión', field: 'Fecha_Emision' },
                 { title: 'Fecha Vencimiento', field: 'Fecha_Vencimiento' },
-                { title: 'Línea de Crédito', field: 'CreditLine' },
-                { title: 'Monto Original', field: 'Monto_Original' },
-                { title: 'Monto Vencido', field: 'Monto_Vencido' }
+                { title: 'Línea de Crédito', field: 'CreditLine', render: rowData => this.numFormat(parseFloat(rowData.CreditLine)) },
+                { title: 'Monto Original', field: 'Monto_Original', render: rowData => this.numFormat(parseFloat(rowData.Monto_Original)) },
+                { title: 'Monto Vencido', field: 'Monto_Vencido', render: rowData => this.numFormat(parseFloat(rowData.Monto_Vencido)) }
             ]
         }
     }
