@@ -6,6 +6,7 @@ import esLocale from "date-fns/locale/es";
 import DateFnsUtils from '@date-io/date-fns';
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
+import LinearProgress from '@material-ui/core/LinearProgress';
 import swal from 'sweetalert';
 import Select2 from 'react-select';
 import axios from 'axios';
@@ -48,7 +49,9 @@ class Home extends Component {
             precio: "",
             no_oficial: "0",
             costo: 0,
-            IDP: ""
+            IDP: "",
+            disabled: false,
+            tipo_pago: [{value:0,label:"Seleccione un cliente"}]
         }
     }
 
@@ -87,6 +90,9 @@ class Home extends Component {
         }
         if (b.name === "producto") {
             this.setState({ precio: option.precio, costo: option.precio, no_oficial: option.no_oficial, IDP: option.IDP });
+        }
+        if (b.name === "cliente") {
+            this.setState({ tipo_pago: option.tipo_pago, tipoPago: [{value:option.NumSAP, label:option.NumSAPLabel}] });
         }
     }
 
@@ -152,6 +158,8 @@ class Home extends Component {
         if (t.cliente !== null && t.tipoPago !== null && t.tipoPago !== null && t.direccion !== null && t.fleteAplicado !== 0 && t.planta !== null) {
             let transporte = 0;
             if (t.transporte !== null) transporte = t.transporte.id;
+            t_.setState({disabled:true});
+            console.log(t);
             axios.post(this.props.url + "api/save-order", {
                 cliente: t.cliente.value,
                 nombreCliente: t.cliente.label,
@@ -160,7 +168,7 @@ class Home extends Component {
                 anioEntrega: t.fechaEntrega.getFullYear(),
                 hora: t.fechaEntrega.getHours(),
                 minutos: t.fechaEntrega.getMinutes(),
-                tipoPago: t.tipoPago.value,
+                tipoPago: t.tipoPago[0].value,
                 direccion: t.direccion.value,
                 fleteAplicado: t.fleteAplicado.value,
                 montoPorGalon: t.montoPorGalon,
@@ -174,6 +182,7 @@ class Home extends Component {
                     // t.setState({ clientes: response.data });
                     t_.props.load_orders();
                     t_.props.history.push("/order-list");
+                    t_.setState({disabled:false});
                 })
                 .catch(function (error) {
                     console.log(error);
@@ -258,10 +267,10 @@ class Home extends Component {
             // }
         }
 
-        let tipos_pago = [
-            { value: 1, label: "Contado" },
-            { value: 2, label: "Crédito" }
-        ];
+        // let tipos_pago = [
+        //     { value: 1, label: "Contado" },
+        //     { value: 2, label: "Crédito" }
+        // ];
 
         let flete_aplicado = [
             { value: 1, label: "EX Rack" },
@@ -367,7 +376,7 @@ class Home extends Component {
                                     isSearchable={true}
                                     onChange={this.handleChangeSelect}
                                     name="tipoPago"
-                                    options={tipos_pago}
+                                    options={this.state.tipo_pago}
                                     placeholder="*Tipo de Pago"
                                 />
                             </FormControl>
@@ -547,9 +556,17 @@ class Home extends Component {
                 </div>
                 <Grid container spacing={2} justify="flex-end" className="padding-top-separation">
                     <Grid item xs={2} sm={2} md={2} lg={2}>
-                        <Button variant="contained" color="primary" className="pull-right" onClick={this.guardarPedido}>
+                        <Button variant="contained" color="primary" disabled={this.state.disabled} className="save-btn pull-right" onClick={this.guardarPedido}>
                             Guardar Pedido
                         </Button>
+                        {
+                            this.state.disabled ?
+                            (
+                                <div className="progress">
+                                    <LinearProgress /> 
+                                </div>
+                            ): ""
+                        }
                     </Grid>
                 </Grid>
             </div>

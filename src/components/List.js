@@ -48,7 +48,17 @@ class List extends Component {
         this.state = {
             columns: [
                 { title: 'ID', field: 'id' },
-                { title: 'Fecha', field: 'creado' },
+                { 
+                    title: 'Fecha carga', 
+                    field: 'FechaCarga',
+                    customSort: (a, b) => {
+                        a = a.FechaCarga.split("/");
+                        b = b.FechaCarga.split("/");
+                        var d1 = a[2]+a[1]+a[0];
+                        var d2 = b[2]+b[1]+b[0];
+                        return parseInt(d1) - parseInt(d2);
+                    }
+                },
                 { title: 'Cliente', field: 'CodigoCliente' },
                 { title: 'Status', field: 'status' },
                 { title: 'Tipo Pago', field: 'tipo_pago' },

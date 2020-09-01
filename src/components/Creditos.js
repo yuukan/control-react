@@ -222,20 +222,12 @@ class Creditos extends Component {
 
             let id = nextProps.match.params.id;
 
-            let tipoPago = "";
-            if (order.tipo_pago.trim() === "Contado") {
-                tipoPago = {
-                    label: "Contado",
-                    value: 1
-                };
-            } else {
-                tipoPago = {
-                    label: "Crédito",
-                    value: 2
-                };
-            }
+            let tipoPago = {
+                label: order.NumSAPLabel,
+                value: order.NumSAP
+            };
 
-            return { fechaEntrega: new Date(order.fecha_carga + " " + order.HoraCarga), id, transporte: tra, planta: pla, planta_original: pla, tipoPago, tipoPagoOriginal: tipoPago };
+            return { fechaEntrega: new Date(order.fecha_carga + " " + order.HoraCarga), id, transporte: tra, planta: pla, planta_original: pla, tipoPago:tipoPago, tipoPagoOriginal: tipoPago };
         }
         return null;
     }
@@ -263,10 +255,10 @@ class Creditos extends Component {
             }
         }
 
-        let tipos_pago = [
-            { value: 1, label: "Contado" },
-            { value: 2, label: "Crédito" }
-        ];
+        // let tipos_pago = [
+        //     { value: 1, label: "Contado" },
+        //     { value: 2, label: "Crédito" }
+        // ];
 
         let conts = [];
 
@@ -306,7 +298,7 @@ class Creditos extends Component {
         let comentarios = "";
         if (order && order.comentarios.length > 0) {
             comentarios = order.comentarios.map((key, idx) => {
-                let da = new Date(key.created_at);
+                let da = new Date(key.updated_at);
                 return (
                     <li key={`c${idx}`}
                     >
@@ -401,6 +393,8 @@ class Creditos extends Component {
                 credit_detail = order.credit_detail;
             }
         }
+        let tipos_pago = null;
+        if(order) tipos_pago = order.tipos_pago;
         return (
             <div className="main-container">
                 {
@@ -716,45 +710,50 @@ class Creditos extends Component {
                             })
                             : ""}
 
-                        <Grid item xs={4} sm={4} md={4} lg={4} className="tot goRight">
+                        <Grid item xs={12} sm={12} md={4} lg={4} className="tot tot_mob goRight">
                             <strong>Totales</strong>
                         </Grid>
-                        <Grid item xs={1} sm={1} md={1} lg={1} className="tot goRight">
+                        <Grid item xs={6} sm={6} md={1} lg={1} className="tot_mob goRight">
+                            <strong>Subtotal</strong>
                             Q {stot.toLocaleString('en-US', {
                             minimumFractionDigits: 2,
                             maximumFractionDigits: 2
                         })}
                         </Grid>
-                        <Grid item xs={1} sm={1} md={1} lg={1} className="tot goRight">
+                        <Grid item xs={6} sm={6} md={1} lg={1} className="tot_mob tot goRight">
+                            <strong>Flete</strong>
                             Q {ftot.toLocaleString('en-US', {
                             minimumFractionDigits: 2,
                             maximumFractionDigits: 2
                         })}
                         </Grid>
-                        <Grid item xs={1} sm={1} md={1} lg={1} className="tot goRight">
+                        <Grid item xs={6} sm={6} md={1} lg={1} className="tot tot_mob goRight">
+                            <strong>IDP</strong>
                             Q {idptot.toLocaleString('en-US', {
                             minimumFractionDigits: 2,
                             maximumFractionDigits: 2
                         })}
                         </Grid>
-                        <Grid item xs={1} sm={1} md={1} lg={1} className="tot goRight border_right">
+                        <Grid item xs={6} sm={6} md={1} lg={1} className="tot tot_mob goRight border_right">
+                            <strong>IVA</strong>
                             Q {ivatot.toLocaleString('en-US', {
                             minimumFractionDigits: 2,
                             maximumFractionDigits: 2
                         })}
                         </Grid>
-                        <Grid item xs={1} sm={1} md={1} lg={1} className="tot goRight">
+                        <Grid item xs={6} sm={6} md={1} lg={1} className="tot hideMobile goRight">
 
                         </Grid>
-                        <Grid item xs={1} sm={1} md={1} lg={1} className="tot goRight">
+                        <Grid item xs={6} sm={6} md={1} lg={1} className="tot hideMobile goRight">
 
                         </Grid>
-                        <Grid item xs={1} sm={1} md={1} lg={1} className="tot goRight">
+                        <Grid item xs={6} sm={6} md={1} lg={1} className="tot hideMobile goRight">
                             <strong>
                                 Total
                             </strong>
                         </Grid>
-                        <Grid item xs={1} sm={1} md={1} lg={1} className="tot goRight">
+                        <Grid item xs={6} sm={6} md={1} lg={1} className="tot tot_mob goRight">
+                            <strong>Subtotal Costo</strong>
                             Q {subtot.toLocaleString('en-US', {
                             minimumFractionDigits: 2,
                             maximumFractionDigits: 2

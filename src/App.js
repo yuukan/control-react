@@ -44,7 +44,8 @@ class App extends Component {
       orders: [],
       plants: [],
       user_permissions: [],
-      prices_flag: 0
+      prices_flag: 0,
+      tipo_pago: null
     };
   }
 
@@ -70,6 +71,14 @@ class App extends Component {
     axios.post(url + "api/get-fletes")
       .then(function (response) {
         t.setState({ fletes: response.data });
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+    // ################################################
+    axios.post(url + "api/get-tipo-pago")
+      .then(function (response) {
+        t.setState({ tipo_pago: response.data });
       })
       .catch(function (error) {
         console.log(error);
@@ -190,6 +199,7 @@ class App extends Component {
                         load_orders={this.load_orders}
                         load_products={this.load_products}
                         config={this.state.config}
+                        tipo_pago={this.state.tipo_pago}
                       />} />
 
                   <Route path="/order-list"
@@ -275,6 +285,7 @@ class App extends Component {
                         plants={this.state.plants}
                         load_orders={this.load_orders}
                         credito={1}
+                        tipo_pago={this.state.tipo_pago}
                       />} />
                   <Route path="/detail/:id"
                     render={(props) =>

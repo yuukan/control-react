@@ -48,15 +48,25 @@ class Programar extends Component {
         super(props);
         this.state = {
             columns: [
-                { title: 'Fecha', field: 'creado' },
+                { title: 'Fecha Carga', field: 'FechaCarga' },
                 { title: 'Cliente', field: 'CodigoCliente' },
                 { title: 'Status', field: 'status' },
+                { title: 'Planta', field: 'NombrePlanta' },
                 { title: 'Tipo Pago', field: 'tipo_pago' },
-                { title: 'Flete', field: 'flete' },
+                { title: 'Costo Total', field: 'costo',render: rowData => "Q "+this.numFormat(parseFloat(rowData.costo)) },
+                { title: 'Venta Total', field: 'venta',render: rowData => "Q "+this.numFormat(parseFloat(rowData.venta)) },
+                { title: 'Código Transporte', field: 'codigoTransporte' },
                 { title: 'Placa Flete', field: 'placa' },
                 { title: 'Detalle', field: 'detalle', render: rowData => <div dangerouslySetInnerHTML={{ __html: rowData.detalle }} /> },
             ]
         };
+    }
+
+    numFormat(num) {
+        return num.toLocaleString('en-US', {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2
+        });
     }
 
     render() {
@@ -69,7 +79,8 @@ class Programar extends Component {
         if (orders)
             orders = orders.filter(
                 (key) =>
-                    key.CreditoValidado !== null && key.HorarioAsignado !== null && key.sid !== "5" && key.sid !== "6" && key.Programado === null
+                    // key.Programado!=="1"
+                    key.sid !== "5" && key.sid !== "6"
             );
 
         return (

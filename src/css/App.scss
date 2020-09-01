@@ -65,6 +65,28 @@ strong{
         }
     }
 }
+.tot_mob{
+    @media (max-width:959px){
+        text-align: center !important;
+    }
+    strong{
+        color: rgba(0, 0, 0, 0.54);
+        font-size: 12px;
+        line-height: 21px;
+        float: left;
+        width: 100%;
+        margin-bottom: 5px;
+        display: none;
+        @media (max-width:959px){
+            display: block;
+        }
+    }
+}
+.hideMobile{
+    @media (max-width:959px){
+        display: none;
+    }
+}
 .no_margin{
     color: red;
 }

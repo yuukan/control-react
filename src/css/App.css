@@ -362,6 +362,11 @@ h3.transporte-title {
 .right_justify {
   text-align: right; }
 
+.progress {
+  float: right;
+  margin-top: 5px;
+  width: 150px; }
+
 /****************************************************************/
 .new-btn {
   float: right;
@@ -419,6 +424,26 @@ strong {
     @media (max-width: 959px) {
       .ch strong {
         display: block; } }
+
+@media (max-width: 959px) {
+  .tot_mob {
+    text-align: center !important; } }
+
+.tot_mob strong {
+  color: rgba(0, 0, 0, 0.54);
+  font-size: 12px;
+  line-height: 21px;
+  float: left;
+  width: 100%;
+  margin-bottom: 5px;
+  display: none; }
+  @media (max-width: 959px) {
+    .tot_mob strong {
+      display: block; } }
+
+@media (max-width: 959px) {
+  .hideMobile {
+    display: none; } }
 
 .no_margin {
   color: red; }
