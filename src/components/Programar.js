@@ -55,7 +55,7 @@ class Programar extends Component {
                 { title: 'Tipo Pago', field: 'tipo_pago' },
                 { title: 'Costo Total', field: 'costo',render: rowData => "Q "+this.numFormat(parseFloat(rowData.costo)) },
                 { title: 'Venta Total', field: 'venta',render: rowData => "Q "+this.numFormat(parseFloat(rowData.venta)) },
-                { title: 'Código Transporte', field: 'codigoTransporte' },
+                { title: 'Código Transporte', field: 'NumeroUnidad' },
                 { title: 'Placa Flete', field: 'placa' },
                 { title: 'Detalle', field: 'detalle', render: rowData => <div dangerouslySetInnerHTML={{ __html: rowData.detalle }} /> },
             ]

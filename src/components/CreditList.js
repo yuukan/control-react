@@ -62,7 +62,7 @@ class CreditList extends Component {
                 { title: 'Cliente', field: 'CodigoCliente' },
                 { title: 'Status', field: 'status' },
                 { title: 'Tipo Pago', field: 'tipo_pago' },
-                { title: 'Flete', field: 'flete' },
+                { title: 'Código Transporte', field: 'NumeroUnidad' },
                 { title: 'Placa Flete', field: 'placa' },
             ]
         };

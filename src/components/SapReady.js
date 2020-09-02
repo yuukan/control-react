@@ -57,6 +57,7 @@ class SapReady extends Component {
                 { title: 'Código Cliente SAP', field: 'CodigoClienteSap', render: rowData => <div className={rowData.CodigoClienteSapExist > 0 ? "" : "no_margin"} dangerouslySetInnerHTML={{ __html: rowData.CodigoClienteSap }} /> },
                 { title: 'Código Transporte SAP', field: 'codigoTransporte', render: rowData => <div className={rowData.codigoTransporteExist > 0 ? "" : "no_margin"} dangerouslySetInnerHTML={{ __html: rowData.codigoTransporte }} /> },
                 { title: 'Código Proveedor SAP', field: 'CodigoProveedorSAP', render: rowData => <div className={rowData.CodigoProveedorSAPExist > 0 ? "" : "no_margin"} dangerouslySetInnerHTML={{ __html: rowData.CodigoProveedorSAP }} /> },
+                { title: 'Código Transporte', field: 'NumeroUnidad' },
             ],
             uploading: false
         };
