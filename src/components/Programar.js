@@ -21,6 +21,7 @@ import Remove from '@material-ui/icons/Remove';
 import SaveAlt from '@material-ui/icons/SaveAlt';
 import Search from '@material-ui/icons/Search';
 import ViewColumn from '@material-ui/icons/ViewColumn';
+import {CheckBoxTwoTone} from '@material-ui/icons';
 
 const tableIcons = {
     Add: forwardRef((props, ref) => <AddBox {...props} ref={ref} />),
@@ -50,6 +51,7 @@ class Programar extends Component {
             columns: [
                 { title: 'Fecha Carga', field: 'FechaCarga' },
                 { title: 'Cliente', field: 'CodigoCliente' },
+                { title: 'Ya Programado?', field: 'Programado' },
                 { title: 'Status', field: 'status' },
                 { title: 'Planta', field: 'NombrePlanta' },
                 { title: 'Tipo Pago', field: 'tipo_pago' },
@@ -97,7 +99,14 @@ class Programar extends Component {
                                 data={orders}
                                 title="Listado de Pedidos"
                                 options={{
-                                    pageSize: 20
+                                    pageSize: 20,
+                                    rowStyle: rowData => {
+                                        if(rowData.Programado !== null) {
+                                            return {color: '#3f51b5'}; 
+                                        }
+                                        
+                                        // return {};
+                                    }
                                 }}
                                 actions={[
                                     rowData => ({
@@ -106,10 +115,22 @@ class Programar extends Component {
                                         hidden: rowData.star === 'N'
                                     }),
                                     rowData => ({
+                                        icon: () => <CheckBoxTwoTone color="primary" />,
+                                        tooltip: 'Ya fue programado',
+                                        hidden: rowData.Programado === null
+                                    }),
+                                    rowData => ({
                                         icon: Schedule,
                                         tooltip: 'Marcar como Programado',
                                         onClick: (event, rowData) => {
-                                            swal("¿Desea marcar como programada?", "Comentario", {
+
+                                            let text = "¿Desea marcar como programada?";
+                                            if(rowData.Programado!==null){
+                                                text = "Esta orden ya fue marcada como programada, ¿desea volverlo a hacer?";
+                                            }
+
+
+                                            swal(text, "Comentario", {
                                                 buttons: ["No", "Si"],
                                                 icon: "warning",
                                                 content: "input",
