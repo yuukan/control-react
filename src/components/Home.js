@@ -92,7 +92,7 @@ class Home extends Component {
             this.setState({ precio: option.precio, costo: option.precio, no_oficial: option.no_oficial, IDP: option.IDP });
         }
         if (b.name === "cliente") {
-            this.setState({ tipo_pago: option.tipo_pago, tipoPago: [{value:option.NumSAP, label:option.NumSAPLabel}] });
+            this.setState({ tipo_pago: option.tipo_pago, tipoPago: {value:option.NumSAP, label:option.NumSAPLabel} });
         }
     }
 
@@ -168,7 +168,7 @@ class Home extends Component {
                 anioEntrega: t.fechaEntrega.getFullYear(),
                 hora: t.fechaEntrega.getHours(),
                 minutos: t.fechaEntrega.getMinutes(),
-                tipoPago: t.tipoPago[0].value,
+                tipoPago: t.tipoPago.value,
                 direccion: t.direccion.value,
                 fleteAplicado: t.fleteAplicado.value,
                 montoPorGalon: t.montoPorGalon,
