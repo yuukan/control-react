@@ -10,6 +10,7 @@ import MaterialTable from 'material-table';
 import { forwardRef } from 'react';
 import { ViewColumn, Search, SaveAlt, Remove, LastPage, FirstPage, FilterList, Edit, DeleteOutline, Clear, ChevronRight, ChevronLeft, Check, ArrowUpward, AddBox } from '@material-ui/icons/';
 import axios from 'axios';
+import moment from 'moment';
 
 const tableIcons = {
     Add: forwardRef((props, ref) => <AddBox {...props} ref={ref} />),
@@ -227,7 +228,10 @@ class Creditos extends Component {
                 value: order.NumSAP
             };
 
-            return { fechaEntrega: new Date(order.fecha_carga + " " + order.HoraCarga), id, transporte: tra, planta: pla, planta_original: pla, tipoPago:tipoPago, tipoPagoOriginal: tipoPago };
+            let d = moment(order.fecha_carga + " " + order.HoraCarga);
+            d = d.toDate();
+
+            return { fechaEntrega: d, id, transporte: tra, planta: pla, planta_original: pla, tipoPago: tipoPago, tipoPagoOriginal: tipoPago };
         }
         return null;
     }
@@ -394,7 +398,7 @@ class Creditos extends Component {
             }
         }
         let tipos_pago = null;
-        if(order) tipos_pago = order.tipos_pago;
+        if (order) tipos_pago = order.tipos_pago;
         return (
             <div className="main-container">
                 {
@@ -716,30 +720,30 @@ class Creditos extends Component {
                         <Grid item xs={6} sm={6} md={1} lg={1} className="tot_mob goRight">
                             <strong>Subtotal</strong>
                             Q {stot.toLocaleString('en-US', {
-                            minimumFractionDigits: 2,
-                            maximumFractionDigits: 2
-                        })}
+                                minimumFractionDigits: 2,
+                                maximumFractionDigits: 2
+                            })}
                         </Grid>
                         <Grid item xs={6} sm={6} md={1} lg={1} className="tot_mob tot goRight">
                             <strong>Flete</strong>
                             Q {ftot.toLocaleString('en-US', {
-                            minimumFractionDigits: 2,
-                            maximumFractionDigits: 2
-                        })}
+                                minimumFractionDigits: 2,
+                                maximumFractionDigits: 2
+                            })}
                         </Grid>
                         <Grid item xs={6} sm={6} md={1} lg={1} className="tot tot_mob goRight">
                             <strong>IDP</strong>
                             Q {idptot.toLocaleString('en-US', {
-                            minimumFractionDigits: 2,
-                            maximumFractionDigits: 2
-                        })}
+                                minimumFractionDigits: 2,
+                                maximumFractionDigits: 2
+                            })}
                         </Grid>
                         <Grid item xs={6} sm={6} md={1} lg={1} className="tot tot_mob goRight border_right">
                             <strong>IVA</strong>
                             Q {ivatot.toLocaleString('en-US', {
-                            minimumFractionDigits: 2,
-                            maximumFractionDigits: 2
-                        })}
+                                minimumFractionDigits: 2,
+                                maximumFractionDigits: 2
+                            })}
                         </Grid>
                         <Grid item xs={6} sm={6} md={1} lg={1} className="tot hideMobile goRight">
 
@@ -755,9 +759,9 @@ class Creditos extends Component {
                         <Grid item xs={6} sm={6} md={1} lg={1} className="tot tot_mob goRight">
                             <strong>Subtotal Costo</strong>
                             Q {subtot.toLocaleString('en-US', {
-                            minimumFractionDigits: 2,
-                            maximumFractionDigits: 2
-                        })}
+                                minimumFractionDigits: 2,
+                                maximumFractionDigits: 2
+                            })}
                         </Grid>
                     </Grid>
                 </div>

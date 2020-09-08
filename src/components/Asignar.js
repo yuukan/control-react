@@ -9,6 +9,7 @@ import swal from 'sweetalert';
 import Select2 from 'react-select';
 import TextField from '@material-ui/core/TextField';
 import axios from 'axios';
+import moment from 'moment';
 
 import {
     MuiPickersUtilsProvider,
@@ -205,7 +206,10 @@ class Asignar extends Component {
                 maximumFractionDigits: 2
             });
 
-            return { fechaEntrega: new Date(order.fecha_carga + " " + order.HoraCarga), fechaEntregaOriginal: new Date(order.fecha_carga + " " + order.HoraCarga), id, transporte: tra, transporte_original: tra, planta: pla, planta_original: pla, order, montoPorGalon, montoPorGalonOriginal: montoPorGalon };
+            let d = moment(order.fecha_carga + " " + order.HoraCarga);
+            d = d.toDate();
+
+            return { fechaEntrega: d, fechaEntregaOriginal: d, id, transporte: tra, transporte_original: tra, planta: pla, planta_original: pla, order, montoPorGalon, montoPorGalonOriginal: montoPorGalon };
         }
         return null;
     }
@@ -216,7 +220,10 @@ class Asignar extends Component {
             order = this.props.orders[order];
             let id = this.props.match.params.id;
 
-            this.setState({ fechaEntrega: new Date(order.FechaCarga + " " + order.HoraCarga), id });
+            let d = moment(order.fecha_carga + " " + order.HoraCarga);
+            d = d.toDate();
+
+            this.setState({ fechaEntrega: d, id });
         }
     }
 
@@ -237,25 +244,30 @@ class Asignar extends Component {
 
         if (order && order.flete && flete) {
             for (let i = 0; i < flete.compartimientos.length; i++) {
-                let filled = 0;
+                // let filled = 0;
                 let product = "";
                 let height = 0;
                 let color = "transparent";
                 let CantidadGalones = flete.compartimientos[i].CantidadGalones;
+                let cantidad = 0;
 
-                if (typeof order.Compartimientos[i] !== "undefined") {
-                    product = order.Compartimientos[i].Nombre;
-                    color = order.Compartimientos[i].Color
-                    height = parseInt(order.Compartimientos[i].cantidad) / parseInt(CantidadGalones) * 100;
+                for (let j = 0; j < order.Compartimientos.length; j++) {
+                    if (parseInt(order.Compartimientos[j].Compartimiento) === i + 1) {
+                        product = order.Compartimientos[j].Nombre;
+                        color = order.Compartimientos[j].Color
+                        height = parseInt(order.Compartimientos[j].cantidad) / parseInt(CantidadGalones) * 100;
+                        cantidad = order.Compartimientos[j].cantidad;
+                    }
                 }
 
                 let style = {
                     height: `${height}%`,
                     backgroundColor: `#${color}`
                 };
+
                 conts.push(
                     <div key={`cont${i}`} className={`cont cont${i + 1}`}>
-                        <div className="number">{filled} / {CantidadGalones}</div>
+                        <div className="number">{cantidad} / {CantidadGalones}</div>
                         <div className="product">{product}</div>
                         <div className={`fill`} style={style}></div>
                     </div>
@@ -566,9 +578,9 @@ class Asignar extends Component {
                         </Grid>
                         <Grid item xs={6} sm={6} md={2} lg={2} className="tot goRight">
                             Q {tot.toLocaleString('en-US', {
-                                minimumFractionDigits: 2,
-                                maximumFractionDigits: 2
-                            })}
+                            minimumFractionDigits: 2,
+                            maximumFractionDigits: 2
+                        })}
                         </Grid>
 
                     </Grid>
