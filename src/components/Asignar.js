@@ -193,7 +193,7 @@ class Asignar extends Component {
             let order = nextProps.orders.findIndex(x => x.id === nextProps.match.params.id);
             order = nextProps.orders[order];
 
-            let tra = nextProps.fletes.findIndex(x => x.value === order.flete);
+            let tra = nextProps.fletes.findIndex(x => parseInt(x.id) === parseInt(order.idFlete));
             tra = nextProps.fletes[tra];
 
             let pla = nextProps.plants.findIndex(x => parseInt(x.value) === parseInt(order.planta));
@@ -235,7 +235,9 @@ class Asignar extends Component {
             order = this.props.orders.findIndex(x => x.id === this.props.match.params.id);
             order = this.props.orders[order];
             if (typeof order !== "undefined") {
-                flete = this.props.fletes.findIndex(x => x.value === order.flete);
+                flete = this.props.fletes.findIndex((x) => {
+                    return parseInt(x.id) === parseInt(order.idFlete)
+                });
                 flete = this.props.fletes[flete];
             }
         }

@@ -46,6 +46,7 @@ class PricessedKust extends Component {
         super(props);
         this.state = {
             columns: [
+                { title: 'ID', field: 'id' },
                 { 
                     title: 'Fecha carga', 
                     field: 'FechaCarga',

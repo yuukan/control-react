@@ -49,6 +49,7 @@ class Programar extends Component {
         super(props);
         this.state = {
             columns: [
+                { title: 'ID', field: 'id' },
                 { title: 'Fecha Carga', field: 'FechaCarga' },
                 { title: 'Cliente', field: 'CodigoCliente' },
                 { title: 'Ya Programado?', field: 'Programado' },
