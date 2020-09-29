@@ -71,6 +71,7 @@ class App extends Component {
     axios.post(url + "api/get-fletes")
       .then(function (response) {
         t.setState({ fletes: response.data });
+        t.load_orders();
       })
       .catch(function (error) {
         console.log(error);
@@ -108,7 +109,7 @@ class App extends Component {
       .catch(function (error) {
         console.log(error);
       });
-    this.load_orders();
+
     // We set the logged in
     let id = localStorage.getItem("tp_uid");
     let permissions = localStorage.getItem("tp_uid_per");
