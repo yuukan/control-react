@@ -42,6 +42,7 @@ class Creditos extends Component {
         this.aprobarPedido = this.aprobarPedido.bind(this);
         this.delete = this.delete.bind(this);
         this.state = {
+            order:null,
             cliente: null,
             direccion: null,
             transporte: null,
@@ -210,19 +211,56 @@ class Creditos extends Component {
 
     }
 
-    static getDerivedStateFromProps(nextProps, prevState) {
-        if (nextProps.match.params.id !== prevState.id && nextProps.orders && nextProps.orders.length > 0 && nextProps.plants) {
-            let order = nextProps.orders.findIndex(x => x.id === nextProps.match.params.id);
-            order = nextProps.orders[order];
+    // static getDerivedStateFromProps(nextProps, prevState) {
+    //     if (nextProps.match.params.id !== prevState.id && nextProps.orders && nextProps.orders.length > 0 && nextProps.plants) {
+    //         let order = nextProps.orders.findIndex(x => x.id === nextProps.match.params.id);
+    //         order = nextProps.orders[order];
 
-            let tra = nextProps.fletes.findIndex(x => parseInt(x.id) === parseInt(order.idFlete));
+    //         let tra = nextProps.fletes.findIndex(x => parseInt(x.id) === parseInt(order.idFlete));
             
-            tra = nextProps.fletes[tra];
+    //         tra = nextProps.fletes[tra];
 
-            let pla = nextProps.plants.findIndex(x => parseInt(x.value) === parseInt(order.planta));
-            pla = nextProps.plants[pla];
+    //         let pla = nextProps.plants.findIndex(x => parseInt(x.value) === parseInt(order.planta));
+    //         pla = nextProps.plants[pla];
 
-            let id = nextProps.match.params.id;
+    //         let id = nextProps.match.params.id;
+
+    //         let tipoPago = {
+    //             label: order.NumSAPLabel,
+    //             value: order.id_tp
+    //         };
+
+    //         let d = moment(order.fecha_carga + " " + order.HoraCarga);
+    //         d = d.toDate();
+
+    //         return { fechaEntrega: d, id, transporte: tra, planta: pla, planta_original: pla, tipoPago: tipoPago, tipoPagoOriginal: tipoPago };
+    //     }
+    //     return null;
+    // }
+
+    // componentDidUpdate() {
+    //     if (this.props.match.params.id !== this.state.id && this.props.orders && this.props.orders.length > 0) {
+    //         let order = this.props.orders.findIndex(x => x.id === this.props.match.params.id);
+    //         order = this.props.orders[order];
+    //         let id = this.props.match.params.id;
+
+    //         this.setState({ fechaEntrega: new Date(order.FechaCarga + " " + order.HoraCarga), id });
+    //     }
+    // }
+    
+    componentDidMount(){
+        let t = this;
+        axios.post(t.props.url + "api/get-order",{id:t.props.match.params.id})
+        .then(function (response) {
+            let order = response.data[0];
+
+            let tra = t.props.fletes.findIndex(x => parseInt(x.id) === parseInt(order.idFlete));
+            
+            tra = t.props.fletes[tra];
+
+            let pla = t.props.plants.findIndex(x => parseInt(x.value) === parseInt(order.planta));
+            pla = t.props.plants[pla];
+
 
             let tipoPago = {
                 label: order.NumSAPLabel,
@@ -232,34 +270,27 @@ class Creditos extends Component {
             let d = moment(order.fecha_carga + " " + order.HoraCarga);
             d = d.toDate();
 
-            return { fechaEntrega: d, id, transporte: tra, planta: pla, planta_original: pla, tipoPago: tipoPago, tipoPagoOriginal: tipoPago };
-        }
-        return null;
-    }
-
-    componentDidUpdate() {
-        if (this.props.match.params.id !== this.state.id && this.props.orders && this.props.orders.length > 0) {
-            let order = this.props.orders.findIndex(x => x.id === this.props.match.params.id);
-            order = this.props.orders[order];
-            let id = this.props.match.params.id;
-
-            this.setState({ fechaEntrega: new Date(order.FechaCarga + " " + order.HoraCarga), id });
-        }
+            t.setState({ order: order,fechaEntrega: d, id:t.props.match.params.id,transporte: tra, planta: pla, planta_original: pla, tipoPago: tipoPago, tipoPagoOriginal: tipoPago });
+        })
+        .catch(function (error) {
+            console.log(error);
+        });
     }
 
     render() {
 
-        let order = null;
+        let order = this.state.order;
         let flete = null;
-        if (this.props.orders) {
-            order = this.props.orders.findIndex(x => x.id === this.props.match.params.id);
-            order = this.props.orders[order];
-            if (typeof order !== "undefined") {
-                flete = this.props.fletes.findIndex((x) => {
-                    return parseInt(x.id) === parseInt(order.idFlete)
-                });
-                flete = this.props.fletes[flete];
-            }
+        // if (this.props.orders) {
+        if (order) {
+            // order = this.props.orders.findIndex(x => x.id === this.props.match.params.id);
+            // order = this.props.orders[order];
+            // if (typeof order !== "undefined") {
+            flete = this.props.fletes.findIndex((x) => {
+                return parseInt(x.id) === parseInt(order.idFlete)
+            });
+            flete = this.props.fletes[flete];
+            // }
         }
 
         // let tipos_pago = [

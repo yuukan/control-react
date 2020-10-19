@@ -188,58 +188,87 @@ class Asignar extends Component {
 
     }
 
-    static getDerivedStateFromProps(nextProps, prevState) {
-        if (nextProps.match.params.id !== prevState.id && nextProps.orders.length > 0 && nextProps.plants) {
-            let order = nextProps.orders.findIndex(x => x.id === nextProps.match.params.id);
-            order = nextProps.orders[order];
+    // static getDerivedStateFromProps(nextProps, prevState) {
+    //     if (nextProps.match.params.id !== prevState.id && nextProps.orders.length > 0 && nextProps.plants) {
+    //         let order = nextProps.orders.findIndex(x => x.id === nextProps.match.params.id);
+    //         order = nextProps.orders[order];
 
-            let tra = nextProps.fletes.findIndex(x => parseInt(x.id) === parseInt(order.idFlete));
-            tra = nextProps.fletes[tra];
+    //         let tra = nextProps.fletes.findIndex(x => parseInt(x.id) === parseInt(order.idFlete));
+    //         tra = nextProps.fletes[tra];
 
-            let pla = nextProps.plants.findIndex(x => parseInt(x.value) === parseInt(order.planta));
-            pla = nextProps.plants[pla];
+    //         let pla = nextProps.plants.findIndex(x => parseInt(x.value) === parseInt(order.planta));
+    //         pla = nextProps.plants[pla];
 
-            let id = nextProps.match.params.id;
+    //         let id = nextProps.match.params.id;
+
+    //         let montoPorGalon = parseFloat(order.FleteXGalon).toLocaleString('en-US', {
+    //             minimumFractionDigits: 2,
+    //             maximumFractionDigits: 2
+    //         });
+
+    //         let d = moment(order.fecha_carga + " " + order.HoraCarga);
+    //         d = d.toDate();
+
+    //         return { fechaEntrega: d, fechaEntregaOriginal: d, id, transporte: tra, transporte_original: tra, planta: pla, planta_original: pla, order, montoPorGalon, montoPorGalonOriginal: montoPorGalon };
+    //     }
+    //     return null;
+    // }
+
+    // componentDidUpdate() {
+    //     if (this.props.match.params.id !== this.state.id && this.props.orders.length > 0) {
+    //         let order = this.props.orders.findIndex(x => x.id === this.props.match.params.id);
+    //         order = this.props.orders[order];
+    //         let id = this.props.match.params.id;
+
+    //         let d = moment(order.fecha_carga + " " + order.HoraCarga);
+    //         d = d.toDate();
+
+    //         this.setState({ fechaEntrega: d, id });
+    //     }
+    // }
+
+    componentDidMount(){
+        let t = this;
+        axios.post(t.props.url + "api/get-order",{id:t.props.match.params.id})
+        .then(function (response) {
+            let order = response.data[0];
+            let id = t.props.match.params.id;
+
+            let d = moment(order.fecha_carga + " " + order.HoraCarga);
+            d = d.toDate();
+
+            let tra = t.props.fletes.findIndex(x => parseInt(x.id) === parseInt(order.idFlete));
+            tra = t.props.fletes[tra];
+
+            let pla = t.props.plants.findIndex(x => parseInt(x.value) === parseInt(order.planta));
+            pla = t.props.plants[pla];
 
             let montoPorGalon = parseFloat(order.FleteXGalon).toLocaleString('en-US', {
                 minimumFractionDigits: 2,
                 maximumFractionDigits: 2
             });
 
-            let d = moment(order.fecha_carga + " " + order.HoraCarga);
-            d = d.toDate();
-
-            return { fechaEntrega: d, fechaEntregaOriginal: d, id, transporte: tra, transporte_original: tra, planta: pla, planta_original: pla, order, montoPorGalon, montoPorGalonOriginal: montoPorGalon };
-        }
-        return null;
-    }
-
-    componentDidUpdate() {
-        if (this.props.match.params.id !== this.state.id && this.props.orders.length > 0) {
-            let order = this.props.orders.findIndex(x => x.id === this.props.match.params.id);
-            order = this.props.orders[order];
-            let id = this.props.match.params.id;
-
-            let d = moment(order.fecha_carga + " " + order.HoraCarga);
-            d = d.toDate();
-
-            this.setState({ fechaEntrega: d, id });
-        }
+            t.setState({ order: order,fechaEntrega: d, id, fechaEntregaOriginal: d, transporte: tra, transporte_original: tra, planta: pla, planta_original: pla,  montoPorGalon, montoPorGalonOriginal: montoPorGalon });
+        })
+        .catch(function (error) {
+            console.log(error);
+        });
     }
 
     render() {
 
-        let order = null;
+        let order = this.state.order;
         let flete = null;
-        if (this.props.orders) {
-            order = this.props.orders.findIndex(x => x.id === this.props.match.params.id);
-            order = this.props.orders[order];
-            if (typeof order !== "undefined") {
+        // if (this.props.orders) {
+        if(order){
+            // order = this.props.orders.findIndex(x => x.id === this.props.match.params.id);
+            // order = this.props.orders[order];
+            // if (typeof order !== "undefined") {
                 flete = this.props.fletes.findIndex((x) => {
                     return parseInt(x.id) === parseInt(order.idFlete)
                 });
                 flete = this.props.fletes[flete];
-            }
+            // }
         }
 
         let conts = [];
@@ -253,6 +282,7 @@ class Asignar extends Component {
                 let CantidadGalones = flete.compartimientos[i].CantidadGalones;
                 let cantidad = 0;
 
+                if(typeof order.Compartimientos !=="undefined")
                 for (let j = 0; j < order.Compartimientos.length; j++) {
                     if (parseInt(order.Compartimientos[j].Compartimiento) === i + 1) {
                         product = order.Compartimientos[j].Nombre;
@@ -278,7 +308,7 @@ class Asignar extends Component {
         }
 
         let comentarios = "";
-        if (order && order.comentarios.length > 0) {
+        if (order && typeof order.comentarios !== "undefined" && order.comentarios.length > 0) {
             comentarios = order.comentarios.map((key, idx) => {
                 let da = new Date(key.created_at);
                 return (
@@ -527,7 +557,7 @@ class Asignar extends Component {
                         <Grid item xs={12} sm={6} md={2} lg={2} className="th goRight">
                             <strong>Subtotal</strong>
                         </Grid>
-                        {order && order.Compartimientos.length > 0
+                        {order && typeof order.Compartimientos !== "undefined" && order.Compartimientos.length > 0
                             ? order.Compartimientos.map((key, idx) => {
                                 tot += parseFloat((key.Precio * key.cantidad).toFixed(2));
                                 let subTotal = parseFloat((key.Precio * key.cantidad).toFixed(2));

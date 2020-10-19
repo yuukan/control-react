@@ -45,7 +45,9 @@ class App extends Component {
       plants: [],
       user_permissions: [],
       prices_flag: 0,
-      tipo_pago: null
+      tipo_pago: null,
+      ordersProgramar:null,
+      ordersSAP:null
     };
   }
 
@@ -59,6 +61,7 @@ class App extends Component {
   }
 
   componentDidMount() {
+    this.load_orders();
     let t = this;
     axios.post(url + "api/get-clients")
       .then(function (response) {
@@ -71,7 +74,7 @@ class App extends Component {
     axios.post(url + "api/get-fletes")
       .then(function (response) {
         t.setState({ fletes: response.data });
-        t.load_orders();
+        // t.load_orders();
       })
       .catch(function (error) {
         console.log(error);
@@ -126,6 +129,34 @@ class App extends Component {
     axios.post(url + "api/get-orders")
       .then(function (response) {
         t.setState({ orders: response.data });
+        t.load_orders_programar();
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+  }
+
+  load_orders_programar() {
+    let t = this;
+    t.setState({ ordersProgramar: null });
+    // ################################################
+    axios.post(url + "api/get-orders-programar")
+      .then(function (response) {
+        t.setState({ ordersProgramar: response.data });
+        t.load_orders_subirSAP();
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+  }
+
+  load_orders_subirSAP() {
+    let t = this;
+    t.setState({ ordersSAP: null });
+    // ################################################
+    axios.post(url + "api/get-orders-procesadas")
+      .then(function (response) {
+        t.setState({ ordersSAP: response.data });
       })
       .catch(function (error) {
         console.log(error);
@@ -234,7 +265,7 @@ class App extends Component {
                   <Route path="/to-schedule"
                     render={(props) =>
                       <Programar {...props}
-                        orders={this.state.orders}
+                        orders={this.state.ordersProgramar}
                         url={url}
                         load_orders={this.load_orders}
                         prices_flag={this.state.prices_flag}
@@ -243,7 +274,7 @@ class App extends Component {
                   <Route path="/sap-list"
                     render={(props) =>
                       <SapReady {...props}
-                        orders={this.state.orders}
+                        orders={this.state.ordersSAP}
                         url={url}
                         load_orders={this.load_orders}
                         prices_flag={this.state.prices_flag}
