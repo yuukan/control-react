@@ -688,7 +688,7 @@ class Creditos extends Component {
                                 subtot += subCosto;
 
                                 let noMargin = "";
-                                if (costo >= key.Precio) {
+                                if (costo >= key.Precio - order.FleteXGalon) {
                                     noMargin = "no_margin";
                                 }
                                 return (
