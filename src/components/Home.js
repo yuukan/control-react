@@ -8,6 +8,8 @@ import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
 import LinearProgress from '@material-ui/core/LinearProgress';
 import swal from 'sweetalert';
+import Switch from '@material-ui/core/Switch';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Select2 from 'react-select';
 import axios from 'axios';
 
@@ -51,7 +53,10 @@ class Home extends Component {
             costo: 0,
             IDP: "",
             disabled: false,
-            tipo_pago: [{value:0,label:"Seleccione un cliente"}]
+            tipo_pago: [{value:0,label:"Seleccione un cliente"}],
+            vendedor: null,
+            entrada_mercancia: true,
+            factura: true
         }
     }
 
@@ -72,6 +77,15 @@ class Home extends Component {
     }
     //############################################################
     handleChangeSelect(option, b) {
+        if(typeof option.target !=='undefined'){
+            if (option.target.name === "entrada_mercancia") {
+                this.setState({ entrada_mercancia: option.target.checked });
+            }
+            if (option.target.name === "factura") {
+                this.setState({ factura: option.target.checked });
+            }
+        }
+
         this.setState({ [b.name]: option });
 
         if (b.name === "cliente") {
@@ -83,7 +97,25 @@ class Home extends Component {
         }
 
         if (b.name === "fleteAplicado") {
-            this.setState({ transporte: null, compartimiento: null, detalle: [], exclusivo: 0, exclusivoid: 0 });
+            // 
+            let montoPorGalon = 0;
+            if(option.value!==1){
+                montoPorGalon = this.props.config.MontoPorGalon.toLocaleString('en-US', {
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2
+                });
+            }
+            this.setState(
+                { 
+                    transporte: null, 
+                    compartimiento: null, 
+                    detalle: [], 
+                    exclusivo: 0, 
+                    exclusivoid: 0,
+                    montoPorGalon:0,
+                    montoPorGalon: parseFloat(montoPorGalon)
+                }
+            );
         }
         if (b.name === "planta") {
             this.props.load_products(option.value);
@@ -176,6 +208,9 @@ class Home extends Component {
                 comentario: t.comentario,
                 detalle: t.detalle,
                 planta: t.planta.value,
+                vendedor: t.vendedor.value,
+                entrada_mercancia: t.entrada_mercancia ? 1 : 0,
+                factura: t.factura ? 1 : 0,
                 user: window.localStorage.getItem('tp_uid')
             })
                 .then(function (response) {
@@ -192,17 +227,17 @@ class Home extends Component {
         }
     }
     componentDidUpdate() {
-        if (this.props.config && this.state.montoPorGalon === 0) {
-            if (this.state.montoPorGalon !== this.props.config.MontoPorGalon) {
-                let montoPorGalon = this.props.config.MontoPorGalon.toLocaleString('en-US', {
-                    minimumFractionDigits: 2,
-                    maximumFractionDigits: 2
-                });
-                this.setState({
-                    montoPorGalon: parseFloat(montoPorGalon)
-                });
-            }
-        }
+        // if (this.props.config && this.state.montoPorGalon === 0) {
+        //     if (this.state.montoPorGalon !== this.props.config.MontoPorGalon) {
+        //         let montoPorGalon = this.props.config.MontoPorGalon.toLocaleString('en-US', {
+        //             minimumFractionDigits: 2,
+        //             maximumFractionDigits: 2
+        //         });
+        //         this.setState({
+        //             montoPorGalon: parseFloat(montoPorGalon)
+        //         });
+        //     }
+        // }
     }
     render() {
 
@@ -213,7 +248,7 @@ class Home extends Component {
         let trans = this.state.transporte;
         let compartimientos_select = [];
         if (trans) {
-            for (let i = 0; i < trans.compartimientos.length; i++) {
+            for (let i = trans.compartimientos.length-1; i >=0 ; i--) {
                 let full = "";
                 let filled = 0;
                 let product = "";
@@ -428,7 +463,47 @@ class Home extends Component {
                                 />
                             </FormControl>
                         </Grid>
-                        <Grid item xs={12} sm={6} md={6} lg={6}>
+                        <Grid item xs={12} sm={3} md={3} lg={3}>
+                            <FormControl variant="outlined" className="form-item margin-fix2">
+                                <Select2
+                                    value={this.state.vendedor}
+                                    isSearchable={true}
+                                    onChange={this.handleChangeSelect}
+                                    name="vendedor"
+                                    options={this.props.vendedores}
+                                    placeholder="Vendedor"
+                                />
+                            </FormControl>
+                        </Grid>
+                        <Grid item xs={12} sm={2} md={2} lg={2}>
+                            <FormControlLabel
+                                control={
+                                <Switch
+                                    checked={this.state.entrada_mercancia}
+                                    onChange={this.handleChangeSelect}
+                                    name="entrada_mercancia"
+                                    color="primary"
+                                />
+                                }
+                                label="Entrada Mercancía"
+                                labelPlacement="top"
+                            />
+                        </Grid>
+                        <Grid item xs={12} sm={2} md={2} lg={2}>
+                            <FormControlLabel
+                                control={
+                                <Switch
+                                    checked={this.state.factura}
+                                    onChange={this.handleChangeSelect}
+                                    name="factura"
+                                    color="primary"
+                                />
+                                }
+                                label="Generar Factura"
+                                labelPlacement="top"
+                            />
+                        </Grid>
+                        <Grid item xs={12} sm={5} md={5} lg={5}>
                             <FormControl variant="outlined" className="form-item">
                                 <TextField
                                     name="comentario"

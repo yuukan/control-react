@@ -47,7 +47,8 @@ class App extends Component {
       prices_flag: 0,
       tipo_pago: null,
       ordersProgramar:null,
-      ordersSAP:null
+      ordersSAP:null,
+      vendedores: null
     };
   }
 
@@ -108,6 +109,14 @@ class App extends Component {
     axios.post(url + "api/get-config")
       .then(function (response) {
         t.setState({ config: response.data[0] });
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+    // ################################################
+    axios.post(url + "api/get-vendedores")
+      .then(function (response) {
+        t.setState({ vendedores: response.data });
       })
       .catch(function (error) {
         console.log(error);
@@ -232,6 +241,7 @@ class App extends Component {
                         load_products={this.load_products}
                         config={this.state.config}
                         tipo_pago={this.state.tipo_pago}
+                        vendedores={this.state.vendedores}
                       />} />
 
                   <Route path="/order-list"
