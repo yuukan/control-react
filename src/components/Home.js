@@ -209,6 +209,7 @@ class Home extends Component {
                 detalle: t.detalle,
                 planta: t.planta.value,
                 vendedor: t.vendedor.value,
+                nombre_vendedor: t.vendedor.label,
                 entrada_mercancia: t.entrada_mercancia ? 1 : 0,
                 factura: t.factura ? 1 : 0,
                 user: window.localStorage.getItem('tp_uid')
