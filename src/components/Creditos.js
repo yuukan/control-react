@@ -62,9 +62,9 @@ class Creditos extends Component {
             id: 0,
             planta: null,
             plant_original: null,
+            contra_boleta: null,
             columns: [
-                { title: 'Fecha', field: 'fecha' },
-                { title: 'Hora', field: 'hora' },
+                { title: 'Fecha', field: 'created_at', type: 'datetime' },
                 { title: 'Usuario', field: 'name' },
                 { title: 'Tipo Operación', field: 'type' },
                 { title: 'Descripción', field: 'Texto', render: rowData => <div dangerouslySetInnerHTML={{ __html: rowData.Texto }} /> }
@@ -188,7 +188,7 @@ class Creditos extends Component {
         });
     }
 
-    aprobarPedido() {
+    aprobarPedido(contra_boleta) {
         let t_ = this;
         let t = this.state;
         axios.post(this.props.url + "api/approve-order", {
@@ -199,6 +199,7 @@ class Creditos extends Component {
             tipoPagoOriginal: this.state.tipoPagoOriginal.value,
             tipoPago_label: this.state.tipoPago.label,
             tipoPagoOriginal_label: this.state.tipoPagoOriginal.label,
+            contra_boleta,
         })
             .then(function () {
                 // t.setState({ clientes: response.data });
@@ -270,7 +271,19 @@ class Creditos extends Component {
             let d = moment(order.fecha_carga + " " + order.HoraCarga);
             d = d.toDate();
 
-            t.setState({ order: order,fechaEntrega: d, id:t.props.match.params.id,transporte: tra, planta: pla, planta_original: pla, tipoPago: tipoPago, tipoPagoOriginal: tipoPago });
+            t.setState(
+                { 
+                    order: order,
+                    fechaEntrega: d, 
+                    id:t.props.match.params.id,
+                    transporte: tra, 
+                    planta: pla, 
+                    planta_original: pla, 
+                    tipoPago: tipoPago, 
+                    tipoPagoOriginal: tipoPago,
+                    contra_boleta: order.contra_boleta
+                }
+            );
         })
         .catch(function (error) {
             console.log(error);
@@ -301,7 +314,8 @@ class Creditos extends Component {
         let conts = [];
 
         if (order && order.flete && flete) {
-            for (let i = 0; i < flete.compartimientos.length; i++) {
+            for (let i = flete.compartimientos.length - 1; i >=0 ; i--) {
+
                 // let filled = 0;
                 let product = "";
                 let height = 0;
@@ -410,7 +424,8 @@ class Creditos extends Component {
             ftot = 0,
             idptot = 0,
             ivatot = 0,
-            subtot = 0;
+            subtot = 0,
+            galtot = 0;
 
         let fE = "", fT = "", planta = "", trans;
         if (this.state.fechaEntrega) {
@@ -418,8 +433,10 @@ class Creditos extends Component {
             // fT = this.formatAMPM(this.state.fechaEntrega);
             fT = this.formatTime(this.state.fechaEntrega.getHours()) + ":" + this.formatTime(this.state.fechaEntrega.getMinutes());
         }
-        if (this.state.planta && this.state.transporte) {
+        if (this.state.planta) {
             planta = this.state.planta.label;
+        }
+        if (this.state.transporte) {
             trans = this.state.transporte.label;
         }
 
@@ -449,7 +466,13 @@ class Creditos extends Component {
                 }
                 <div className="landing-container">
                     <Grid container spacing={2} justify="space-around">
-                        <Grid item xs={12} sm={6} md={3} lg={3}>
+                        <Grid item xs={12} sm={6} md={1} lg={1}>
+                            <label className="label">
+                                ID
+                            </label>
+                            {this.state.id}
+                        </Grid>
+                        <Grid item xs={12} sm={6} md={2} lg={2}>
                             <label className="label">
                                 Fecha de Carga
                             </label>
@@ -526,7 +549,31 @@ class Creditos extends Component {
                                 {trans}
                             </FormControl>
                         </Grid>
-                        <Grid item xs={12} sm={6} md={6} lg={6}>
+                        <Grid item xs={12} sm={3} md={3} lg={3}>
+                            <FormControl variant="outlined" className="form-item">
+                                <label className="label">
+                                    Vendedor
+                                </label>
+                                {order ? order.vendedor : ""}
+                            </FormControl>
+                        </Grid>
+                        <Grid item xs={12} sm={2} md={2} lg={2}>
+                            <FormControl variant="outlined" className="form-item">
+                                <label className="label">
+                                    Entrada Mercancía
+                                </label>
+                                {order ? order.generar_entrada_mercancia==="1" ? "Si" :"No" : ""}
+                            </FormControl>
+                        </Grid>
+                        <Grid item xs={12} sm={2} md={2} lg={2}>
+                            <FormControl variant="outlined" className="form-item">
+                                <label className="label">
+                                    Generar Factura
+                                </label>
+                                {order ? order.generar_factura==="1" ? "Si" :"No" : ""}
+                            </FormControl>
+                        </Grid>
+                        <Grid item xs={12} sm={5} md={5} lg={5}>
                             <FormControl variant="outlined" className="form-item">
                                 <label className="label">
                                     Comentario
@@ -687,6 +734,8 @@ class Creditos extends Component {
                                 let subCosto = costo * key.cantidad;
                                 subtot += subCosto;
 
+                                galtot += parseInt(key.cantidad);
+
                                 let noMargin = "";
                                 if (costo >= key.Precio - order.FleteXGalon) {
                                     noMargin = "no_margin";
@@ -748,8 +797,17 @@ class Creditos extends Component {
                             })
                             : ""}
 
-                        <Grid item xs={12} sm={12} md={4} lg={4} className="tot tot_mob goRight">
+                        <Grid item xs={12} sm={12} md={1} lg={1} className="tot tot_mob goRight">
                             <strong>Totales</strong>
+                        </Grid>
+                        <Grid item xs={6} sm={6} md={1} lg={1} className="tot_mob goRight">
+                            <strong>Total Galones</strong>
+                            {galtot.toLocaleString('en-US', {
+                                minimumFractionDigits: 0,
+                                maximumFractionDigits: 0
+                            })}
+                        </Grid>
+                        <Grid item xs={6} sm={6} md={2} lg={2} className="tot_mob goRight">
                         </Grid>
                         <Grid item xs={6} sm={6} md={1} lg={1} className="tot_mob goRight">
                             <strong>Subtotal</strong>
@@ -841,12 +899,27 @@ class Creditos extends Component {
                     ) : ""
                 }
                 {
-                    this.props.credito === 1 ? (
+                    this.props.credito === 1 && this.state.contra_boleta !== null ? (
                         <Grid container spacing={2} justify="flex-end" className="padding-top-separation">
-                            <Grid item xs={2} sm={2} md={2} lg={2}>
-                                <Button variant="contained" color="primary" className="pull-right" onClick={this.aprobarPedido}>
-                                    Aprobar
-                                </Button>
+                            <Grid item xs={12} sm={12} md={12} lg={12}>
+                                {
+                                    this.state.contra_boleta ==="2" ?
+                                    (
+                                        <Button variant="contained" color="secondary" className="pull-right" onClick={()=> this.aprobarPedido(3)}>
+                                            Aprobar contra boleta
+                                        </Button>
+                                    ):
+                                    (
+                                        <React.Fragment>
+                                            <Button variant="contained" color="secondary" className="pull-right" onClick={()=> this.aprobarPedido(2)}>
+                                                Necesita Boleta depósito
+                                            </Button>
+                                            <Button variant="contained" color="primary" className="pull-right" onClick={()=> this.aprobarPedido(1)}>
+                                                Aprobar
+                                            </Button>
+                                        </React.Fragment>
+                                    )
+                                }
                             </Grid>
                         </Grid>
                     ) : ""
