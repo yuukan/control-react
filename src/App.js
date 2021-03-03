@@ -13,6 +13,7 @@ import CreditList from './components/CreditList';
 import SapReady from './components/SapReady';
 import Programar from './components/Programar';
 import ProcessedList from './components/ProcessedList';
+import ReporteVendedores from './components/ReporteVendedores';
 import axios from 'axios';
 // We import the css
 import './css/App.css';
@@ -338,6 +339,12 @@ class App extends Component {
                         plants={this.state.plants}
                         load_orders={this.load_orders}
                         detalle={1}
+                      />} />
+                  <Route path="/reporte-vendedores"
+                    render={(props) =>
+                      <ReporteVendedores {...props}
+                        url={url}
+                        vendedores={this.state.vendedores}
                       />} />
                 </React.Fragment>
               )}

@@ -195,6 +195,15 @@ class Header extends Component {
                                         </Link>
                                     ) : ""
                             }
+                            <Divider />
+                            <Link className="link" to="/reporte-vendedores" onClick={() => this.changeIndex(7)}>
+                                <ListItem button selected={this.state.selectedIndex === 7}>
+                                    <ListItemIcon>
+                                        <CheckBox />
+                                    </ListItemIcon>
+                                    <ListItemText primary={`Reporte Vendedores`} />
+                                </ListItem>
+                            </Link>
                         </List>
                         <Divider />
                     </Drawer>
