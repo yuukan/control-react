@@ -50,7 +50,9 @@ class Programar extends Component {
         this.state = {
             columns: [
                 { title: 'ID', field: 'id' },
+                { title: 'Vendedor', field: 'nombre_vendedor' },
                 { title: 'Fecha Carga', field: 'FechaCarga' },
+                { title: 'Hora Carga', field: 'HoraCarga' },
                 { title: 'Cliente', field: 'CodigoCliente' },
                 { title: 'Ya Programado?', field: 'Programado' },
                 { title: 'Status', field: 'status' },
@@ -59,7 +61,6 @@ class Programar extends Component {
                 { title: 'Costo Total', field: 'costo',render: rowData => "Q "+this.numFormat(parseFloat(rowData.costo)) },
                 { title: 'Venta Total', field: 'venta',render: rowData => "Q "+this.numFormat(parseFloat(rowData.venta)) },
                 { title: 'Código Transporte', field: 'NumeroUnidad' },
-                { title: 'Placa Flete', field: 'placa' },
                 { title: 'Detalle', field: 'detalle', render: rowData => <div dangerouslySetInnerHTML={{ __html: rowData.detalle }} /> },
             ]
         };

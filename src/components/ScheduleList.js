@@ -49,6 +49,7 @@ class ScheduleList extends Component {
         this.state = {
             columns: [
                 { title: 'ID', field: 'id' },
+                { title: 'Vendedor', field: 'nombre_vendedor' },
                 { 
                     title: 'Fecha carga', 
                     field: 'FechaCarga',
@@ -60,11 +61,11 @@ class ScheduleList extends Component {
                         return parseInt(d1) - parseInt(d2);
                     }
                 },
+                { title: 'Hora Carga', field: 'HoraCarga' },
                 { title: 'Cliente', field: 'CodigoCliente' },
                 { title: 'Status', field: 'status' },
                 { title: 'Tipo Pago', field: 'tipo_pago' },
                 { title: 'Código Transporte', field: 'NumeroUnidad' },
-                { title: 'Placa Flete', field: 'placa' },
             ]
         };
     }

@@ -47,6 +47,7 @@ class PricessedKust extends Component {
         this.state = {
             columns: [
                 { title: 'ID', field: 'id' },
+                { title: 'Vendedor', field: 'nombre_vendedor' },
                 { 
                     title: 'Fecha carga', 
                     field: 'FechaCarga',

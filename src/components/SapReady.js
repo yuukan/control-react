@@ -50,7 +50,7 @@ class SapReady extends Component {
         this.state = {
             columns: [
                 { title: 'ID', field: 'id' },
-                { title: 'Fecha Carga', field: 'FechaCarga' },
+                { title: 'Vendedor', field: 'nombre_vendedor' },
                 { title: 'Cliente', field: 'CodigoCliente' },
                 { title: 'Fecha de Carga', field: 'FechaCarga' },
                 { title: 'Hora de Carga', field: 'HoraCarga' },
