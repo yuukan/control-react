@@ -19,7 +19,7 @@ import Remove from '@material-ui/icons/Remove';
 import SaveAlt from '@material-ui/icons/SaveAlt';
 import Search from '@material-ui/icons/Search';
 import ViewColumn from '@material-ui/icons/ViewColumn';
-import { CalendarToday, Money, Cancel, Schedule, FiberNew, Visibility, Star } from '@material-ui/icons/';
+import { CalendarToday, Money, Cancel, Schedule, FiberNew, Visibility, Star,Gavel } from '@material-ui/icons/';
 
 const tableIcons = {
     Add: forwardRef((props, ref) => <AddBox {...props} ref={ref} />),
@@ -125,6 +125,11 @@ class List extends Component {
                                         icon: Money,
                                         tooltip: 'Credito Validado',
                                         hidden: rowData.CreditoValidado === null
+                                    }),
+                                    rowData => ({
+                                        icon: Gavel,
+                                        tooltip: 'Necesita aprobación contra Boleta',
+                                        hidden: rowData.contra_boleta !== "2"
                                     }),
                                     rowData => ({
                                         icon: Cancel,

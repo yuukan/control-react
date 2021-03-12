@@ -484,3 +484,6 @@ strong {
     padding: 10px;
     font-size: 16px;
     color: gray; }
+
+.fix-right {
+  margin-right: 10px !important; }

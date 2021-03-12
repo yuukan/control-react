@@ -20,7 +20,7 @@ import Remove from '@material-ui/icons/Remove';
 import SaveAlt from '@material-ui/icons/SaveAlt';
 import Search from '@material-ui/icons/Search';
 import ViewColumn from '@material-ui/icons/ViewColumn';
-import { DateRange, Cancel, Star } from '@material-ui/icons/';
+import { DateRange, Cancel, Star,Gavel } from '@material-ui/icons/';
 
 const tableIcons = {
     Add: forwardRef((props, ref) => <AddBox {...props} ref={ref} />),
@@ -104,6 +104,11 @@ class ScheduleList extends Component {
                                         icon: () => <Star color="secondary" />,
                                         tooltip: 'VIP',
                                         hidden: rowData.star === 'N'
+                                    }),
+                                    rowData => ({
+                                        icon: Gavel,
+                                        tooltip: 'Necesita aprobación contra Boleta',
+                                        hidden: rowData.contra_boleta !== "2"
                                     }),
                                     rowData => ({
                                         icon: DateRange,

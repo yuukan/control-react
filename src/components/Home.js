@@ -112,7 +112,6 @@ class Home extends Component {
                     detalle: [], 
                     exclusivo: 0, 
                     exclusivoid: 0,
-                    montoPorGalon:0,
                     montoPorGalon: parseFloat(montoPorGalon)
                 }
             );

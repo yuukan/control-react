@@ -21,7 +21,7 @@ import Remove from '@material-ui/icons/Remove';
 import SaveAlt from '@material-ui/icons/SaveAlt';
 import Search from '@material-ui/icons/Search';
 import ViewColumn from '@material-ui/icons/ViewColumn';
-import {CheckBoxTwoTone} from '@material-ui/icons';
+import {CheckBoxTwoTone, Gavel} from '@material-ui/icons';
 
 const tableIcons = {
     Add: forwardRef((props, ref) => <AddBox {...props} ref={ref} />),
@@ -49,7 +49,7 @@ class Programar extends Component {
         super(props);
         this.state = {
             columns: [
-                { title: 'ID', field: 'id' },
+                { title: 'ID', field: 'id', type: 'numeric',defaultSort: 'desc' },
                 { title: 'Vendedor', field: 'nombre_vendedor' },
                 { title: 'Fecha Carga', field: 'FechaCarga' },
                 { title: 'Hora Carga', field: 'HoraCarga' },
@@ -115,6 +115,11 @@ class Programar extends Component {
                                         icon: () => <Star color="secondary" />,
                                         tooltip: 'VIP',
                                         hidden: rowData.star === 'N'
+                                    }),
+                                    rowData => ({
+                                        icon: Gavel,
+                                        tooltip: 'Necesita aprobación contra Boleta',
+                                        hidden: rowData.contra_boleta !== "2"
                                     }),
                                     rowData => ({
                                         icon: () => <CheckBoxTwoTone color="primary" />,

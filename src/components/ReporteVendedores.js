@@ -2,8 +2,6 @@ import React, { Component } from 'react';
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
 import FormControl from '@material-ui/core/FormControl';
-import esLocale from "date-fns/locale/es";
-import DateFnsUtils from '@date-io/date-fns';
 import Button from '@material-ui/core/Button';
 import LinearProgress from '@material-ui/core/LinearProgress';
 import Select2 from 'react-select';

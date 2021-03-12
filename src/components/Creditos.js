@@ -899,7 +899,7 @@ class Creditos extends Component {
                     ) : ""
                 }
                 {
-                    this.props.credito === 1 && this.state.contra_boleta !== null ? (
+                    this.props.credito === 1 ? (
                         <Grid container spacing={2} justify="flex-end" className="padding-top-separation">
                             <Grid item xs={12} sm={12} md={12} lg={12}>
                                 {
@@ -914,7 +914,7 @@ class Creditos extends Component {
                                             <Button variant="contained" color="secondary" className="pull-right" onClick={()=> this.aprobarPedido(2)}>
                                                 Necesita Boleta depósito
                                             </Button>
-                                            <Button variant="contained" color="primary" className="pull-right" onClick={()=> this.aprobarPedido(1)}>
+                                            <Button variant="contained" color="primary" className="pull-right fix-right" onClick={()=> this.aprobarPedido(1)}>
                                                 Aprobar
                                             </Button>
                                         </React.Fragment>
