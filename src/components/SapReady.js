@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import Typography from '@material-ui/core/Typography';
 import MaterialTable from 'material-table';
-import { CloudUpload, Cancel, Star } from '@material-ui/icons/';
+import { CloudUpload, Cancel, Star, Gavel } from '@material-ui/icons/';
 import swal from 'sweetalert';
 import axios from 'axios';
 
@@ -108,9 +108,14 @@ class SapReady extends Component {
                                         hidden: rowData.star === 'N'
                                     }),
                                     rowData => ({
+                                        icon: Gavel,
+                                        tooltip: 'Necesita aprobación contra Boleta',
+                                        hidden: rowData.contra_boleta !== "2"
+                                    }),
+                                    rowData => ({
                                         icon: CloudUpload,
                                         tooltip: 'Subir a SAP',
-                                        hidden: rowData.CodigoClienteSap === '' || rowData.CodigoClienteSap === null || rowData.codigoTransporte === '' || rowData.codigoTransporte === null || rowData.CodigoProveedorSAP === '' || rowData.CodigoProveedorSAP === null || parseInt(rowData.oid) === 6 || rowData.CodigoClienteSapExist === 0 || rowData.codigoTransporteExist === 0 || rowData.CodigoProveedorSAPExist === 0,
+                                        hidden: rowData.CodigoClienteSap === '' || rowData.CodigoClienteSap === null || rowData.codigoTransporte === '' || rowData.codigoTransporte === null || rowData.CodigoProveedorSAP === '' || rowData.CodigoProveedorSAP === null || parseInt(rowData.oid) === 6 || rowData.CodigoClienteSapExist === 0 || rowData.codigoTransporteExist === 0 || rowData.CodigoProveedorSAPExist === 0 || rowData.contra_boleta === "2",
                                         onClick: (event, rowData) => {
                                             if (!this.state.uploading)
                                                 swal("¿Subir Orden a SAP?", "Comentario", {
