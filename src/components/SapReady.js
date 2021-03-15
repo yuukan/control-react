@@ -108,7 +108,7 @@ class SapReady extends Component {
                                         hidden: rowData.star === 'N'
                                     }),
                                     rowData => ({
-                                        icon: Gavel,
+                                        icon: () => <Gavel color="secondary" />,
                                         tooltip: 'Necesita aprobación contra Boleta',
                                         hidden: rowData.contra_boleta !== "2"
                                     }),
