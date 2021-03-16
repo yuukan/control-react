@@ -475,7 +475,7 @@ class Home extends Component {
                                 />
                             </FormControl>
                         </Grid>
-                        <Grid item xs={12} sm={2} md={2} lg={2}>
+                        <Grid item xs={12} sm={3} md={3} lg={3}>
                             <FormControlLabel
                                 control={
                                 <Switch
@@ -503,7 +503,7 @@ class Home extends Component {
                                 labelPlacement="top"
                             />
                         </Grid>
-                        <Grid item xs={12} sm={5} md={5} lg={5}>
+                        <Grid item xs={12} sm={4} md={4} lg={4}>
                             <FormControl variant="outlined" className="form-item">
                                 <TextField
                                     name="comentario"

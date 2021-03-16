@@ -204,7 +204,7 @@ class ReporteVendedores extends Component {
                                         actions: 'Estados'
                                     },
                                     body: {
-                                        emptyDataSourceMessage: 'No existen ordenes',
+                                        emptyDataSourceMessage: 'No existen ventas',
                                         filterRow: {
                                             filterTooltip: 'Filter'
                                         }
