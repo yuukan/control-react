@@ -344,6 +344,7 @@ class App extends Component {
                     render={(props) =>
                       <ReporteVendedores {...props}
                         url={url}
+                        plants={this.state.plants}
                         vendedores={this.state.vendedores}
                       />} />
                 </React.Fragment>

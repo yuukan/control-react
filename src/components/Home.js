@@ -485,7 +485,7 @@ class Home extends Component {
                                     color="primary"
                                 />
                                 }
-                                label="Entrada Mercancía"
+                                label="Entrada Mercancía Chevron"
                                 labelPlacement="top"
                             />
                         </Grid>

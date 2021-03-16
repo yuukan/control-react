@@ -487,3 +487,8 @@ strong {
 
 .fix-right {
   margin-right: 10px !important; }
+
+.z-fix {
+  z-index: 99; }
+  .z-fix .react-datepicker-popper {
+    z-index: 99; }

@@ -12,7 +12,7 @@ import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
-import { LocalShipping, ListAltTwoTone, CheckBox, Schedule } from '@material-ui/icons';
+import { LocalShipping, ListAltTwoTone, CheckBox, Schedule, Report } from '@material-ui/icons';
 import Button from '@material-ui/core/Button';
 import swal from 'sweetalert';
 
@@ -199,7 +199,7 @@ class Header extends Component {
                             <Link className="link" to="/reporte-vendedores" onClick={() => this.changeIndex(7)}>
                                 <ListItem button selected={this.state.selectedIndex === 7}>
                                     <ListItemIcon>
-                                        <CheckBox />
+                                        <Report />
                                     </ListItemIcon>
                                     <ListItemText primary={`Reporte Vendedores`} />
                                 </ListItem>

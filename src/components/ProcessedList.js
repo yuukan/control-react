@@ -59,6 +59,7 @@ class PricessedKust extends Component {
                         return parseInt(d1) - parseInt(d2);
                     }
                 },
+                { title: 'Hora Carga', field: 'HoraCarga' },
                 { title: 'Cliente', field: 'CodigoCliente' },
                 { title: 'Status', field: 'status' },
                 { title: 'Tipo Pago', field: 'tipo_pago' },
