@@ -64,7 +64,7 @@ class ReporteVendedores extends Component {
                 { title: 'Planta', field: 'nombre' },
                 { title: 'Vendedor', field: 'nombre_vendedor' },
                 { title: 'Producto', field: 'Producto' },
-                { title: 'Cantidad', field: 'cantidad' },
+                { title: 'Cantidad', field: 'cantidad', render: rowData => this.numFormat(parseFloat(rowData.cantidad)) },
             ],
             data: null
         }
@@ -79,6 +79,13 @@ class ReporteVendedores extends Component {
     }
     handleDateChange2(fechaFin) {
         this.setState({ fechaFin });
+    }
+
+    numFormat(num) {
+        return num.toLocaleString('en-US', {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2
+        });
     }
 
     generarReporte() {
@@ -133,6 +140,7 @@ class ReporteVendedores extends Component {
                                     name="plant"
                                     options={this.props.plants}
                                     placeholder="*Seleccione Planta"
+                                    isClearable={true}
                                 />
                             </FormControl>
                         </Grid>
