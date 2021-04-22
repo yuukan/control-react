@@ -340,7 +340,7 @@ class Creditos extends Component {
                 conts.push(
                     <div key={`cont${i}`} className={`cont cont${i + 1}`}>
                         <div className="number">{cantidad} / {CantidadGalones}</div>
-                        <div className="product">{product}</div>
+                        <div className="product">{product} ({i + 1})</div>
                         <div className={`fill`} style={style}></div>
                     </div>
                 );
@@ -903,12 +903,7 @@ class Creditos extends Component {
                         <Grid container spacing={2} justify="flex-end" className="padding-top-separation">
                             <Grid item xs={12} sm={12} md={12} lg={12}>
                                 {
-                                    this.state.contra_boleta ==="2" ?
-                                    (
-                                        <Button variant="contained" color="secondary" className="pull-right" onClick={()=> this.aprobarPedido(3)}>
-                                            Aprobar contra boleta
-                                        </Button>
-                                    ):
+                                    this.state.contra_boleta !=="2" ?
                                     (
                                         <React.Fragment>
                                             <Button variant="contained" color="secondary" className="pull-right" onClick={()=> this.aprobarPedido(2)}>
@@ -918,6 +913,11 @@ class Creditos extends Component {
                                                 Aprobar
                                             </Button>
                                         </React.Fragment>
+                                    ):
+                                    (
+                                        <Button variant="contained" color="primary" className="pull-right fix-right" onClick={()=> this.aprobarPedido(1)}>
+                                            Aprobar
+                                        </Button>
                                     )
                                 }
                             </Grid>
