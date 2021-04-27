@@ -274,7 +274,8 @@ class Asignar extends Component {
         let conts = [];
 
         if (order && order.flete && flete) {
-            for (let i = 0; i < flete.compartimientos.length; i++) {
+            for (let i = flete.compartimientos.length - 1; i >=0 ; i--) {
+
                 // let filled = 0;
                 let product = "";
                 let height = 0;
@@ -282,7 +283,6 @@ class Asignar extends Component {
                 let CantidadGalones = flete.compartimientos[i].CantidadGalones;
                 let cantidad = 0;
 
-                if(typeof order.Compartimientos !=="undefined")
                 for (let j = 0; j < order.Compartimientos.length; j++) {
                     if (parseInt(order.Compartimientos[j].Compartimiento) === i + 1) {
                         product = order.Compartimientos[j].Nombre;
@@ -300,7 +300,7 @@ class Asignar extends Component {
                 conts.push(
                     <div key={`cont${i}`} className={`cont cont${i + 1}`}>
                         <div className="number">{cantidad} / {CantidadGalones}</div>
-                        <div className="product">{product}</div>
+                        <div className="product">{product} ({i + 1})</div>
                         <div className={`fill`} style={style}></div>
                     </div>
                 );

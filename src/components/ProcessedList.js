@@ -65,7 +65,6 @@ class PricessedKust extends Component {
                 { title: 'Tipo Pago', field: 'tipo_pago' },
                 { title: 'Flete', field: 'flete' },
                 { title: 'Código Transporte', field: 'NumeroUnidad' },
-                { title: 'Placa Flete', field: 'placa' },
                 { title: 'Entrega Productos', field: 'Chevron' },
                 { title: 'Entrega Flete', field: 'Fletero' },
                 { title: 'Factura Cliente', field: 'Invoice' },
