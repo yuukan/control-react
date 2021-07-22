@@ -47,6 +47,7 @@ class CancelList extends Component {
         this.state = {
             columns: [
                 { title: 'ID', field: 'id' },
+                { title: 'Vendedor', field: 'nombre_vendedor' },
                 { 
                     title: 'Fecha carga', 
                     field: 'FechaCarga',
@@ -75,10 +76,11 @@ class CancelList extends Component {
         if (this.props.orders) orders = this.props.orders;
 
         // Show only the anuladas orders
+        let v = parseInt(localStorage.getItem("tp_vendedor"));
         if (orders)
             orders = orders.filter(
                 (key) =>
-                    key.status.trim() === "Anulado"
+                    key.status.trim() === "Anulado" && ( !v || v===0 || ( v>0 && parseInt(key.vendedor)===v ) )
             );
 
         return (

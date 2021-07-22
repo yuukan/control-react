@@ -86,6 +86,12 @@ class Home extends Component {
             }
         }
 
+        if (b.name === "vendedor") {
+            if(this.props.vendedor){
+                return;
+            }
+        }
+
         this.setState({ [b.name]: option });
 
         if (b.name === "cliente") {
@@ -120,7 +126,8 @@ class Home extends Component {
             this.props.load_products(option.value);
         }
         if (b.name === "producto") {
-            this.setState({ precio: option.precio, costo: option.precio, no_oficial: option.no_oficial, IDP: option.IDP });
+            console.log(option);
+            this.setState({ precio: parseFloat(option.precio)+parseFloat(option.Margen), costo: option.precio, no_oficial: option.no_oficial, IDP: option.IDP });
         }
         if (b.name === "cliente") {
             this.setState({ tipo_pago: option.tipo_pago, tipoPago: {value:option.NumSAP, label:option.NumSAPLabel} });
@@ -226,19 +233,16 @@ class Home extends Component {
             swal("Error", "Debe de llenar todos los campos requeridos!", "error");
         }
     }
-    componentDidUpdate() {
-        // if (this.props.config && this.state.montoPorGalon === 0) {
-        //     if (this.state.montoPorGalon !== this.props.config.MontoPorGalon) {
-        //         let montoPorGalon = this.props.config.MontoPorGalon.toLocaleString('en-US', {
-        //             minimumFractionDigits: 2,
-        //             maximumFractionDigits: 2
-        //         });
-        //         this.setState({
-        //             montoPorGalon: parseFloat(montoPorGalon)
-        //         });
-        //     }
-        // }
+
+    UNSAFE_componentWillMount(){
+        this.setState({ vendedor:this.props.vendedor });
     }
+
+    UNSAFE_componentWillReceiveProps(nextProps){
+        if(!this.state.vendedor)
+            this.setState({ vendedor:nextProps.vendedor });    
+    }
+
     render() {
 
 
@@ -341,7 +345,6 @@ class Home extends Component {
         // #################################################
         // Product Filters
         // #################################################
-
         return (
             <div className="main-container">
                 <Typography variant="h3" component="h1" gutterBottom>

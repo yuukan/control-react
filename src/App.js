@@ -35,6 +35,7 @@ class App extends Component {
     this.load_orders = this.load_orders.bind(this);
     this.load_products = this.load_products.bind(this);
     this.setUserPermissions = this.setUserPermissions.bind(this);
+    this.get_vendedores = this.get_vendedores.bind(this);
 
     this.state = {
       logged: false,
@@ -49,7 +50,8 @@ class App extends Component {
       tipo_pago: null,
       ordersProgramar:null,
       ordersSAP:null,
-      vendedores: null
+      vendedores: null,
+      vendedor: null
     };
   }
 
@@ -60,6 +62,24 @@ class App extends Component {
 
   setUserPermissions(user_permissions) {
     this.setState({ user_permissions });
+  }
+
+  get_vendedores(){
+    let t = this;
+    // ################################################
+    axios.post(url + "api/get-vendedores")
+      .then(function (response) {
+        let v = response.data;
+        if( parseInt(localStorage.getItem("tp_vendedor")) > 0 ){
+          v = v.filter(v => parseInt(v.value) === parseInt(localStorage.getItem("tp_vendedor")));
+          t.setState({ vendedores: v, vendedor:v[0] });
+        }else{
+          t.setState({ vendedores: response.data });
+        }
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
   }
 
   componentDidMount() {
@@ -115,13 +135,7 @@ class App extends Component {
         console.log(error);
       });
     // ################################################
-    axios.post(url + "api/get-vendedores")
-      .then(function (response) {
-        t.setState({ vendedores: response.data });
-      })
-      .catch(function (error) {
-        console.log(error);
-      });
+    this.get_vendedores();
 
     // We set the logged in
     let id = localStorage.getItem("tp_uid");
@@ -131,6 +145,7 @@ class App extends Component {
       this.setState({ logged: true });
     }
   }
+
 
   load_orders() {
     let t = this;
@@ -211,6 +226,7 @@ class App extends Component {
                       clientes={this.state.clientes}
                       productos={this.state.productos}
                       fletes={this.state.fletes}
+                      get_vendedores={this.get_vendedores}
                     />} />
               ) :
               (
@@ -225,6 +241,7 @@ class App extends Component {
                         clientes={this.state.clientes}
                         productos={this.state.productos}
                         fletes={this.state.fletes}
+                        get_vendedores={this.get_vendedores}
                       />} />
 
                   <Route path="/nueva-orden"
@@ -243,6 +260,7 @@ class App extends Component {
                         config={this.state.config}
                         tipo_pago={this.state.tipo_pago}
                         vendedores={this.state.vendedores}
+                        vendedor={this.state.vendedor}
                       />} />
 
                   <Route path="/order-list"

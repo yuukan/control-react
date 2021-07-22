@@ -80,11 +80,12 @@ class Programar extends Component {
         if (this.props.orders) orders = this.props.orders;
 
         // Show only the anuladas orders
+        let v = parseInt(localStorage.getItem("tp_vendedor"));
         if (orders)
             orders = orders.filter(
                 (key) =>
                     // key.Programado!=="1"
-                    key.sid !== "5" && key.sid !== "6"
+                    key.sid !== "5" && key.sid !== "6" && ( !v || v===0 || ( v>0 && parseInt(key.vendedor)===v ) )
             );
 
         return (
