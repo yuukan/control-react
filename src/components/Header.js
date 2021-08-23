@@ -80,6 +80,17 @@ class Header extends Component {
                                         )
                                 }
                             </Typography>
+                            {
+                                this.props.loading ?
+                                (
+                                    !this.props.prices_flag ? (
+                                        <img src="images/loadingwhite.gif" alt="" width="32" />
+                                    ):
+                                    (
+                                        <img src="images/loading.gif" alt="" width="32" />
+                                    )
+                                ): ""
+                            }
                             <Button color="inherit" onClick={this.logOut}>Salir</Button>
                         </Toolbar>
                     </AppBar>

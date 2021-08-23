@@ -126,8 +126,11 @@ class Home extends Component {
             this.props.load_products(option.value);
         }
         if (b.name === "producto") {
-            console.log(option);
-            this.setState({ precio: parseFloat(option.precio)+parseFloat(option.Margen), costo: option.precio, no_oficial: option.no_oficial, IDP: option.IDP });
+            var margen = parseFloat(option.Margen).toFixed(2);
+            if (isNaN(margen)) {
+                margen = 0;
+            }
+            this.setState({ precio: parseFloat(option.precio)+parseFloat(margen), costo: option.precio, no_oficial: option.no_oficial, IDP: option.IDP });
         }
         if (b.name === "cliente") {
             this.setState({ tipo_pago: option.tipo_pago, tipoPago: {value:option.NumSAP, label:option.NumSAPLabel} });

@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import Typography from '@material-ui/core/Typography';
 import MaterialTable from 'material-table';
-import { CloudUpload, Cancel, Star, Gavel } from '@material-ui/icons/';
+import { CloudUpload, Cancel, Star, Gavel, Error } from '@material-ui/icons/';
 import swal from 'sweetalert';
 import axios from 'axios';
 
@@ -108,6 +108,11 @@ class SapReady extends Component {
                                         hidden: rowData.star === 'N'
                                     }),
                                     rowData => ({
+                                        icon: () => <Error color="secondary" />,
+                                        tooltip: 'No tiene precios oficiales',
+                                        hidden: parseInt(rowData.noOficiales) <= 0
+                                    }),
+                                    rowData => ({
                                         icon: () => <Gavel color="secondary" />,
                                         tooltip: 'Necesita aprobación contra Boleta',
                                         hidden: rowData.contra_boleta !== "2"
@@ -115,7 +120,7 @@ class SapReady extends Component {
                                     rowData => ({
                                         icon: CloudUpload,
                                         tooltip: 'Subir a SAP',
-                                        hidden: rowData.CodigoClienteSap === '' || rowData.CodigoClienteSap === null || rowData.codigoTransporte === '' || rowData.codigoTransporte === null || rowData.CodigoProveedorSAP === '' || rowData.CodigoProveedorSAP === null || parseInt(rowData.oid) === 6 || rowData.CodigoClienteSapExist === 0 || rowData.codigoTransporteExist === 0 || rowData.CodigoProveedorSAPExist === 0 || rowData.contra_boleta === "2",
+                                        hidden: rowData.CodigoClienteSap === '' || rowData.CodigoClienteSap === null || rowData.codigoTransporte === '' || rowData.codigoTransporte === null || rowData.CodigoProveedorSAP === '' || rowData.CodigoProveedorSAP === null || parseInt(rowData.oid) === 6 || rowData.CodigoClienteSapExist === 0 || rowData.codigoTransporteExist === 0 || rowData.CodigoProveedorSAPExist === 0 || rowData.contra_boleta === "2" || parseInt(rowData.noOficiales) > 0,
                                         onClick: (event, rowData) => {
                                             if (!this.state.uploading)
                                                 swal("¿Subir Orden a SAP?", "Comentario", {

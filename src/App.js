@@ -27,7 +27,7 @@ library.add(faBars, faPrint, faEnvelope, faTrash, faSignIn);
 // Live
 let url = window._url;
 // let url = "http://2f341138.ngrok.io/control/public/";
-
+let load = 10;
 class App extends Component {
   constructor(props) {
     super(props);
@@ -69,6 +69,7 @@ class App extends Component {
     // ################################################
     axios.post(url + "api/get-vendedores")
       .then(function (response) {
+        load--;
         let v = response.data;
         if( parseInt(localStorage.getItem("tp_vendedor")) > 0 ){
           v = v.filter(v => parseInt(v.value) === parseInt(localStorage.getItem("tp_vendedor")));
@@ -87,6 +88,7 @@ class App extends Component {
     let t = this;
     axios.post(url + "api/get-clients")
       .then(function (response) {
+        load--;
         t.setState({ clientes: response.data });
       })
       .catch(function (error) {
@@ -95,6 +97,7 @@ class App extends Component {
     // ################################################
     axios.post(url + "api/get-fletes")
       .then(function (response) {
+        load--;
         t.setState({ fletes: response.data });
         // t.load_orders();
       })
@@ -104,6 +107,7 @@ class App extends Component {
     // ################################################
     axios.post(url + "api/get-tipo-pago")
       .then(function (response) {
+        load--;
         t.setState({ tipo_pago: response.data });
       })
       .catch(function (error) {
@@ -112,6 +116,7 @@ class App extends Component {
     // ################################################
     axios.post(url + "api/get-prices-flag")
       .then(function (response) {
+        load--;
         if (response.data)
           t.setState({ prices_flag: response.data[0].ban === "1" });
       })
@@ -121,6 +126,7 @@ class App extends Component {
     // ################################################
     axios.post(url + "api/get-plants")
       .then(function (response) {
+        load--;
         t.setState({ plants: response.data });
       })
       .catch(function (error) {
@@ -129,6 +135,7 @@ class App extends Component {
     // ################################################
     axios.post(url + "api/get-config")
       .then(function (response) {
+        load--;
         t.setState({ config: response.data[0] });
       })
       .catch(function (error) {
@@ -153,6 +160,7 @@ class App extends Component {
     // ################################################
     axios.post(url + "api/get-orders")
       .then(function (response) {
+        load--;
         t.setState({ orders: response.data });
         t.load_orders_programar();
       })
@@ -167,6 +175,7 @@ class App extends Component {
     // ################################################
     axios.post(url + "api/get-orders-programar")
       .then(function (response) {
+        load--;
         t.setState({ ordersProgramar: response.data });
         t.load_orders_subirSAP();
       })
@@ -181,6 +190,7 @@ class App extends Component {
     // ################################################
     axios.post(url + "api/get-orders-procesadas")
       .then(function (response) {
+        load--;
         t.setState({ ordersSAP: response.data });
       })
       .catch(function (error) {
@@ -211,6 +221,7 @@ class App extends Component {
             changeLogged={this.changeLogged}
             prices_flag={this.state.prices_flag}
             user_permissions={this.state.user_permissions}
+            loading={load!==0}
           />
           {
             !this.state.logged ?
