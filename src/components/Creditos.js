@@ -450,6 +450,8 @@ class Creditos extends Component {
         }
         let tipos_pago = null;
         if (order) tipos_pago = order.tipos_pago;
+
+        let vendedor = parseInt(localStorage.getItem("tp_vendedor")) > 0;
         return (
             <div className="main-container">
                 {
@@ -710,12 +712,23 @@ class Creditos extends Component {
                         <Grid item xs={12} sm={6} md={2} lg={2} className="th goRight">
                             <strong>Precio + IVA + IDP</strong>
                         </Grid>
-                        <Grid item xs={12} sm={6} md={1} lg={1} className="th goRight">
-                            <strong>Costo + IVA + IDP</strong>
-                        </Grid>
-                        <Grid item xs={12} sm={6} md={1} lg={1} className="th goRight">
-                            <strong>Subtotal Costo</strong>
-                        </Grid>
+                        {
+                            !vendedor ?
+                            (
+                                <React.Fragment>
+                                    <Grid item xs={12} sm={6} md={1} lg={1} className="th goRight">
+                                        <strong>Costo + IVA + IDP</strong>
+                                    </Grid>
+                                    <Grid item xs={12} sm={6} md={1} lg={1} className="th goRight">
+                                        <strong>Subtotal Costo</strong>
+                                    </Grid>
+                                </React.Fragment>
+                            ) : 
+                            (
+                                <Grid item xs={12} sm={12} md={2} lg={2} className="th goRight"></Grid>
+                            )
+                        }
+                        
                         {order && order.Compartimientos.length > 0
                             ? order.Compartimientos.map((key, idx) => {
                                 let sub = key.Precio * key.cantidad;
@@ -778,14 +791,24 @@ class Creditos extends Component {
                                             <strong>Precio + IVA + IDP</strong>
                                             Q {this.numFormat(key.Precio - order.FleteXGalon)}
                                         </Grid>
-                                        <Grid item xs={6} sm={6} md={1} lg={1} className={`ch goRight ${noMargin}`}>
-                                            <strong>Costo + IVA + IDP</strong>
-                                            Q {this.numFormat(costo)}
-                                        </Grid>
-                                        <Grid item xs={6} sm={6} md={1} lg={1} className="ch goRight">
-                                            <strong>Subtotal Costo</strong>
-                                            Q {this.numFormat(subCosto)}
-                                        </Grid>
+                                        {
+                                            !vendedor ?
+                                            (
+                                                <React.Fragment>
+                                                    <Grid item xs={6} sm={6} md={1} lg={1} className={`ch goRight ${noMargin}`}>
+                                                        <strong>Costo + IVA + IDP</strong>
+                                                        Q {this.numFormat(costo)}
+                                                    </Grid>
+                                                    <Grid item xs={6} sm={6} md={1} lg={1} className="ch goRight">
+                                                        <strong>Subtotal Costo</strong>
+                                                        Q {this.numFormat(subCosto)}
+                                                    </Grid>
+                                                </React.Fragment>
+                                            ) : 
+                                            (
+                                                <Grid item xs={12} sm={12} md={2} lg={2} className="ch goRight"></Grid>
+                                            )
+                                        }
                                         <Grid item xs={6} sm={6} md={12} lg={12} className="mobile">
                                             &nbsp;
                                         </Grid>
@@ -843,18 +866,28 @@ class Creditos extends Component {
                         <Grid item xs={6} sm={6} md={1} lg={1} className="tot hideMobile goRight">
 
                         </Grid>
-                        <Grid item xs={6} sm={6} md={1} lg={1} className="tot hideMobile goRight">
-                            <strong>
-                                Total
-                            </strong>
-                        </Grid>
-                        <Grid item xs={6} sm={6} md={1} lg={1} className="tot tot_mob goRight">
-                            <strong>Subtotal Costo</strong>
-                            Q {subtot.toLocaleString('en-US', {
-                                minimumFractionDigits: 2,
-                                maximumFractionDigits: 2
-                            })}
-                        </Grid>
+                        {
+                            !vendedor ?
+                            (
+                                <React.Fragment>
+                                    <Grid item xs={6} sm={6} md={1} lg={1} className="tot hideMobile goRight">
+                                        <strong>
+                                            Total
+                                        </strong>
+                                    </Grid>
+                                    <Grid item xs={6} sm={6} md={1} lg={1} className="tot tot_mob goRight">
+                                        <strong>Subtotal Costo</strong>
+                                        Q {subtot.toLocaleString('en-US', {
+                                            minimumFractionDigits: 2,
+                                            maximumFractionDigits: 2
+                                        })}
+                                    </Grid>
+                                </React.Fragment>
+                            ) : 
+                            (
+                                <Grid item xs={12} sm={12} md={2} lg={2} className="tot tot_mob goRight"></Grid>
+                            )
+                        }
                     </Grid>
                 </div>
                 {
