@@ -53,6 +53,8 @@ class Header extends Component {
                 localStorage.removeItem("tp_uid");
                 localStorage.removeItem("tp_uid_per");
                 localStorage.removeItem("tp_vendedor");
+                this.props.clearState();
+                window.location.href="/";
             }
         });
     }

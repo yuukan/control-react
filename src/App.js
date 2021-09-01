@@ -36,6 +36,8 @@ class App extends Component {
     this.load_products = this.load_products.bind(this);
     this.setUserPermissions = this.setUserPermissions.bind(this);
     this.get_vendedores = this.get_vendedores.bind(this);
+    this.loadAll = this.loadAll.bind(this);
+    this.clearState = this.clearState.bind(this);
 
     this.state = {
       logged: false,
@@ -53,6 +55,26 @@ class App extends Component {
       vendedores: null,
       vendedor: null
     };
+  }
+
+  // clear State
+  clearState(){
+    this.setState({
+      logged: false,
+      config: null,
+      clientes: [],
+      productos: [],
+      fletes: [],
+      orders: [],
+      plants: [],
+      user_permissions: [],
+      prices_flag: 0,
+      tipo_pago: null,
+      ordersProgramar:null,
+      ordersSAP:null,
+      vendedores: null,
+      vendedor: null
+    })
   }
 
   //Function to change the logged state
@@ -84,8 +106,19 @@ class App extends Component {
   }
 
   componentDidMount() {
-    this.load_orders();
+    // We set the logged in
+    let id = localStorage.getItem("tp_uid");
+    let permissions = localStorage.getItem("tp_uid_per");
+    if (id) {
+      this.setUserPermissions(permissions.split(","));
+      this.setState({ logged: true });
+      this.loadAll();
+    }
+  }
+
+  loadAll(){
     let t = this;
+    t.load_orders();
     axios.post(url + "api/get-clients")
       .then(function (response) {
         load--;
@@ -143,16 +176,7 @@ class App extends Component {
       });
     // ################################################
     this.get_vendedores();
-
-    // We set the logged in
-    let id = localStorage.getItem("tp_uid");
-    let permissions = localStorage.getItem("tp_uid_per");
-    if (id) {
-      this.setUserPermissions(permissions.split(","));
-      this.setState({ logged: true });
-    }
   }
-
 
   load_orders() {
     let t = this;
@@ -198,11 +222,12 @@ class App extends Component {
       });
   }
 
-  load_products(plant) {
+  load_products(plant,fechaEntrega) {
     let t = this;
     // ################################################
     axios.post(url + "api/get-products", {
-      plant
+      plant,
+      fechaEntrega
     })
       .then(function (response) {
         t.setState({ productos: response.data });
@@ -222,6 +247,7 @@ class App extends Component {
             prices_flag={this.state.prices_flag}
             user_permissions={this.state.user_permissions}
             loading={load!==0}
+            clearState={this.clearState}
           />
           {
             !this.state.logged ?
@@ -238,6 +264,7 @@ class App extends Component {
                       productos={this.state.productos}
                       fletes={this.state.fletes}
                       get_vendedores={this.get_vendedores}
+                      loadAll={this.loadAll}
                     />} />
               ) :
               (

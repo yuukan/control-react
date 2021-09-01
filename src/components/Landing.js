@@ -37,6 +37,7 @@ class Landing extends Component {
                     localStorage.setItem("tp_vendedor", response.data.vendedor);
                     this_.props.changeLogged(true);
                     this_.props.get_vendedores();
+                    this_.props.loadAll();
                 } else {
                     swal("Error", response.data.message, "error");
                 }

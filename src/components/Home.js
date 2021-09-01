@@ -60,6 +60,13 @@ class Home extends Component {
         }
     }
 
+    numFormat(num) {
+        return num.toLocaleString('en-US', {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2
+        });
+    }
+
     handleChange(event) {
         this.setState({ [event.target.name]: event.target.value });
     }
@@ -123,14 +130,20 @@ class Home extends Component {
             );
         }
         if (b.name === "planta") {
-            this.props.load_products(option.value);
+            this.props.load_products(option.value,this.state.fechaEntrega);
+            this.setState({product:"",detalle:[]});
         }
         if (b.name === "producto") {
             var margen = parseFloat(option.Margen).toFixed(2);
             if (isNaN(margen)) {
                 margen = 0;
             }
-            this.setState({ precio: parseFloat(option.precio)+parseFloat(margen), costo: option.precio, no_oficial: option.no_oficial, IDP: option.IDP });
+            var precio = parseFloat(option.precio);
+            if ( isNaN (precio) ){
+                precio = 0;
+            }
+            var total = parseFloat(precio) + parseFloat(margen);
+            this.setState({ precio: this.numFormat(total), costo: option.precio, no_oficial: option.no_oficial, IDP: option.IDP });
         }
         if (b.name === "cliente") {
             this.setState({ tipo_pago: option.tipo_pago, tipoPago: {value:option.NumSAP, label:option.NumSAPLabel} });
@@ -139,6 +152,8 @@ class Home extends Component {
 
     handleDateChange(fechaEntrega) {
         this.setState({ fechaEntrega });
+        this.props.load_products(this.state.planta.value,fechaEntrega);
+        this.setState({product:"",detalle:[]});
     }
 
     agregarDetalle() {
