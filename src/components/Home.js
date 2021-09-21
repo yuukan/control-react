@@ -131,7 +131,7 @@ class Home extends Component {
         }
         if (b.name === "planta") {
             this.props.load_products(option.value,this.state.fechaEntrega);
-            this.setState({product:"",detalle:[]});
+            this.setState({product:"",detalle:[], transporte: null, producto:null, cantidad:0,compartimiento:null, precio:""});
         }
         if (b.name === "producto") {
             var margen = parseFloat(option.Margen).toFixed(2);
@@ -153,7 +153,7 @@ class Home extends Component {
     handleDateChange(fechaEntrega) {
         this.setState({ fechaEntrega });
         this.props.load_products(this.state.planta.value,fechaEntrega);
-        this.setState({product:"",detalle:[]});
+        this.setState({product:"",detalle:[], transporte: null, producto:null, cantidad:0,compartimiento:null, precio:""});
     }
 
     agregarDetalle() {
