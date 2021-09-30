@@ -224,10 +224,13 @@ class App extends Component {
 
   load_products(plant,fechaEntrega) {
     let t = this;
+    const offset = fechaEntrega.getTimezoneOffset()
+    fechaEntrega = new Date(fechaEntrega.getTime() - (offset*60*1000))
+    let fecha = fechaEntrega.toISOString().split('T')[0]
     // ################################################
     axios.post(url + "api/get-products", {
       plant,
-      fechaEntrega
+      fechaEntrega: fecha
     })
       .then(function (response) {
         t.setState({ productos: response.data });

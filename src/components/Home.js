@@ -152,7 +152,7 @@ class Home extends Component {
 
     handleDateChange(fechaEntrega) {
         this.setState({ fechaEntrega });
-        this.props.load_products(this.state.planta.value,fechaEntrega);
+        this.props.load_products(this.state.planta ? this.state.planta.value : 0,fechaEntrega);
         this.setState({product:"",detalle:[], transporte: null, producto:null, cantidad:0,compartimiento:null, precio:""});
     }
 
@@ -188,9 +188,9 @@ class Home extends Component {
         let row = [];
         let exclusivo = 0, exclusivoid = 0;
         if (this.state.compartimiento) {
-            row = [this.state.producto.value, this.state.cantidad, this.state.compartimiento.value, this.state.producto.label, this.state.producto.color, this.state.no_oficial, this.state.precio, this.state.costo, this.state.IDP];
+            row = [this.state.producto.value, this.state.cantidad, this.state.compartimiento.value, this.state.producto.label, this.state.producto.color, this.state.no_oficial ? this.state.no_oficial : 1, this.state.precio, this.state.costo, this.state.IDP];
         } else {
-            row = [this.state.producto.value, this.state.cantidad, 0, this.state.producto.label, this.state.producto.color, this.state.no_oficial, this.state.precio, this.state.costo, this.state.IDP];
+            row = [this.state.producto.value, this.state.cantidad, 0, this.state.producto.label, this.state.producto.color, this.state.no_oficial ? this.state.no_oficial : 1, this.state.precio, this.state.costo, this.state.IDP];
         }
         let detalle = this.state.detalle.splice(0);
         detalle.push(row);
@@ -211,7 +211,7 @@ class Home extends Component {
             swal("Error", "Debe de ingresar el detalle de los productos del pedido!", "error");
             return;
         }
-        if (t.cliente !== null && t.tipoPago !== null && t.tipoPago !== null && t.direccion !== null && t.fleteAplicado !== 0 && t.planta !== null) {
+        if (t.cliente !== null && t.tipoPago !== null && t.tipoPago !== null && t.direccion !== null && t.fleteAplicado !== 0 && t.planta !== null && t.vendedor !== null) {
             let transporte = 0;
             if (t.transporte !== null) transporte = t.transporte.id;
             t_.setState({disabled:true});
@@ -492,7 +492,7 @@ class Home extends Component {
                                     onChange={this.handleChangeSelect}
                                     name="vendedor"
                                     options={this.props.vendedores}
-                                    placeholder="Vendedor"
+                                    placeholder="*Vendedor"
                                 />
                             </FormControl>
                         </Grid>
