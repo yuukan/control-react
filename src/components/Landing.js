@@ -35,6 +35,7 @@ class Landing extends Component {
                     this_.props.setUserPermissions(response.data.permissions.split(","));
                     localStorage.setItem("tp_uid_per", response.data.permissions.split(","));
                     localStorage.setItem("tp_vendedor", response.data.vendedor);
+                    localStorage.setItem("tp_nombre", response.data.nombre);
                     this_.props.changeLogged(true);
                     this_.props.get_vendedores();
                     this_.props.loadAll();

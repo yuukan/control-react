@@ -15,7 +15,9 @@ import ListItemText from '@material-ui/core/ListItemText';
 import { LocalShipping, ListAltTwoTone, CheckBox, Schedule, Report } from '@material-ui/icons';
 import Button from '@material-ui/core/Button';
 import swal from 'sweetalert';
-
+import MenuItem from '@material-ui/core/MenuItem';
+import Menu from '@material-ui/core/Menu';
+import axios from 'axios';
 
 class Header extends Component {
     constructor(props) {
@@ -24,11 +26,51 @@ class Header extends Component {
         this.handleDrawerOpen = this.handleDrawerOpen.bind(this);
         this.changeIndex = this.changeIndex.bind(this);
         this.logOut = this.logOut.bind(this);
+        this.handleMenu = this.handleMenu.bind(this);
+        this.handleClose = this.handleClose.bind(this);
+        this.cambiarContrasena = this.cambiarContrasena.bind(this);
         this.state = {
             selectedIndex: 1,
-            openDrawer: false
+            openDrawer: false,
+            anchorEl: null
         };
     }
+
+    handleMenu(event) {
+        this.setState({ anchorEl: event.currentTarget });
+    };
+
+    handleClose() {
+        this.setState({ anchorEl: null });
+    };
+
+    cambiarContrasena() {
+        swal({
+            text: 'Ingrese su nueva contraseña',
+            content: "input",
+            button: {
+                text: "Cambiar Contraseña",
+                closeModal: false,
+            },
+        })
+            .then(pass => {
+                if (!pass){
+                    swal("Error", "La contraseña no puede estar vacía.", "error");
+                    return null;
+                }
+                axios.post(this.props.url + "api/change-pass", {
+                    pass,
+                    user: window.localStorage.getItem('tp_uid')
+                })
+                    .then(function (response) {
+                        swal("Éxito", "Contraseña cambiada correctamente.", "success");
+                    })
+                    .catch(function (error) {
+                        swal("Error", "Consulte con el administrador.", "error");
+                    });
+            });
+        this.setState({ anchorEl: null });
+    };
 
     handleDrawerClose() {
         this.setState({ openDrawer: false });
@@ -54,7 +96,7 @@ class Header extends Component {
                 localStorage.removeItem("tp_uid_per");
                 localStorage.removeItem("tp_vendedor");
                 this.props.clearState();
-                window.location.href="/";
+                window.location.href = window.location.origin;
             }
         });
     }
@@ -84,16 +126,44 @@ class Header extends Component {
                             </Typography>
                             {
                                 this.props.loading ?
-                                (
-                                    !this.props.prices_flag ? (
-                                        <img src="images/loadingwhite.gif" alt="" width="32" />
-                                    ):
                                     (
-                                        <img src="images/loading.gif" alt="" width="32" />
-                                    )
-                                ): ""
+                                        !this.props.prices_flag ? (
+                                            <img src="images/loadingwhite.gif" alt="" width="32" />
+                                        ) :
+                                            (
+                                                <img src="images/loading.gif" alt="" width="32" />
+                                            )
+                                    ) : ""
                             }
-                            <Button color="inherit" onClick={this.logOut}>Salir</Button>
+                            <div>
+                                <Button
+                                    aria-label="Usuario actual"
+                                    aria-controls="menu-appbar"
+                                    aria-haspopup="true"
+                                    onClick={this.handleMenu}
+                                    color="inherit"
+                                >
+                                    {window.localStorage.getItem('tp_nombre')}
+                                </Button>
+                                <Menu
+                                    id="menu-appbar"
+                                    anchorEl={this.state.anchorEl}
+                                    anchorOrigin={{
+                                        vertical: 'top',
+                                        horizontal: 'right',
+                                    }}
+                                    keepMounted
+                                    transformOrigin={{
+                                        vertical: 'top',
+                                        horizontal: 'right',
+                                    }}
+                                    open={Boolean(this.state.anchorEl)}
+                                    onClose={this.handleClose}
+                                >
+                                    <MenuItem onClick={this.cambiarContrasena}>Cambiar Contraseña</MenuItem>
+                                    <MenuItem onClick={this.logOut}>Salir</MenuItem>
+                                </Menu>
+                            </div>
                         </Toolbar>
                     </AppBar>
                     <Drawer

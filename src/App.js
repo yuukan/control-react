@@ -251,6 +251,7 @@ class App extends Component {
             user_permissions={this.state.user_permissions}
             loading={load!==0}
             clearState={this.clearState}
+            url={url}
           />
           {
             !this.state.logged ?
