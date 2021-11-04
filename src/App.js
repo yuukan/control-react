@@ -21,6 +21,7 @@ import './css/App.css';
 // Fontawesome
 import { library } from '@fortawesome/fontawesome-svg-core';
 import { faBars, faPrint, faEnvelope, faTrash, faSignIn } from '@fortawesome/pro-solid-svg-icons';
+import ChangePass from './components/ChangePass';
 library.add(faBars, faPrint, faEnvelope, faTrash, faSignIn);
 
 // let url = "http://192.168.0.7:81/control/public/";
@@ -327,6 +328,15 @@ class App extends Component {
                   <Route path="/new-list"
                     render={(props) =>
                       <ScheduleList {...props}
+                        orders={this.state.orders}
+                        url={url}
+                        load_orders={this.load_orders}
+                        prices_flag={this.state.prices_flag}
+                      />} />
+
+                  <Route path="/change-pass"
+                    render={(props) =>
+                      <ChangePass {...props}
                         orders={this.state.orders}
                         url={url}
                         load_orders={this.load_orders}

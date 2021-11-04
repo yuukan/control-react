@@ -370,6 +370,14 @@ h3.transporte-title {
 button.margin-fix2 {
   margin-top: 27px !important; }
 
+.pass {
+  max-width: 350px;
+  width: 100%; }
+  .pass .save-pass-button {
+    width: 100%;
+    margin-top: 15px;
+    text-align: right; }
+
 /****************************************************************/
 .new-btn {
   float: right;
