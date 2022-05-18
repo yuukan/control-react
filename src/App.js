@@ -51,15 +51,15 @@ class App extends Component {
       user_permissions: [],
       prices_flag: 0,
       tipo_pago: null,
-      ordersProgramar:null,
-      ordersSAP:null,
+      ordersProgramar: null,
+      ordersSAP: null,
       vendedores: null,
       vendedor: null
     };
   }
 
   // clear State
-  clearState(){
+  clearState() {
     this.setState({
       logged: false,
       config: null,
@@ -71,8 +71,8 @@ class App extends Component {
       user_permissions: [],
       prices_flag: 0,
       tipo_pago: null,
-      ordersProgramar:null,
-      ordersSAP:null,
+      ordersProgramar: null,
+      ordersSAP: null,
       vendedores: null,
       vendedor: null
     })
@@ -87,17 +87,17 @@ class App extends Component {
     this.setState({ user_permissions });
   }
 
-  get_vendedores(){
+  get_vendedores() {
     let t = this;
     // ################################################
     axios.post(url + "api/get-vendedores")
       .then(function (response) {
         load--;
         let v = response.data;
-        if( parseInt(localStorage.getItem("tp_vendedor")) > 0 ){
+        if (parseInt(localStorage.getItem("tp_vendedor")) > 0) {
           v = v.filter(v => parseInt(v.value) === parseInt(localStorage.getItem("tp_vendedor")));
-          t.setState({ vendedores: v, vendedor:v[0] });
-        }else{
+          t.setState({ vendedores: v, vendedor: v[0] });
+        } else {
           t.setState({ vendedores: response.data });
         }
       })
@@ -117,7 +117,7 @@ class App extends Component {
     }
   }
 
-  loadAll(){
+  loadAll() {
     let t = this;
     t.load_orders();
     axios.post(url + "api/get-clients")
@@ -223,22 +223,25 @@ class App extends Component {
       });
   }
 
-  load_products(plant,fechaEntrega) {
+  load_products(plant, fechaEntrega) {
     let t = this;
-    const offset = fechaEntrega.getTimezoneOffset()
-    fechaEntrega = new Date(fechaEntrega.getTime() - (offset*60*1000))
-    let fecha = fechaEntrega.toISOString().split('T')[0]
-    // ################################################
-    axios.post(url + "api/get-products", {
-      plant,
-      fechaEntrega: fecha
-    })
-      .then(function (response) {
-        t.setState({ productos: response.data });
+    if (fechaEntrega instanceof Date && !!fechaEntrega.getDate()) {
+      const offset = fechaEntrega.getTimezoneOffset()
+      fechaEntrega = new Date(fechaEntrega.getTime() - (offset * 60 * 1000))
+
+      let fecha = fechaEntrega.toISOString().split('T')[0]
+      // ################################################
+      axios.post(url + "api/get-products", {
+        plant,
+        fechaEntrega: fecha
       })
-      .catch(function (error) {
-        console.log(error);
-      });
+        .then(function (response) {
+          t.setState({ productos: response.data });
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
+    }
   }
 
   render() {
@@ -250,7 +253,7 @@ class App extends Component {
             changeLogged={this.changeLogged}
             prices_flag={this.state.prices_flag}
             user_permissions={this.state.user_permissions}
-            loading={load!==0}
+            loading={load !== 0}
             clearState={this.clearState}
             url={url}
           />

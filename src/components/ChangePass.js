@@ -15,7 +15,8 @@ class ChangePass extends Component {
         this.changePass = this.changePass.bind(this);
         this.state = {
             pass: "",
-            confirm: ""
+            confirm: "",
+            currentpass: ""
         };
     }
 
@@ -26,16 +27,20 @@ class ChangePass extends Component {
         if (event.target.name === "confirm") {
             this.setState({ confirm: event.target.value });
         }
+        if (event.target.name === "currentpass") {
+            this.setState({ currentpass: event.target.value });
+        }
     };
 
     changePass() {
         let t = this;
-        if (this.state.pass === "" || this.state.confirm === "") {
+        if (this.state.currentpass === "" ||this.state.pass === "" || this.state.confirm === "") {
             swal("Error", "¡Debes de ingresar todos los campos!", "error");
         } else if (this.state.pass !== this.state.confirm) {
             swal("Error", "¡Las contraseñas deben coincidir!", "error");
         } else {
             axios.post(this.props.url + "api/change-pass", {
+                currentpass: this.state.currentpass,
                 pass: this.state.pass,
                 user: window.localStorage.getItem('tp_uid')
             })
@@ -58,6 +63,15 @@ class ChangePass extends Component {
                 </Typography>
                 <Card className="pass">
                     <CardContent>
+                        <TextField
+                            name="currentpass"
+                            id="currentpass"
+                            label="Contraseña Actual"
+                            type="password"
+                            fullWidth
+                            onChange={this.handleChange}
+                            value={this.state.currentpass}
+                        />
                         <TextField
                             name="password"
                             id="password"
